@@ -1,0 +1,12 @@
+
+Crewmate.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+CrewmateMove
+  rotate: false
+  xy: 0, 0
+  size: 88, 100
+  orig: 88, 100
+  offset: 0, 0
+  index: -1
