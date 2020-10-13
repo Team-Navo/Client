@@ -18,6 +18,9 @@ public class Crewmate  extends Sprite {
     public World world;
     public Body b2Body;
     private TextureRegion crewmateFrontStand;
+    private TextureRegion crewmateBackStand;
+    private TextureRegion crewmateRightStand;
+    private TextureRegion crewmateLeftStand;
     private Animation crewmateFront;
     private Animation crewmateBack;
     private Animation crewmateLeft;
@@ -63,6 +66,9 @@ public class Crewmate  extends Sprite {
 
         defineCrewmate(v);
         crewmateFrontStand = new TextureRegion(getTexture(), 0+1, 50+12, 20, 25);
+        crewmateBackStand = new TextureRegion(getTexture(), 0+1, 75+12, 20, 25);
+        crewmateLeftStand = new TextureRegion(getTexture(), 0+1, 25+12, 20, 25);
+        crewmateRightStand = new TextureRegion(getTexture(), 0+1, 0+12, 20, 25);
         setBounds(200-11, 500-12, 20, 25);
         setRegion(crewmateFrontStand);
     }
@@ -88,13 +94,26 @@ public class Crewmate  extends Sprite {
 
     public TextureRegion getFrame(float dt){
         currentState = getState();
+        TextureRegion region;
         if(isStop){
             previousState = currentState;
             stateTimer = 0;
-            return crewmateFrontStand;
+            switch(previousState){
+                case UP:
+                    region = crewmateBackStand;
+                    break;
+                case LEFT:
+                    region = crewmateLeftStand;
+                    break;
+                case RIGHT:
+                    region = crewmateRightStand;
+                    break;
+                default:
+                    region = crewmateFrontStand;
+                    break;
+            }
+            return region;
         }
-
-        TextureRegion region;
         switch (currentState){
             case UP:
                 region = (TextureRegion)crewmateBack.getKeyFrame(stateTimer);
