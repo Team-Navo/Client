@@ -10,15 +10,23 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
+import java.util.ArrayList;
+
 public class B2WorldCreator {
+
+    private ArrayList<Rectangle> recList;
+
     public B2WorldCreator(World world, TiledMap map){
         BodyDef bDef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         FixtureDef fDef = new FixtureDef();
         Body body;
+        recList = new ArrayList<>();
 
         for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
                 Rectangle rect = ((RectangleMapObject)object).getRectangle();
+
+                recList.add(rect);
 
                 bDef.type = BodyDef.BodyType.StaticBody;
                 bDef.position.set(rect.getX() + rect.getWidth() / 2,
@@ -31,5 +39,8 @@ public class B2WorldCreator {
                 fDef.shape = shape;
                 body.createFixture(fDef);
         }
+    }
+    public ArrayList<Rectangle> getRecList() {
+        return recList;
     }
 }

@@ -9,12 +9,14 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Scenes.Hud;
+import dev.navo.game.Sprites.Bullet;
 import dev.navo.game.Sprites.Crewmate;
 import dev.navo.game.Tools.B2WorldCreator;
 
@@ -38,12 +40,17 @@ public class PlayScreen implements Screen {
     private Crewmate c1;
     private ArrayList<Crewmate> cList;
 
+    private ArrayList<Bullet> bList;
+
+    private ArrayList<Rectangle> recList;
+
+
     private String mapType = "Navo32.tmx";
     private static final int moveSpeed = 10;
     private static final int maxSpeed = 100;
 
     public PlayScreen(NavoGame game){
-        atlas = new TextureAtlas("Crewmate.pack");
+        atlas = new TextureAtlas("Image.atlas");
 
         this.game = game;
         gameCam = new OrthographicCamera();
@@ -58,7 +65,10 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0,0), true);
         b2dr = new Box2DDebugRenderer();
 
-        new B2WorldCreator(world, map);
+        B2WorldCreator b2 = new B2WorldCreator(world, map);
+        recList = new ArrayList<>();
+        recList = b2.getRecList();
+
         c1 = new Crewmate(world, this, new Vector2(200, 500));
         cList = new ArrayList<>();
         cList.add(c1);
@@ -66,6 +76,8 @@ public class PlayScreen implements Screen {
             Crewmate temp = new Crewmate(world, this, new Vector2((int)(Math.random()*1560) + 20, (int)(Math.random()*960) + 20));
             cList.add(temp);
         }
+        bList = new ArrayList<>();
+
     }
 
     public TextureAtlas getAtlas(){
@@ -110,6 +122,9 @@ public class PlayScreen implements Screen {
                 c1.b2Body.setLinearVelocity(c1.b2Body.getLinearVelocity().x-10, c1.b2Body.getLinearVelocity().y);
         }
 
+        if(Gdx.input.isKeyJustPressed(Input.Keys.X)){
+            bList.add(new Bullet(world, this, new Vector2(c1.getX(), c1.getY()), c1.currentState));
+        }
 
         if(Gdx.input.isTouched()) {
             c1 = cList.get((int)(Math.random() * cList.size()));
@@ -119,11 +134,46 @@ public class PlayScreen implements Screen {
     public void update(float dt){
         handleInput(dt);
 
+
+        for(int i = 0 ; i< bList.size() ; i++){
+            if(bList.get(i).check()) bList.remove(i--);
+        }
+
+        Bullet bullet;
+        Rectangle rect;
+        for(int i = 0 ; i< bList.size() ; i++) {
+            bullet = bList.get(i);
+            for (int j = 0; j < recList.size(); j++){
+                rect = recList.get(j);
+                if (bullet.getX() >= rect.getX()-bullet.getWidth() && bullet.getX() <= rect.getX()+rect.getWidth())
+                    if (bullet.getY() >= rect.getY()-bullet.getHeight() && bullet.getY() <= rect.getY()+rect.getHeight())
+                        bList.remove(i--);
+            }
+        }
+
+        Crewmate crewmate;
+        for(int i = 0 ; i< bList.size() ; i++) {
+            bullet = bList.get(i);
+            for (int j = 0; j < cList.size(); j++){
+                crewmate = cList.get(j);
+                if(!c1.equals(crewmate)){
+                    if (bullet.getX() >= crewmate.getX()-bullet.getWidth() && bullet.getX() <= crewmate.getX()+crewmate.getWidth())
+                        if (bullet.getY() >= crewmate.getY()-bullet.getHeight() && bullet.getY() <= crewmate.getY()+crewmate.getHeight())
+                            bList.remove(i--);
+                }
+            }
+        }
+
         world.step(1/60f, 6, 2);
 
         //c1.update(dt);
-        for(Crewmate c : cList)
+        for(Crewmate c : cList) {
             c.update(dt);
+        }
+        for(Bullet b : bList) {
+            b.update(dt);
+        }
+
 
         hud.showMessage("x축 속도 : "+ c1.b2Body.getLinearVelocity().x + ", y축 속도" + c1.b2Body.getLinearVelocity().y);
         gameCam.position.x = c1.b2Body.getPosition().x;
@@ -149,6 +199,8 @@ public class PlayScreen implements Screen {
         c1.draw(game.batch);
         for(Crewmate c : cList)
             c.draw(game.batch);
+        for(Bullet b : bList)
+            b.draw(game.batch);
         game.batch.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);

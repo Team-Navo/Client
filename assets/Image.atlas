@@ -1,0 +1,19 @@
+
+Image.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+CrewmateMove
+  rotate: false
+  xy: 1, 12
+  size: 88, 100
+  orig: 88, 100
+  offset: 0, 0
+  index: -1
+Bullet
+  rotate: false
+  xy: 1, 1
+  size: 9, 9
+  orig: 9, 9
+  offset: 0, 0
+  index: -1

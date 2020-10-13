@@ -13,6 +13,7 @@ public class Crewmate  extends Sprite {
     public enum State { UP, DOWN, LEFT, RIGHT };
     public State currentState;
     public State previousState;
+    private final static Vector2 regionV = new Vector2(1, 12);
 
     public World world;
     public Body b2Body;
@@ -38,30 +39,30 @@ public class Crewmate  extends Sprite {
         Array<TextureRegion> frames = new Array<>();
         //Down animation create
         for(int i = 1 ; i < 4 ; i++)
-            frames.add(new TextureRegion(getTexture(), 22*i, 50, 20, 25));
+            frames.add(new TextureRegion(getTexture(), 22*i+1,  50+12, 20, 25));
         crewmateFront = new Animation(frameDuration, frames);
         frames.clear();
 
         //Up animation create
         for(int i = 1 ; i < 4 ; i++)
-            frames.add(new TextureRegion(getTexture(), 22*i, 75, 20, 25));
+            frames.add(new TextureRegion(getTexture(), 22*i+1, 75+12, 20, 25));
         crewmateBack = new Animation(frameDuration, frames);
         frames.clear();
 
         //Left animation create
         for(int i = 1 ; i < 4 ; i++)
-            frames.add(new TextureRegion(getTexture(), 22*i, 25, 20, 25));
+            frames.add(new TextureRegion(getTexture(), 22*i+1, 25+12, 20, 25));
         crewmateLeft = new Animation(frameDuration, frames);
         frames.clear();
 
         //Right animation create
         for(int i = 1 ; i < 4 ; i++)
-            frames.add(new TextureRegion(getTexture(), 22*i, 0, 20, 25));
+            frames.add(new TextureRegion(getTexture(), 22*i+1, 0+12, 20, 25));
         crewmateRight = new Animation(frameDuration, frames);
         frames.clear();
 
         defineCrewmate(v);
-        crewmateFrontStand = new TextureRegion(getTexture(), 0, 50, 20, 25);
+        crewmateFrontStand = new TextureRegion(getTexture(), 0+1, 50+12, 20, 25);
         setBounds(200-11, 500-12, 20, 25);
         setRegion(crewmateFrontStand);
     }
@@ -131,7 +132,7 @@ public class Crewmate  extends Sprite {
             return State.DOWN;
         else {
             isStop = true;
-            return State.DOWN;
+            return currentState;
         }
     }
 }
