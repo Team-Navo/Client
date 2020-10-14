@@ -26,11 +26,20 @@ public class Crewmate  extends Sprite {
     private Animation crewmateLeft;
     private Animation crewmateRight;
 
+    private float attackDelay;
+
     private boolean isStop;
     private float stateTimer;
     private final static float frameDuration = (float) 0.2;
     public float getStateTimer(){
         return stateTimer;
+    }
+    public float getAttackDelay(){
+        return attackDelay;
+    }
+
+    public void setAttackDelay(float delay){
+         this.attackDelay = delay;
     }
 
     public Crewmate(World world, PlayScreen screen, Vector2 v){
@@ -39,6 +48,7 @@ public class Crewmate  extends Sprite {
         currentState = State.DOWN;
         previousState = State.DOWN;
         stateTimer = 0;
+        attackDelay = 0f;
         Array<TextureRegion> frames = new Array<>();
         //Down animation create
         for(int i = 1 ; i < 4 ; i++)
@@ -88,6 +98,9 @@ public class Crewmate  extends Sprite {
     }
 
     public void update(float dt){
+        if(attackDelay > 0){
+            attackDelay -= dt;
+        }
         setPosition(b2Body.getPosition().x - getWidth() /2 -1, b2Body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(dt));
     }

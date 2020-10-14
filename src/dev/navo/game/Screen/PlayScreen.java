@@ -122,8 +122,9 @@ public class PlayScreen implements Screen {
                 c1.b2Body.setLinearVelocity(c1.b2Body.getLinearVelocity().x-10, c1.b2Body.getLinearVelocity().y);
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.X)){
-            bList.add(new Bullet(world, this, new Vector2(c1.getX(), c1.getY()), c1.currentState));
+        if(Gdx.input.isKeyJustPressed(Input.Keys.X) && c1.getAttackDelay() <= 0){
+            bList.add(new Bullet(world, this, new Vector2(c1.getX(), c1.getY()), c1.currentState)); // 총알 생성
+            c1.setAttackDelay(0.3f);//공격 딜레이 설정
         }
 
         if(Gdx.input.isTouched()) {
@@ -175,7 +176,7 @@ public class PlayScreen implements Screen {
         }
 
 
-        hud.showMessage("x축 속도 : "+ c1.b2Body.getLinearVelocity().x + ", y축 속도" + c1.b2Body.getLinearVelocity().y);
+        hud.showMessage("c1.attackDelay"+ c1.getAttackDelay());
         gameCam.position.x = c1.b2Body.getPosition().x;
         gameCam.position.y = c1.b2Body.getPosition().y;
 
