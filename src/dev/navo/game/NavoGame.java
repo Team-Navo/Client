@@ -16,6 +16,7 @@ public class NavoGame extends Game {
 
 	public SpriteBatch batch;
 
+	private Texture background;
 	@Override
 	public void create () {
 		batch = new SpriteBatch();

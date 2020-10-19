@@ -28,6 +28,7 @@ public class LoginScreen implements Screen {
     private TextField pwField;
 
     private Texture background;
+
     private Label title;
     private Label idLabel;
     private Label pwLabel;
@@ -48,15 +49,16 @@ public class LoginScreen implements Screen {
 
         TextField.TextFieldStyle textFieldStyle = skin.get(TextField.TextFieldStyle.class);
 
-        background = new Texture("data/back.png");
         viewport = new FitViewport(400, 300, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
 
+        background = new Texture("data/GameBack.png");
+
         BitmapFont f = new BitmapFont(Gdx.files.internal("font/16Bold/hangulBold16.fnt"));
 
-        title = new Label( "이제 아무꺼나 입력해도 되겠지", new Label.LabelStyle(f, Color.WHITE ));
-
+        title = new Label( "Navo Ground", new Label.LabelStyle(FontGenerator.font32, Color.WHITE ));
+        title.setFontScale(0.8f);
         idField = new TextField("", textFieldStyle);
         pwField = new TextField("", textFieldStyle);
         pwField.setPasswordMode(true);
@@ -71,7 +73,7 @@ public class LoginScreen implements Screen {
         pwField.setBounds(125, 120, 150, 25);
         idLabel.setBounds(80, 150, 45, 25);
         pwLabel.setBounds(80, 120, 45, 25);
-        title.setBounds(0, 180, 400, 25);
+        title.setBounds(0, 185, 400, 25);
         title.setAlignment(Align.center);
         loginBtn.setBounds(150, 85, 100, 25);
         signUpBtn.setBounds(150, 50, 100, 25);
@@ -79,7 +81,7 @@ public class LoginScreen implements Screen {
         loginBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
                 if(userId.equals(pwField.getText()) && userPw.equals(idField.getText())){
-                    Gdx.graphics.setWindowedMode(1000, 750);
+                    Gdx.graphics.setWindowedMode(800, 600);
                     game.setScreen(new PlayScreen(game));
                 }
             }

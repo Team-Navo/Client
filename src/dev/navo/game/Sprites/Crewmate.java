@@ -1,22 +1,29 @@
 package dev.navo.game.Sprites;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import dev.navo.game.Screen.PlayScreen;
+import dev.navo.game.Tools.FontGenerator;
 
 public class Crewmate  extends Sprite {
     public enum State { UP, DOWN, LEFT, RIGHT };
     public State currentState;
     public State previousState;
+
     private final static Vector2 regionV = new Vector2(1, 12);
 
     public World world;
     public Body b2Body;
+
+    //Image and animation
     private TextureRegion crewmateFrontStand;
     private TextureRegion crewmateBackStand;
     private TextureRegion crewmateRightStand;
@@ -26,10 +33,15 @@ public class Crewmate  extends Sprite {
     private Animation crewmateLeft;
     private Animation crewmateRight;
 
+    //캐릭터 정보
+    private String name;
+    private Label nameLabel;
+    private float maxHP;
+    private float HP;
     private float attackDelay;
-
     private boolean isStop;
     private float stateTimer;
+
     private final static float frameDuration = (float) 0.2;
     public float getStateTimer(){
         return stateTimer;
@@ -38,13 +50,32 @@ public class Crewmate  extends Sprite {
         return attackDelay;
     }
 
+    public float getMaxHP() { return maxHP;}
+    public float getHP() { return HP;}
+    public void hit() {
+        if(!(HP == 0))
+        this.HP--;
+    }
+    public Label getLabel(){
+        return nameLabel;
+    }
+
     public void setAttackDelay(float delay){
          this.attackDelay = delay;
     }
 
-    public Crewmate(World world, PlayScreen screen, Vector2 v){
+    public Crewmate(World world, PlayScreen screen, Vector2 v, String name){
         super(screen.getAtlas().findRegion("CrewmateMove"));
         this.world = world;
+        maxHP = 10;
+        HP = 10;
+        this.name = name;
+        nameLabel = new Label(name, new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
+        nameLabel.setWidth(50);
+        nameLabel.setHeight(15);
+        nameLabel.setFontScale(0.3f);
+        nameLabel.setAlignment(Align.center);
+
         currentState = State.DOWN;
         previousState = State.DOWN;
         stateTimer = 0;
