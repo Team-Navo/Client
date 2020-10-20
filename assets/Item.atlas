@@ -1,0 +1,34 @@
+
+Item.png
+size: 128,32
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+pill_blue
+  rotate: false
+  xy: 26, 2
+  size: 22, 21
+  orig: 22, 21
+  offset: 0, 0
+  index: -1
+pill_green
+  rotate: false
+  xy: 74, 2
+  size: 22, 21
+  orig: 22, 21
+  offset: 0, 0
+  index: -1
+pill_red
+  rotate: false
+  xy: 2, 2
+  size: 22, 21
+  orig: 22, 21
+  offset: 0, 0
+  index: -1
+pill_yellow
+  rotate: false
+  xy: 50, 2
+  size: 22, 21
+  orig: 22, 21
+  offset: 0, 0
+  index: -1
