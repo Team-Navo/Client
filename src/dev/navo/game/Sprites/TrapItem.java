@@ -23,7 +23,7 @@ public class TrapItem  extends Sprite {
     public TrapItem(World world, PlayScreen screen, Vector2 v){
         super(screen.getItemAtlas().findRegion("pill_yellow"));
         this.world = world;
-        setBounds(v.x, v.y, 22, 21);
+        setBounds(v.x, v.y, 15, 14);
         setRegion(new TextureRegion(getTexture(), 50, 2, 22 ,21));
     }
 

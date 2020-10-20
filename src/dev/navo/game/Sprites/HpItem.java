@@ -25,7 +25,7 @@ public class HpItem  extends Sprite {
         super(screen.getItemAtlas().findRegion("pill_red"));
         this.world = world;
 //        defineHpItem(v);
-        setBounds(v.x, v.y, 22, 21);
+        setBounds(v.x, v.y, 15, 14);
         setRegion(new TextureRegion(getTexture(), 1, 2, 22 ,21));
     }
 

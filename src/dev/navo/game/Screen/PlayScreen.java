@@ -107,13 +107,46 @@ public class PlayScreen implements Screen {
         hList.add(h1);
         sList.add(s1);
         tList.add(t1);
+
+        //벽에 겹치지 않게 Hp약 생성
         for(int i = 0; i<100; i++){
+            boolean check = true;
             HpItem hp = new HpItem(world, this, new Vector2((int)(Math.random()*1560)+20, (int)(Math.random()*960)+20));
+            for (int j = 0; j < recList.size(); j++){
+                Rectangle rect = recList.get(j);
+                if (hp.getX() >= rect.getX()-hp.getWidth() && hp.getX() <= rect.getX()+rect.getWidth())
+                    if (hp.getY() >= rect.getY()-hp.getHeight() && hp.getY() <= rect.getY()+rect.getHeight())
+                        check = false;
+            }
+            if(check) {hList.add(hp);} else i--;
+        }
+
+        //벽에 겹치지 않게 Speed약 생성
+        for(int i = 0; i<100; i++){
+            boolean check = true;
             SpeedItem sp = new SpeedItem(world, this, new Vector2((int)(Math.random()*1560)+20, (int)(Math.random()*960)+20));
+            for (int j = 0; j < recList.size(); j++){
+                Rectangle rect = recList.get(j);
+                if (sp.getX() >= rect.getX()-sp.getWidth() && sp.getX() <= rect.getX()+rect.getWidth())
+                    if (sp.getY() >= rect.getY()-sp.getHeight() && sp.getY() <= rect.getY()+rect.getHeight())
+                        check = false;
+            }
+            if(check) {sList.add(sp);}
+            else i--;
+        }
+
+        //벽에 겹치지 않게 Trap약 생성
+        for(int i = 0; i<100; i++){
+            boolean check = true;
             TrapItem tp = new TrapItem(world, this, new Vector2((int)(Math.random()*1560)+20, (int)(Math.random()*960)+20));
-            hList.add(hp);
-            sList.add(sp);
-            tList.add(tp);
+            for (int j = 0; j < recList.size(); j++){
+                Rectangle rect = recList.get(j);
+                if (tp.getX() >= rect.getX()-tp.getWidth() && tp.getX() <= rect.getX()+rect.getWidth())
+                    if (tp.getY() >= rect.getY()-tp.getHeight() && tp.getY() <= rect.getY()+rect.getHeight())
+                        check = false;
+            }
+            if(check) {tList.add(tp);}
+            else i--;
         }
     }
 
@@ -209,47 +242,48 @@ public class PlayScreen implements Screen {
             }
         }
 
-        //총알과 회복약 충돌 체크
+        //캐릭과 회복약 충돌 체크
         HpItem hp;
         for(int i = 0 ; i< hList.size() ; i++) {
             hp = hList.get(i);
             for (int j = 0; j < cList.size(); j++){
                 crewmate = cList.get(j);
-                if (crewmate.getX() >= hp.getX()-hp.getWidth() && crewmate.getX() <= hp.getX()+hp.getWidth())
-                    if (crewmate.getY() >= hp.getY()-hp.getHeight() && crewmate.getY() <= hp.getY()+hp.getHeight()) {
+                if (crewmate.getX() >= hp.getX()-crewmate.getWidth() && crewmate.getX() <= hp.getX()+hp.getWidth())
+                    if (crewmate.getY() >= hp.getY()-crewmate.getHeight() && crewmate.getY() <= hp.getY()+hp.getHeight()) {
                         hList.remove(i--);
                         crewmate.heal();
                     }
             }
         }
 
-        //총알과 스피드약 충돌 체크
+        //캐릭과 스피드약 충돌 체크
         SpeedItem sp;
         for(int i = 0 ; i< sList.size() ; i++) {
             sp = sList.get(i);
             for (int j = 0; j < cList.size(); j++){
                 crewmate = cList.get(j);
-                if (crewmate.getX() >= sp.getX()-sp.getWidth() && crewmate.getX() <= sp.getX()+sp.getWidth())
-                    if (crewmate.getY() >= sp.getY()-sp.getHeight() && crewmate.getY() <= sp.getY()+sp.getHeight()) {
+                if (crewmate.getX() >= sp.getX()-crewmate.getWidth() && crewmate.getX() <= sp.getX()+sp.getWidth())
+                    if (crewmate.getY() >= sp.getY()-crewmate.getHeight() && crewmate.getY() <= sp.getY()+sp.getHeight()) {
                         sList.remove(i--);
                         crewmate.setSpeed(10);
                     }
             }
         }
 
-        //총알과 함정약 충돌 체크
+        //캐릭과 함정약 충돌 체크
         TrapItem tp;
         for(int i = 0 ; i< tList.size() ; i++) {
             tp = tList.get(i);
             for (int j = 0; j < cList.size(); j++){
                 crewmate = cList.get(j);
-                if (crewmate.getX() >= tp.getX()-tp.getWidth() && crewmate.getX() <= tp.getX()+tp.getWidth())
-                    if (crewmate.getY() >= tp.getY()-tp.getHeight() && crewmate.getY() <= tp.getY()+tp.getHeight()) {
+                if (crewmate.getX() >= tp.getX()-crewmate.getWidth() && crewmate.getX() <= tp.getX()+tp.getWidth())
+                    if (crewmate.getY() >= tp.getY()-crewmate.getHeight() && crewmate.getY() <= tp.getY()+tp.getHeight()) {
                         tList.remove(i--);
                         crewmate.hit();
                     }
             }
         }
+
 
         world.step(1/60f, 6, 2);
 
