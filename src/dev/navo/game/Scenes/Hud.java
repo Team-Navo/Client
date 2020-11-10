@@ -57,6 +57,7 @@ public class Hud implements Disposable{
     public void addLabel(Label label){
         stage.addActor(label);
     }
+
     public <T> void removeActor(T actor){
         for(Actor temp : stage.getActors()){
             if(temp.equals(actor)){

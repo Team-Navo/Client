@@ -22,6 +22,5 @@ public class Weapon extends InteractiveTileObject{
         shape.setAsBox(bounds.getWidth() / 2, bounds.getHeight() / 2);
         fDef.shape = shape;
         body.createFixture(fDef);
-
     }
 }

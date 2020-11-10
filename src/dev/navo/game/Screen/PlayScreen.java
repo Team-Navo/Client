@@ -55,7 +55,8 @@ public class PlayScreen implements Screen {
 
     private String mapType = "Navo32.tmx";
     private static final int moveSpeed = 10;
-    private static final int maxSpeed = 100;
+    //private static final int maxSpeed = 100;
+    private static int maxSpeed = 80;
 
     public PlayScreen(NavoGame game){
         atlas = new TextureAtlas("Image.atlas");
@@ -199,7 +200,7 @@ public class PlayScreen implements Screen {
 
 
 
-        hud.showMessage("c1.attackDelay"+ c1.getAttackDelay());
+        hud.showMessage("c1.velocity"+ c1.b2Body.getLinearVelocity().toString());
 
 
         gameCam.position.x = c1.b2Body.getPosition().x;
