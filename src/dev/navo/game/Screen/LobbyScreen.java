@@ -15,8 +15,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import dev.navo.game.ClientSocket.Client;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Tools.FontGenerator;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
 
 public class LobbyScreen implements Screen {
 
@@ -33,12 +38,16 @@ public class LobbyScreen implements Screen {
     private TextButton startBtn;
     private TextButton backBtn;
 
+    Client client;
+
     public LobbyScreen(final NavoGame game){
         this.game = game;
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         viewport = new FitViewport(NavoGame.V_WIDTH, NavoGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
+
+        this.client = Client.getInstance();
 
         background = new Texture("data/GameBack.png");
 
@@ -54,14 +63,24 @@ public class LobbyScreen implements Screen {
 
         startBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-                game.setScreen(new PlayScreen(game));
+                try {
+                    JSONObject roomInfo = client.enter(client.getOwner());
+                    startBtn.clear();
+                    backBtn.clear();
+                    game.setScreen(new WaitScreen(game, roomInfo));
+                } catch (IOException | ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         backBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
                 Gdx.graphics.setWindowedMode(400, 300);
+                startBtn.clear();
+                backBtn.clear();
                 game.setScreen(new LoginScreen(game));
+                client.logout();
             }
         });
         stage.addActor(title);

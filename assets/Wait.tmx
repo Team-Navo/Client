@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="12" height="9" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="6">
+ <tileset firstgid="1" source="NavoTile32.tsx"/>
+ <layer id="1" name="Background" width="12" height="9">
+  <data encoding="csv">
+78,78,78,78,78,78,78,78,78,78,78,78,
+78,14,14,14,14,14,14,14,14,14,14,78,
+78,14,14,14,14,14,14,14,14,14,14,78,
+78,14,14,14,14,14,14,14,14,14,14,78,
+78,14,14,14,14,14,14,14,14,14,14,78,
+78,14,14,14,14,14,14,14,14,14,14,78,
+78,14,14,14,14,14,14,14,14,14,14,78,
+78,14,14,14,14,14,14,14,14,14,14,78,
+78,61,61,61,61,61,61,61,61,61,61,78
+</data>
+ </layer>
+ <layer id="2" name="Object" width="12" height="9">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="3" name="block">
+  <object id="1" x="0" y="-0.125" width="31.75" height="288.125"/>
+  <object id="2" x="31.75" y="256" width="352.5" height="32.25"/>
+  <object id="3" x="352.125" y="-0.125" width="31.875" height="256.25"/>
+  <object id="4" x="31.875" y="0" width="320.125" height="31.875"/>
+ </objectgroup>
+</map>

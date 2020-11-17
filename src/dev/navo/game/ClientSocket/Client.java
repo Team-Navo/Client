@@ -1,12 +1,19 @@
 package dev.navo.game.ClientSocket;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.physics.box2d.World;
+import dev.navo.game.Sprites.Crewmate2D;
+import dev.navo.game.Tools.JsonParser;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
+@SuppressWarnings("unchecked")
 public class Client {
 
     private static Client instance;
@@ -14,13 +21,12 @@ public class Client {
     BufferedReader in;
     PrintWriter out;
 
+    String owner;
+
     String serverIPv4 = "127.0.0.1";
     int serverPort = 10002;
 
 
-//    public static void main(String[] args) {
-//        new Client();
-//    }
 
     public static Client getInstance(){
         if(instance == null)
@@ -38,6 +44,8 @@ public class Client {
     public void connect() {
         try{
             clientSocket=new Socket(serverIPv4, serverPort);
+            clientSocket.setTcpNoDelay(true);
+            clientSocket.setSoLinger(false, 0);
             System.out.println("[Client] Connected to server");
         }
         catch(Exception e) {
@@ -55,6 +63,12 @@ public class Client {
         }
     }
 
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+    public String getOwner() {
+        return this.owner;
+    }
 
     public void dataRecv() {
         new Thread(new Runnable() {
@@ -84,91 +98,121 @@ public class Client {
         }).start();
     }
 
-    public void dataSend() {
+
+    public void update(final Crewmate2D user, final Room room, final World world, final TextureAtlas atlas) {
         new Thread(new Runnable() {
-            Scanner input=new Scanner(System.in);
+            int i = 0;
             boolean isThread=true;
             @Override
             public void run() {
-                while(isThread)
+                while(isThread){
+                    JSONObject json = user.getCrewmateJson();
+                    json.put("Header", "UPDATE");
+
+                    out.println(json.toJSONString());
+
+                    String result = null;
                     try {
-                        String sendData=input.nextLine();
-                        if(sendData.equals("/quit"))
-                            isThread=false;
-                        else {
-                            //String login = String.format("{\"Header\":%s,\"id\":%s,\"pw\":%s}", header, id, pw);
-                            //System.out.println(login);
-                            out.println(sendData);
+                        result = in.readLine();
+                        JSONObject roomJson = null;
+                        if(result != null)
+                            roomJson = JsonParser.createJson(result);
+                        if(roomJson != null){
+                            System.out.println(roomJson.toJSONString());
+                            room.roomUpdate(roomJson, world, atlas);
+                            Thread.sleep(200);
                         }
+                    } catch (IOException | ParseException | InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    catch (Exception e) {
-                        System.out.println(e.toString());
-                        try {
-                            if(clientSocket != null)
-                                clientSocket.close();
-                            out.close();
-                        } catch (IOException ioE) {
-                            ioE.printStackTrace();
-                        }
-                        isThread = false;
-                    }
+                }
             }
         }).start();
     }
+
     public boolean login(String id, String pw) throws IOException {
-        String header = "\"LOGIN\"";
-        String login = String.format("{\"Header\":%s,\"id\":%s,\"pw\":%s}", header, String.format("\"%s\"", id), String.format("\"%s\"", pw));
-        System.out.println(login);
-        out.println(login);
+        JSONObject json = new JSONObject();
+        json.put("Header", "LOGIN");
+        json.put("id", id);
+        json.put("pw", pw);
+
+        System.out.println(json.toJSONString());
+        out.println(json.toJSONString());
         String recvData= in.readLine();
 
         return recvData.equals("SUCCESS");
     }
 
     public boolean create(String id, String pw, String name, String birth, String phone) throws IOException {
-        String header = "\"CREATE\"";
-        String create = String.format("{\"Header\":%s,\"id\":%s,\"pw\":%s,\"name\":%s,\"birth\":%s,\"phone\":%s}"
-                , header
-                , String.format("\"%s\"", id)
-                , String.format("\"%s\"", pw)
-                , String.format("\"%s\"", name)
-                , String.format("\"%s\"", birth)
-                , String.format("\"%s\"", phone));
+        JSONObject json = new JSONObject();
+        json.put("Header", "CREATE");
+        json.put("id", id);
+        json.put("pw", pw);
+        json.put("name", name);
+        json.put("birth", birth);
+        json.put("phone", phone);
 
-        System.out.println(create);
-        out.println(create);
+        System.out.println(json.toJSONString());
+        out.println(json.toJSONString());
+
         String recvData= in.readLine();
 
         return recvData.equals("SUCCESS");
     }
 
-    public boolean idFind(String name, String birth) throws IOException {
-        String header = "\"ID\"";
-        String id = String.format("{\"Header\":%s,\"name\":%s,\"birth\":%s}"
-                , header
-                , String.format("\"%s\"", name)
-                , String.format("\"%s\"", birth));
+    public String idFind(String name, String birth) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("Header", "ID");
+        json.put("name", name);
+        json.put("birth", birth);
 
-        System.out.println(id);
-        out.println(id);
-        String recvData= in.readLine();
+        System.out.println(json.toJSONString());
+        out.println(json.toJSONString());
 
-        return recvData.equals("SUCCESS");
+        String result = in.readLine();
+        if(result.equals("FAIL"))
+            return null;
+        else
+            return result;
     }
 
-    public boolean pwFind(String id, String name) throws IOException {
-        String header = "\"ID\"";
-        String pw = String.format("{\"Header\":%s,\"id\":%s,\"name\":%s}"
-                , header
-                , String.format("\"%s\"", id)
-                , String.format("\"%s\"", name));
+    public String pwFind(String id, String name) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("Header", "PW");
+        json.put("id", id);
+        json.put("name", name);
 
-        System.out.println(pw);
-        out.println(pw);
-        String recvData= in.readLine();
+        System.out.println(json.toJSONString());
+        out.println(json.toJSONString());
 
-        return recvData.equals("SUCCESS");
+        String result = in.readLine();
+        if(result.equals("FAIL"))
+            return null;
+        else
+            return result;
     }
+
+    public void logout(){
+        JSONObject json = new JSONObject();
+        json.put("Header", "LOGOUT");
+
+        System.out.println(json.toJSONString());
+        out.println(json.toJSONString());
+    }
+
+    public JSONObject enter(String owner) throws IOException, ParseException {
+        JSONObject json = new JSONObject();
+        json.put("Header", "ENTER");
+        json.put("owner", owner);
+
+
+        System.out.println(json.toJSONString());
+        out.println(json.toJSONString());
+
+        String result = in.readLine();
+        return JsonParser.createJson(result);
+    }
+
 }
 
 

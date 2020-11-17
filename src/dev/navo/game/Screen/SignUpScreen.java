@@ -120,8 +120,6 @@ public class SignUpScreen implements Screen {
                 resultField.setVisible(false);
                 resultLabel.setVisible(false);
                 resultBtn.setVisible(false);
-
-
             }
         });
 

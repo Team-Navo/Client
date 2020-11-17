@@ -9,7 +9,7 @@ import dev.navo.game.Screen.PlayScreen;
 public class Bullet extends Sprite {
 
     public boolean isCollision;
-    public Crewmate.State dir;
+    public Crewmate2D.State dir;
     public Vector2 startV;
     public int stackDistance;
     public World world;
@@ -17,7 +17,7 @@ public class Bullet extends Sprite {
     private final static float SPEED = 3.5f;
 
 
-    public Bullet(World world, PlayScreen screen, Vector2 v, Crewmate.State crewmateState){
+    public Bullet(World world, PlayScreen screen, Vector2 v, Crewmate2D.State crewmateState){
         super(screen.getAtlas().findRegion("Bullet"));
         isCollision = false;
         this.world = world;
@@ -44,16 +44,16 @@ public class Bullet extends Sprite {
     }
 
     public void update(float dt){
-        if(dir.equals(Crewmate.State.UP)) {
+        if(dir.equals(Crewmate2D.State.UP)) {
             setPosition(this.getX(), this.getY() + SPEED);
         }
-        else if(dir.equals(Crewmate.State.DOWN)){
+        else if(dir.equals(Crewmate2D.State.DOWN)){
             setPosition(this.getX(), this.getY()-SPEED);
         }
-        else if(dir.equals(Crewmate.State.LEFT)){
+        else if(dir.equals(Crewmate2D.State.LEFT)){
             setPosition(this.getX()-SPEED, this.getY());
         }
-        else if(dir.equals(Crewmate.State.RIGHT)){
+        else if(dir.equals(Crewmate2D.State.RIGHT)){
             setPosition(this.getX()+SPEED, this.getY());
         }
         stackDistance += 5;

@@ -14,10 +14,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.navo.game.ClientSocket.Client;
 import dev.navo.game.NavoGame;
+import dev.navo.game.Tools.FontGenerator;
+
+import java.io.IOException;
 
 public class IdPwFindScreen implements Screen {
 
@@ -40,6 +44,11 @@ public class IdPwFindScreen implements Screen {
     private TextField pwIdField;
     private TextField pwNameField;
     private TextButton pwFindBtn;
+
+    // 결과
+    private TextField resultField;
+    private Label resultLabel;
+    private TextButton resultBtn;
 
     private TextButton backBtn;
 
@@ -83,7 +92,24 @@ public class IdPwFindScreen implements Screen {
         idFindBtn.setBounds(250, 200, 80, 25);
         idFindBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-
+                try {
+                    String result = client.idFind(idNameField.getText(), idBirthField.getText());
+                    if(result != null){
+                        resultLabel.setText("아이디 : " + result);
+                        resultLabel.setVisible(true);
+                        resultField.setVisible(true);
+                        resultBtn.setVisible(true);
+                    }else{
+                        resultLabel.setText("아이디 찾기 실패");
+                        resultLabel.setVisible(true);
+                        resultField.setVisible(true);
+                        resultBtn.setVisible(true);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                idNameField.setText("");
+                idBirthField.setText("");
             }
         });
 
@@ -107,10 +133,46 @@ public class IdPwFindScreen implements Screen {
         pwFindBtn.setBounds(250, 100, 80, 25);
         pwFindBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-
+                try {
+                    String result = client.pwFind(pwIdField.getText(), pwNameField.getText());
+                    if(result != null){
+                        resultLabel.setText("패스워드 : " + result);
+                        resultLabel.setVisible(true);
+                        resultField.setVisible(true);
+                        resultBtn.setVisible(true);
+                    }else{
+                        resultLabel.setText("패스워드 찾기 실패");
+                        resultLabel.setVisible(true);
+                        resultField.setVisible(true);
+                        resultBtn.setVisible(true);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                pwIdField.setText("");
+                pwNameField.setText("");
             }
         });
 
+        resultField = new TextField("", skin);
+        resultField.setBounds(40, 30, 320, 240);
+        resultField.setDisabled(true);
+        resultLabel = new Label("", new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
+        resultLabel.setBounds(40, 150, 320, 25);
+        resultLabel.setAlignment(Align.center);
+        resultBtn = new TextButton( "OK", skin );
+        resultBtn.setBounds(160, 50, 80, 25);
+        resultField.setVisible(false);
+        resultLabel.setVisible(false);
+        resultBtn.setVisible(false);
+
+        resultBtn.addListener(new ClickListener(){
+            public void clicked (InputEvent event, float x, float y) {
+                resultField.setVisible(false);
+                resultLabel.setVisible(false);
+                resultBtn.setVisible(false);
+            }
+        });
 
         backBtn = new TextButton( "BACK", skin );
         backBtn.setBounds(310, 10, 80, 25);
@@ -135,6 +197,10 @@ public class IdPwFindScreen implements Screen {
         stage.addActor(pwFindBtn);
 
         stage.addActor(backBtn);
+
+        stage.addActor(resultField);
+        stage.addActor(resultLabel);
+        stage.addActor(resultBtn);
     }
 
     @Override

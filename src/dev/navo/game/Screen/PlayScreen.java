@@ -15,14 +15,15 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import dev.navo.game.ClientSocket.Client;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Sprites.Bullet;
-import dev.navo.game.Sprites.Crewmate;
+import dev.navo.game.Sprites.Crewmate2D;
 import dev.navo.game.Tools.B2WorldCreator;
+import dev.navo.game.Tools.Util;
 
 import java.util.ArrayList;
 
@@ -43,20 +44,20 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
 
-    private Crewmate c1;
-    private ArrayList<Crewmate> cList;
+    private Crewmate2D myCrewmate;
+    private ArrayList<Crewmate2D> crewmates;
 
-    private ArrayList<Bullet> bList;
+    private ArrayList<Bullet> bullets;
 
-    private ArrayList<Rectangle> recList;
+    private ArrayList<Rectangle> blocks;
     private Vector2 centerHP;
 
     ShapeRenderer shapeRenderer;
 
     private String mapType = "Navo32.tmx";
     private static final int moveSpeed = 10;
-    //private static final int maxSpeed = 100;
     private static int maxSpeed = 80;
+    //private static final int maxSpeed = 100;
 
     public PlayScreen(NavoGame game){
         atlas = new TextureAtlas("Image.atlas");
@@ -76,20 +77,40 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         B2WorldCreator b2 = new B2WorldCreator(world, map);
-        recList = new ArrayList<>();
-        recList = b2.getRecList();
+        blocks = new ArrayList<>();
+        blocks = b2.getRecList();
 
-        c1 = new Crewmate(world, this, new Vector2(200, 500), "상민이");
+        myCrewmate = new Crewmate2D(world, atlas, new Vector2(200, 500), "상민이", "Purple", Client.getInstance().getOwner());
 
-        cList = new ArrayList<>();
-        cList.add(c1);
-        hud.addLabel(c1.getLabel());
-        for(int i = 0 ; i < 100 ; i++){
-            Crewmate temp = new Crewmate(world, this, new Vector2((int)(Math.random()*1560) + 20, (int)(Math.random()*960) + 20), "상민이" + i);
-            cList.add(temp);
+        crewmates = new ArrayList<>();
+        crewmates.add(myCrewmate);
+        hud.addLabel(myCrewmate.getLabel());
+        for(int i = 1 ; i <= 5 ; i++){
+            Crewmate2D temp = new Crewmate2D(world, atlas, new Vector2((int)(Math.random()*1560) + 20, (int)(Math.random()*960) + 20), "상민이" + i,"Red", "temp");
+            crewmates.add(temp);
             hud.addLabel(temp.getLabel());
         }
-        bList = new ArrayList<>();
+        for(int i = 6 ; i <= 10 ; i++){
+            Crewmate2D temp = new Crewmate2D(world, atlas, new Vector2((int)(Math.random()*1560) + 20, (int)(Math.random()*960) + 20), "상민이" + i,"Blue", "temp");
+            crewmates.add(temp);
+            hud.addLabel(temp.getLabel());
+        }
+        for(int i = 11 ; i <= 15 ; i++){
+            Crewmate2D temp = new Crewmate2D(world, atlas, new Vector2((int)(Math.random()*1560) + 20, (int)(Math.random()*960) + 20), "상민이" + i,"Green", "temp");
+            crewmates.add(temp);
+            hud.addLabel(temp.getLabel());
+        }
+        for(int i = 16 ; i <= 20 ; i++){
+            Crewmate2D temp = new Crewmate2D(world, atlas, new Vector2((int)(Math.random()*1560) + 20, (int)(Math.random()*960) + 20), "상민이" + i,"Gray", "temp");
+            crewmates.add(temp);
+            hud.addLabel(temp.getLabel());
+        }
+        for(int i = 21 ; i <= 25 ; i++){
+            Crewmate2D temp = new Crewmate2D(world, atlas, new Vector2((int)(Math.random()*1560) + 20, (int)(Math.random()*960) + 20), "상민이" + i,"Purple", "temp");
+            crewmates.add(temp);
+            hud.addLabel(temp.getLabel());
+        }
+        bullets = new ArrayList<>();
 
     }
 
@@ -103,109 +124,76 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt){
-        if(Gdx.input.isKeyPressed(Input.Keys.UP) && c1.b2Body.getLinearVelocity().y  < maxSpeed){
-            c1.b2Body.applyLinearImpulse(new Vector2(0, moveSpeed), c1.b2Body.getWorldCenter(), true);
-        }else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)  && c1.b2Body.getLinearVelocity().y  > -maxSpeed){
-            c1.b2Body.applyLinearImpulse(new Vector2(0, -moveSpeed), c1.b2Body.getWorldCenter(), true);
-        }else if(c1.b2Body.getLinearVelocity().y < 0){
-            if(c1.b2Body.getLinearVelocity().y >= -10)
-                c1.b2Body.setLinearVelocity(c1.b2Body.getLinearVelocity().x, 0);
-            else
-                c1.b2Body.setLinearVelocity(c1.b2Body.getLinearVelocity().x, c1.b2Body.getLinearVelocity().y+10);
-        }else if(c1.b2Body.getLinearVelocity().y > 0){
-            if(c1.b2Body.getLinearVelocity().y <= 10)
-                c1.b2Body.setLinearVelocity(c1.b2Body.getLinearVelocity().x, 0);
-            else
-                c1.b2Body.setLinearVelocity(c1.b2Body.getLinearVelocity().x, c1.b2Body.getLinearVelocity().y-10);
-        }
+        Util.moveInputHandle(dt, myCrewmate, maxSpeed, moveSpeed);
 
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && c1.b2Body.getLinearVelocity().x  > -maxSpeed){
-            c1.b2Body.applyLinearImpulse(new Vector2(-moveSpeed, 0), c1.b2Body.getWorldCenter(), true);
-        }else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)  && c1.b2Body.getLinearVelocity().x  < maxSpeed){
-            c1.b2Body.applyLinearImpulse(new Vector2(moveSpeed, 0), c1.b2Body.getWorldCenter(), true);
-        }else if(c1.b2Body.getLinearVelocity().x < 0){
-            if(c1.b2Body.getLinearVelocity().x >= -10)
-                c1.b2Body.setLinearVelocity(0, c1.b2Body.getLinearVelocity().y);
-            else
-                c1.b2Body.setLinearVelocity(c1.b2Body.getLinearVelocity().x+10, c1.b2Body.getLinearVelocity().y);
-        }else if(c1.b2Body.getLinearVelocity().x > 0){
-            if(c1.b2Body.getLinearVelocity().x <= 10)
-                c1.b2Body.setLinearVelocity(0, c1.b2Body.getLinearVelocity().y);
-            else
-                c1.b2Body.setLinearVelocity(c1.b2Body.getLinearVelocity().x-10, c1.b2Body.getLinearVelocity().y);
-        }
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.X) && c1.getAttackDelay() <= 0){
-            bList.add(new Bullet(world, this, new Vector2(c1.getX(), c1.getY()), c1.currentState)); // 총알 생성
-            c1.setAttackDelay(0.3f);//공격 딜레이 설정
+        if(Gdx.input.isKeyJustPressed(Input.Keys.X) && myCrewmate.getAttackDelay() <= 0){
+            bullets.add(new Bullet(world, this, new Vector2(myCrewmate.getX(), myCrewmate.getY()), myCrewmate.currentState)); // 총알 생성
+            myCrewmate.setAttackDelay(0.3f);//공격 딜레이 설정
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            c1 = cList.get((int)(Math.random() * cList.size()));
+            myCrewmate = crewmates.get((int)(Math.random() * crewmates.size()));
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            game.setScreen(new LobbyScreen(game));
         }
     }
 
     public void update(float dt){
         handleInput(dt);
+        Util.frameSet(world);
 
-
-        for(int i = 0 ; i< bList.size() ; i++){
-            if(bList.get(i).check()) bList.remove(i--);
+        for(int i = 0; i< bullets.size() ; i++){
+            if(bullets.get(i).check()) bullets.remove(i--);
         }
 
         Bullet bullet;
         Rectangle rect;
-        for(int i = 0 ; i< bList.size() ; i++) {
-            bullet = bList.get(i);
-            for (int j = 0; j < recList.size(); j++){
-                rect = recList.get(j);
+        for(int i = 0; i< bullets.size() ; i++) {
+            bullet = bullets.get(i);
+            for (int j = 0; j < blocks.size(); j++){
+                rect = blocks.get(j);
                 if (bullet.getX() >= rect.getX()-bullet.getWidth() && bullet.getX() <= rect.getX()+rect.getWidth())
                     if (bullet.getY() >= rect.getY()-bullet.getHeight() && bullet.getY() <= rect.getY()+rect.getHeight())
-                        bList.remove(i--);
+                        bullets.remove(i--);
             }
         }
 
-        Crewmate crewmate;
-        for(int i = 0 ; i< bList.size() ; i++) {
-            bullet = bList.get(i);
-            for (int j = 0; j < cList.size(); j++){
-                crewmate = cList.get(j);
-                if(!c1.equals(crewmate)){
+        Crewmate2D crewmate;
+        for(int i = 0; i< bullets.size() ; i++) {
+            bullet = bullets.get(i);
+            for (int j = 0; j < crewmates.size(); j++){
+                crewmate = crewmates.get(j);
+                if(!myCrewmate.equals(crewmate)){
                     if (bullet.getX() >= crewmate.getX()-bullet.getWidth() && bullet.getX() <= crewmate.getX()+crewmate.getWidth())
                         if (bullet.getY() >= crewmate.getY()-bullet.getHeight() && bullet.getY() <= crewmate.getY()+crewmate.getHeight()) {
-                            bList.remove(i--);
+                            bullets.remove(i--);
                             crewmate.hit();
                         }
                 }
             }
         }
 
-        world.step(1/60f, 6, 2);
-
         //c1.update(dt);
-        for(int i = 0 ; i < cList.size() ; i++){
-            Crewmate temp = cList.get(i);
+        for(int i = 0; i < crewmates.size() ; i++){
+            Crewmate2D temp = crewmates.get(i);
             if(temp.getHP() == 0){
                 world.destroyBody(temp.b2Body);
                 hud.removeActor(temp.getLabel());
-                cList.remove(i--);
+                crewmates.remove(i--);
                 continue;
             }
-
             temp.update(dt);
         }
-        for(Bullet b : bList) {
+        for(Bullet b : bullets) {
             b.update(dt);
         }
 
+        hud.showMessage("c1.velocity"+ myCrewmate.b2Body.getLinearVelocity().toString());
 
 
-        hud.showMessage("c1.velocity"+ c1.b2Body.getLinearVelocity().toString());
-
-
-        gameCam.position.x = c1.b2Body.getPosition().x;
-        gameCam.position.y = c1.b2Body.getPosition().y;
-
+        gameCam.position.x = myCrewmate.b2Body.getPosition().x;
+        gameCam.position.y = myCrewmate.b2Body.getPosition().y;
         gameCam.update();
         renderer.setView(gameCam);
     }
@@ -229,24 +217,26 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.begin();
-        c1.draw(game.batch);
-        shapeRenderer.rect(centerHP.x ,centerHP.y, 50 * (c1.getHP() / c1.getMaxHP()), 10);
+        myCrewmate.draw(game.batch);
+        shapeRenderer.rect(centerHP.x ,centerHP.y, 50 * (myCrewmate.getHP() / myCrewmate.getMaxHP()), 10);
 
-        for(Crewmate c : cList) {
+        for(Crewmate2D c : crewmates) {
             c.draw(game.batch);
-            if(!c.equals(c1)) {
-                shapeRenderer.rect(centerHP.x + (c.b2Body.getPosition().x - c1.b2Body.getPosition().x) * 2,
-                        centerHP.y + (c.b2Body.getPosition().y - c1.b2Body.getPosition().y) * 2, 50 * (c.getHP() / c.getMaxHP()), 10);
+            if(!c.equals(myCrewmate)) {
+                shapeRenderer.rect(centerHP.x + (c.b2Body.getPosition().x - myCrewmate.b2Body.getPosition().x) * 2,
+                        centerHP.y + (c.b2Body.getPosition().y - myCrewmate.b2Body.getPosition().y) * 2, 50 * (c.getHP() / c.getMaxHP()), 10);
 
-                c.getLabel().setPosition(174 + (c.b2Body.getPosition().x - c1.b2Body.getPosition().x),
-                        165 + (c.b2Body.getPosition().y - c1.b2Body.getPosition().y));
+                c.getLabel().setPosition(174 + (c.b2Body.getPosition().x - myCrewmate.b2Body.getPosition().x),
+                        165 + (c.b2Body.getPosition().y - myCrewmate.b2Body.getPosition().y));
 
             }else{
-                c1.getLabel().setPosition(174, 166);
+                myCrewmate.getLabel().setPosition(174, 166);
             }
         }
-        for(Bullet b : bList)
+        for(Bullet b : bullets)
             b.draw(game.batch);
+
+
         game.batch.end();
 
         shapeRenderer.end();

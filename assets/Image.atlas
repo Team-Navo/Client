@@ -3,9 +3,37 @@ Image.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-CrewmateMove
+Blue
   rotate: false
   xy: 1, 12
+  size: 88, 100
+  orig: 88, 100
+  offset: 0, 0
+  index: -1
+Gray
+  rotate: false
+  xy: 91, 12
+  size: 88, 100
+  orig: 88, 100
+  offset: 0, 0
+  index: -1
+Green
+  rotate: false
+  xy: 181, 12
+  size: 88, 100
+  orig: 88, 100
+  offset: 0, 0
+  index: -1
+Purple
+  rotate: false
+  xy: 271, 12
+  size: 88, 100
+  orig: 88, 100
+  offset: 0, 0
+  index: -1
+Red
+  rotate: false
+  xy: 361, 12
   size: 88, 100
   orig: 88, 100
   offset: 0, 0
