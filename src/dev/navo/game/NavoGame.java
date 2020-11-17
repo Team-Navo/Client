@@ -10,17 +10,16 @@ import dev.navo.game.Screen.LoginScreen;
 import dev.navo.game.Screen.PlayScreen;
 
 public class NavoGame extends Game {
-	public static final int V_WIDTH = 400;
-	public static final int V_HEIGHT = 300;
-	public static final int PPM = 100;
+	public static final int V_WIDTH = 400; // 화면 가상의 넓이
+	public static final int V_HEIGHT = 300; // 화면 가상의 높이
+	public static final int PPM = 100; // Pixel Per Miter
 
-	public SpriteBatch batch;
+	public SpriteBatch batch; // 스프라이트들을 배치하는 곳
 
-	private Texture background;
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		setScreen(new LoginScreen(this));
+		setScreen(new LoginScreen(this)); // 로그인 스크린을 띄워줌
 	}
 
 	@Override

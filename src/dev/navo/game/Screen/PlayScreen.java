@@ -380,20 +380,21 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         myCrewmate.draw(game.batch);
         shapeRenderer.rect(centerHP.x, centerHP.y, 50 * (myCrewmate.getHP() / myCrewmate.getMaxHP()), 10);
+        myCrewmate.getLabel().setPosition(174, 166);
 
-        for (Crewmate2D c : crewmates) {
-            c.draw(game.batch);
-            if (!c.equals(myCrewmate)) {
-                shapeRenderer.rect(centerHP.x + (c.b2Body.getPosition().x - myCrewmate.b2Body.getPosition().x) * 2,
-                        centerHP.y + (c.b2Body.getPosition().y - myCrewmate.b2Body.getPosition().y) * 2, 50 * (c.getHP() / c.getMaxHP()), 10);
-
-                c.getLabel().setPosition(174 + (c.b2Body.getPosition().x - myCrewmate.b2Body.getPosition().x),
-                        165 + (c.b2Body.getPosition().y - myCrewmate.b2Body.getPosition().y));
-
-            } else {
-                myCrewmate.getLabel().setPosition(174, 166);
-            }
-        }
+//        for (Crewmate2D c : crewmates) {
+//            c.draw(game.batch);
+//            if (!c.equals(myCrewmate)) {
+//                shapeRenderer.rect(centerHP.x + (c.b2Body.getPosition().x - myCrewmate.b2Body.getPosition().x) * 2,
+//                        centerHP.y + (c.b2Body.getPosition().y - myCrewmate.b2Body.getPosition().y) * 2, 50 * (c.getHP() / c.getMaxHP()), 10);
+//
+//                c.getLabel().setPosition(174 + (c.b2Body.getPosition().x - myCrewmate.b2Body.getPosition().x),
+//                        165 + (c.b2Body.getPosition().y - myCrewmate.b2Body.getPosition().y));
+//
+//            } else {
+//                myCrewmate.getLabel().setPosition(174, 166);
+//            }
+//        }
         for (Bullet b : bullets)
             b.draw(game.batch);
 
@@ -444,7 +445,6 @@ public class PlayScreen implements Screen {
     public void pause () {
 
     }
-
     @Override
     public void show () {
     }
