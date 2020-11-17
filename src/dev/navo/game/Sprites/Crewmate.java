@@ -41,6 +41,7 @@ public class Crewmate  extends Sprite {
     private float attackDelay;
     private boolean isStop;
     private float stateTimer;
+    private int speed;
 
     private final static float frameDuration = (float) 0.2;
     public float getStateTimer(){
@@ -64,11 +65,34 @@ public class Crewmate  extends Sprite {
          this.attackDelay = delay;
     }
 
+
+    public float getMaxHP() { return maxHP;}
+    public float getHP() { return HP;}
+    public int getSpeed() {return speed;}
+    public void setSpeed(int up) {this.speed += up; }
+
+    public void hit() {
+        if(!(HP == 0))
+        this.HP--;
+    }
+    public void heal() {
+        if(!(HP == 0) && !(HP == this.getMaxHP()))
+            this.HP++;
+    }
+    public Label getLabel(){
+        return nameLabel;
+    }
+
+    public void setAttackDelay(float delay){
+         this.attackDelay = delay;
+    }
+
     public Crewmate(World world, PlayScreen screen, Vector2 v, String name){
         super(screen.getAtlas().findRegion("CrewmateMove"));
         this.world = world;
         maxHP = 10;
         HP = 10;
+        speed = 80;
         this.name = name;
         nameLabel = new Label(name, new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
         nameLabel.setWidth(50);

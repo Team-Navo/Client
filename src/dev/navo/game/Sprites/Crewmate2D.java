@@ -69,7 +69,13 @@ public class Crewmate2D extends Sprite{
     public void setAttackDelay(float delay){
         this.attackDelay = delay;
     }
+    public void heal(){
+        if( HP != 0 && HP != this.getMaxHP()){
+            this.HP++;
+        }
+    }
 
+    //생성자
     public Crewmate2D(World world, TextureAtlas atlas, Vector2 v, String name, String color, String owner){
         super(atlas.findRegion(color));
 
@@ -146,6 +152,7 @@ public class Crewmate2D extends Sprite{
                 return 361;
         }
     }
+
     // 2D 엔진 적용된 바디 생성
     public void defineCrewmate(Vector2 v){
         BodyDef bDef = new BodyDef();
@@ -257,6 +264,7 @@ public class Crewmate2D extends Sprite{
         return result;
     }
 
+    // 멀티에 사용할 프레임 번호 생성
     private int getFrameNum() {
         int move = (int)(stateTimer / 0.2F)+1;
         if(currentState == State.RIGHT){

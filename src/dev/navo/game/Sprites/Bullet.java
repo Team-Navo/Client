@@ -60,7 +60,7 @@ public class Bullet extends Sprite {
 //        setPosition(b2Body.getPosition().x - getWidth() /2, b2Body.getPosition().y - getHeight() / 2);
 //        setRegion(getFrame(dt));
     }
-    public boolean check(){
+    public boolean distanceOverCheck(){
         return stackDistance > 250;
     }
 

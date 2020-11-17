@@ -3,6 +3,7 @@ package dev.navo.game.ClientSocket;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.World;
+import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Sprites.Crewmate2D;
 import dev.navo.game.Sprites.CrewmateMulti;
 import org.json.simple.JSONObject;
@@ -41,7 +42,8 @@ public class Room { // 게임 방
     public int getRoomCode(){
         return roomCode;
     }
-    public void roomUpdate(JSONObject roomInfo, World world, TextureAtlas atlas){
+
+    public void roomUpdate(JSONObject roomInfo, World world, TextureAtlas atlas, Hud hud){
         if(this.roomCode == Integer.parseInt(roomInfo.get("code").toString()) ){
             JSONObject crewmatesJson = (JSONObject)roomInfo.get("crewmates");
             int size = Integer.parseInt(crewmatesJson.get("crewmates_size").toString());
@@ -55,12 +57,14 @@ public class Room { // 게임 방
                         isFine = true;
                     }
                 }
-                if (!isFine) addCrewmate(temp, world, atlas);
+                if (!isFine) addCrewmate(temp, world, atlas, hud);
             }
         }
     }
 
-    public void addCrewmate(JSONObject crewmateJson, World world, TextureAtlas atlas){
-        crewmates.add(new CrewmateMulti(world, atlas, crewmateJson));
+    public void addCrewmate(JSONObject crewmateJson, World world, TextureAtlas atlas, Hud hud){
+        CrewmateMulti temp = new CrewmateMulti(world, atlas, crewmateJson);
+        crewmates.add(temp);
+        hud.stage.addActor(temp.getLabel());
     }
 }

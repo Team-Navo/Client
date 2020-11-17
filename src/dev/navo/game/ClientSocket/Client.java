@@ -2,6 +2,7 @@ package dev.navo.game.ClientSocket;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.World;
+import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Sprites.Crewmate2D;
 import dev.navo.game.Tools.JsonParser;
 import org.json.simple.JSONObject;
@@ -99,7 +100,7 @@ public class Client {
     }
 
 
-    public void update(final Crewmate2D user, final Room room, final World world, final TextureAtlas atlas) {
+    public void update(final Crewmate2D user, final Room room, final World world, final TextureAtlas atlas, final Hud hud) {
         new Thread(new Runnable() {
             int i = 0;
             boolean isThread=true;
@@ -119,8 +120,8 @@ public class Client {
                             roomJson = JsonParser.createJson(result);
                         if(roomJson != null){
                             System.out.println(roomJson.toJSONString());
-                            room.roomUpdate(roomJson, world, atlas);
-                            Thread.sleep(200);
+                            room.roomUpdate(roomJson, world, atlas, hud);
+                            Thread.sleep(75);
                         }
                     } catch (IOException | ParseException | InterruptedException e) {
                         e.printStackTrace();

@@ -91,28 +91,28 @@ public class WaitScreen implements Screen {    private NavoGame game;
         myCrewmate = new Crewmate2D(world, atlas, new Vector2(100, 100), "상민이", "Purple", client.getOwner());
 
         hud.addLabel(myCrewmate.getLabel());
-        client.update(myCrewmate, room, world, atlas);
+        //client.update(myCrewmate, room, world, atlas, hud);
     }
+    // 키 입력 처리 메소드
     public void handleInput(float dt){
+        Util.moveInputHandle(dt, myCrewmate, maxSpeed, moveSpeed); // 내 캐릭터 움직임 처리
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            game.setScreen(new PlayScreen(game));
+        if(Gdx.input.isKeyJustPressed(Input.Keys.C)){
+
+            game.setScreen(new PlayScreen(game)); // PlayScreen으로 넘어가기
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.setScreen(new LobbyScreen(game));
-        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) game.setScreen(new LobbyScreen(game)); // 나가기
+
     }
 
     public void update(float dt) throws IOException, ParseException {
         handleInput(dt);
-        Util.moveInputHandle(dt, myCrewmate, maxSpeed, moveSpeed);
-        Util.frameSet(world);
+        Util.frameSet(world); // FSP 60으로 설정
 
-        myCrewmate.update(dt);
-        for(CrewmateMulti c :  room.getCrewmates()){
-            c.update(dt);
-        }
-        //c1.update(dt);
+        myCrewmate.update(dt); // 내 캐릭터 업데이트
+        for(CrewmateMulti c :  room.getCrewmates()) c.update(dt); // 방에 있는 캐릭터들 업데이트
+
         hud.showMessage("Room Code : "+ room.getRoomCode());
 
         gameCam.position.x = myCrewmate.b2Body.getPosition().x;
@@ -120,8 +120,6 @@ public class WaitScreen implements Screen {    private NavoGame game;
 
         gameCam.update();
         renderer.setView(gameCam);
-
-
     }
     @Override
     public void show() {
