@@ -18,6 +18,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.sun.tools.javac.jvm.Items;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Sprites.*;
@@ -51,6 +52,8 @@ public class PlayScreen implements Screen {
     private ArrayList<SpeedItem> sList;
     private TrapItem t1;
     private ArrayList<TrapItem> tList;
+    private ItemSample is1;
+    private ArrayList<ItemSample> isList;
 
     private ArrayList<Bullet> bList;
 
@@ -62,6 +65,7 @@ public class PlayScreen implements Screen {
     private String mapType = "Navo32.tmx";
     private static final int moveSpeed = 10;
     private static final int maxSpeed = 100;
+    public Body b2Body;
 
     public PlayScreen(NavoGame game){
         atlas = new TextureAtlas("Image.atlas");
@@ -85,7 +89,7 @@ public class PlayScreen implements Screen {
         recList = new ArrayList<>();
         recList = b2.getRecList();
 
-        c1 = new Crewmate(world, this, new Vector2(200, 100), "상민이");
+        c1 = new Crewmate(world, this, new Vector2(30, 10), "상민이");
 
         cList = new ArrayList<>();
         cList.add(c1);
@@ -100,13 +104,16 @@ public class PlayScreen implements Screen {
         h1 = new HpItem(world, this, new Vector2(0, 0));
         s1 = new SpeedItem(world, this, new Vector2(21, 0));
         t1 = new TrapItem(world, this, new Vector2(42, 0));
+        is1 = new ItemSample(world, this, new Vector2(63, 0));
 
         hList = new ArrayList<>();
         sList = new ArrayList<>();
         tList = new ArrayList<>();
+        isList = new ArrayList<>();
         hList.add(h1);
         sList.add(s1);
         tList.add(t1);
+        isList.add(is1);
 
         //벽에 겹치지 않게 Hp약 생성
         for(int i = 0; i<100; i++){
@@ -148,6 +155,45 @@ public class PlayScreen implements Screen {
             if(check) {tList.add(tp);}
             else i--;
         }
+        //벽에 겹치지 않게 z습득약 생성
+        for(int i = 0; i<100; i++){
+            boolean check = true;
+            ItemSample is = new ItemSample(world, this, new Vector2((int)(Math.random()*1560)+20, (int)(Math.random()*960)+20));
+            for (int j = 0; j < recList.size(); j++){
+                Rectangle rect = recList.get(j);
+                if (is.getX() >= rect.getX()-is.getWidth() && is.getX() <= rect.getX()+rect.getWidth())
+                    if (is.getY() >= rect.getY()-is.getHeight() && is.getY() <= rect.getY()+rect.getHeight())
+                        check = false;
+            }
+            if(check) {isList.add(is);}
+            else i--;
+        }
+
+        //게임 필드 벽 생성
+        BodyDef bDef = new BodyDef();
+        bDef.position.set(0,640);
+        bDef.type = BodyDef.BodyType.StaticBody;
+        b2Body = world.createBody(bDef);
+        FixtureDef fDef = new FixtureDef();
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(0.1f, 640);
+        fDef.shape = shape;
+        b2Body.createFixture(fDef);
+
+        bDef.position.set(1600,640);
+        b2Body = world.createBody(bDef);
+        b2Body.createFixture(fDef);
+
+        bDef.position.set(800,0);
+        b2Body = world.createBody(bDef);
+        shape.setAsBox(800, 0.1f);
+        fDef.shape = shape;
+        b2Body.createFixture(fDef);
+
+        bDef.position.set(800,1280);
+        b2Body = world.createBody(bDef);
+        b2Body.createFixture(fDef);
+
     }
 
     public TextureAtlas getAtlas(){
@@ -203,6 +249,22 @@ public class PlayScreen implements Screen {
         if(Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             c1 = cList.get((int)(Math.random() * cList.size()));
         }
+        //z로 템줍
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
+            ItemSample is;
+            Crewmate crewmate;
+            for(int i = 0 ; i< isList.size() ; i++) {
+                is = isList.get(i);
+                for (int j = 0; j < cList.size(); j++){
+                    crewmate = cList.get(j);
+                    if (crewmate.getX() >= is.getX()-crewmate.getWidth() && crewmate.getX() <= is.getX()+is.getWidth())
+                        if (crewmate.getY() >= is.getY()-crewmate.getHeight() && crewmate.getY() <= is.getY()+is.getHeight()) {
+                            isList.remove(i--);
+                            crewmate.heal();
+                        }
+                }
+            }
+        }
     }
 
     public void update(float dt){
@@ -212,6 +274,7 @@ public class PlayScreen implements Screen {
         for(int i = 0 ; i< bList.size() ; i++){
             if(bList.get(i).check()) bList.remove(i--);
         }
+
 
         //총알과 벽 충돌체크
         Bullet bullet;
@@ -312,6 +375,9 @@ public class PlayScreen implements Screen {
         for(TrapItem t : tList){
             t.update(dt);
         }
+        for(ItemSample i : isList){
+            i.update(dt);
+        }
 
 
         hud.showMessage("c1.attackDelay"+ c1.getAttackDelay());
@@ -343,9 +409,25 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.begin();
-        c1.draw(game.batch);
+
         shapeRenderer.rect(centerHP.x ,centerHP.y, 50 * (c1.getHP() / c1.getMaxHP()), 10);
 
+        for(Bullet b : bList)
+            b.draw(game.batch);
+
+        for(HpItem h : hList)
+            h.draw(game.batch);
+
+        for(SpeedItem s : sList)
+            s.draw(game.batch);
+
+        for(TrapItem t : tList)
+            t.draw(game.batch);
+
+        for(ItemSample i : isList)
+            i.draw(game.batch);
+
+        c1.draw(game.batch);
         for(Crewmate c : cList) {
             c.draw(game.batch);
             if(!c.equals(c1)) {
@@ -359,18 +441,6 @@ public class PlayScreen implements Screen {
                 c1.getLabel().setPosition(174, 166);
             }
         }
-        for(Bullet b : bList)
-            b.draw(game.batch);
-
-        for(HpItem h : hList)
-            h.draw(game.batch);
-
-        for(SpeedItem s : sList)
-            s.draw(game.batch);
-
-        for(TrapItem t : tList)
-            t.draw(game.batch);
-
         game.batch.end();
 
         shapeRenderer.end();
