@@ -2,6 +2,7 @@ package dev.navo.game.Screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -22,6 +23,12 @@ import java.io.IOException;
 
 
 public class LoginScreen implements Screen {
+
+    // 사운드 변수들
+    private Sound backSound;
+    private Sound failSound;
+    private Sound succSound;
+    private Sound clickbtnSound;
 
     private Texture background; // 배경
 
@@ -60,6 +67,11 @@ public class LoginScreen implements Screen {
 
         client = Client.getInstance(); // 서버랑 통신할 클라이언트 가져오기
 
+        backSound = Gdx.audio.newSound(Gdx.files.internal("sound/loginbgm.wav")); // 백그라운드 사운드 초기화
+        failSound = Gdx.audio.newSound(Gdx.files.internal("sound/fail.wav")); // 각종 실패 사운드 초기화
+        succSound = Gdx.audio.newSound(Gdx.files.internal("sound/succ.wav")); // 각종 성공 사운드 초기화
+        clickbtnSound = Gdx.audio.newSound(Gdx.files.internal("sound/clickbtn.wav")); // 각종 클릭 사운드 초기화
+        backSound.loop(); // 배경음악 반복재생
 
         //라벨 및 텍스트 초기화 및 생성
         title = new Label( "Navo Ground", new Label.LabelStyle(FontGenerator.font32, Color.WHITE ));
@@ -126,10 +138,12 @@ public class LoginScreen implements Screen {
                 try {
                     if( client.login(idField.getText(), pwField.getText()) ){
                         Gdx.graphics.setWindowedMode(800 , 600 );
+                        succSound.play(0.7f); // 로그인 성공 시 효과음 출력
                         game.setScreen(new LobbyScreen(game));
                         client.setOwner(idField.getText());
                     }else{
                         resultLabel.setText("로그인 실패!");
+                        failSound.play(1); // 로그인 실패 시 효과음 출력
                         resultShow();
                     }
                 } catch (IOException e) {
@@ -139,17 +153,20 @@ public class LoginScreen implements Screen {
         });
         signUpBtn.addListener(new ClickListener(){ // 회원가입 화면 버튼 리스너
             public void clicked (InputEvent event, float x, float y) {
+                clickbtnSound.play(0.7f); // 버튼 클릭 효과음
                 game.setScreen(new SignUpScreen(game));
             }
         });
 
         IdPwFindBtn.addListener(new ClickListener(){ // 아이디 패스워드 찾기 화면 버튼 리스너
             public void clicked (InputEvent event, float x, float y) {
+                clickbtnSound.play(0.7f); // 버튼 클릭 효과음
                 game.setScreen(new IdPwFindScreen(game));
             }
         });
         resultBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) { // 결과 창 닫기 버튼 리스너
+                clickbtnSound.play(0.7f); // 버튼 클릭 효과음
                 resultClose();
             }
         });

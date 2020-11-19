@@ -3,6 +3,7 @@ package dev.navo.game.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -22,8 +23,8 @@ import dev.navo.game.ClientSocket.Client;
 import dev.navo.game.ClientSocket.Room;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Scenes.Hud;
-import dev.navo.game.Sprites.Crewmate2D;
-import dev.navo.game.Sprites.CrewmateMulti;
+import dev.navo.game.Sprites.Character.Crewmate2D;
+import dev.navo.game.Sprites.Character.CrewmateMulti;
 import dev.navo.game.Tools.B2WorldCreator;
 import dev.navo.game.Tools.Util;
 import org.json.simple.JSONObject;
@@ -33,6 +34,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class WaitScreen implements Screen {    private NavoGame game;
+
+    // 사운드 변수
+    private Sound clickbtnSound;
+    private Sound startSound;
+
     private TextureAtlas atlas;
 
     private OrthographicCamera gameCam;
@@ -78,6 +84,9 @@ public class WaitScreen implements Screen {    private NavoGame game;
         renderer = new OrthogonalTiledMapRenderer(map);
         gameCam.position.set(100,100, 0); // 200, 1130 = Left Top
 
+        clickbtnSound = Gdx.audio.newSound(Gdx.files.internal("sound/clickbtn.wav")); // 각종 클릭 사운드 초기화
+        startSound = Gdx.audio.newSound(Gdx.files.internal("sound/gamestart.wav")); // 게임 시작 효과음 초기화
+
         world = new World(new Vector2(0,0), true);
         b2dr = new Box2DDebugRenderer();
 
@@ -95,10 +104,10 @@ public class WaitScreen implements Screen {    private NavoGame game;
     }
     // 키 입력 처리 메소드
     public void handleInput(float dt){
-        Util.moveInputHandle(dt, myCrewmate, maxSpeed, moveSpeed); // 내 캐릭터 움직임 처리
+        Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed); // 내 캐릭터 움직임 처리
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.C)){
-
+            startSound.play(); // 게임 시작 사운드 출력
             game.setScreen(new PlayScreen(game)); // PlayScreen으로 넘어가기
         }
 

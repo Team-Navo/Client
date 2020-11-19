@@ -16,14 +16,14 @@ public class B2WorldCreator {
 
     private ArrayList<Rectangle> recList;
 
-    public B2WorldCreator(World world, TiledMap map){
+    public B2WorldCreator(World world, TiledMap map){ // 벽 만드는 클래스
         BodyDef bDef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         FixtureDef fDef = new FixtureDef();
         Body body;
         recList = new ArrayList<>();
 
-        for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
+        for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){ // Tmx에서 3번째(Object) 가져와서 자바 객체로 생성
                 Rectangle rect = ((RectangleMapObject)object).getRectangle();
 
                 recList.add(rect);

@@ -4,8 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.World;
 import dev.navo.game.Scenes.Hud;
-import dev.navo.game.Sprites.Crewmate2D;
-import dev.navo.game.Sprites.CrewmateMulti;
+import dev.navo.game.Sprites.Character.CrewmateMulti;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;

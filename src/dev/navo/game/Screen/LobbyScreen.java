@@ -2,6 +2,7 @@ package dev.navo.game.Screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -24,6 +25,8 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 
 public class LobbyScreen implements Screen {
+
+    private Sound clickbtnSound;
 
     private NavoGame game;
     private Stage stage;
@@ -49,6 +52,8 @@ public class LobbyScreen implements Screen {
 
         this.client = Client.getInstance();
 
+        clickbtnSound = Gdx.audio.newSound(Gdx.files.internal("sound/clickbtn.wav")); // 클릭 사운드 초기화
+
         background = new Texture("data/GameBack.png");
 
         title = new Label( "Navo Ground", new Label.LabelStyle(FontGenerator.font32, Color.WHITE ));
@@ -67,6 +72,7 @@ public class LobbyScreen implements Screen {
                     JSONObject roomInfo = client.enter(client.getOwner());
                     startBtn.clear();
                     backBtn.clear();
+                    clickbtnSound.play();
                     game.setScreen(new WaitScreen(game, roomInfo));
                 } catch (IOException | ParseException e) {
                     e.printStackTrace();
@@ -79,6 +85,7 @@ public class LobbyScreen implements Screen {
                 Gdx.graphics.setWindowedMode(400, 300);
                 startBtn.clear();
                 backBtn.clear();
+                clickbtnSound.play();
                 game.setScreen(new LoginScreen(game));
                 client.logout();
             }

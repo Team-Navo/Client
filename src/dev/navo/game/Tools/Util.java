@@ -4,11 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import dev.navo.game.Sprites.Crewmate2D;
+import dev.navo.game.Sprites.Character.Crewmate2D;
 
 public class Util {
-
-    public static void moveInputHandle(float dt, Crewmate2D crewmate, int maxSpeed, int moveSpeed){
+    // 캐릭터 움직임 처리
+    public static void moveInputHandle(Crewmate2D crewmate, int maxSpeed, int moveSpeed){
         if(Gdx.input.isKeyPressed(Input.Keys.UP) && crewmate.b2Body.getLinearVelocity().y  < maxSpeed){
             crewmate.b2Body.applyLinearImpulse(new Vector2(0, moveSpeed), crewmate.b2Body.getWorldCenter(), true);
         }else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)  && crewmate.b2Body.getLinearVelocity().y  > -maxSpeed){
@@ -42,6 +42,7 @@ public class Util {
         }
     }
 
+    //60FPS 세팅
     public static void frameSet(World world){
         world.step(1/60f, 6, 2);
     }

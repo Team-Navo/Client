@@ -3,7 +3,7 @@ package dev.navo.game.ClientSocket;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.World;
 import dev.navo.game.Scenes.Hud;
-import dev.navo.game.Sprites.Crewmate2D;
+import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Tools.JsonParser;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -24,11 +24,10 @@ public class Client {
 
     String owner;
 
-    String serverIPv4 = "127.0.0.1";
+    String serverIPv4 = "118.39.171.111";
     int serverPort = 10002;
 
-
-
+    //싱글톤 객체 접근자
     public static Client getInstance(){
         if(instance == null)
             instance = new Client();
@@ -38,10 +37,9 @@ public class Client {
     public Client() {
         connect();
         streamSetting();
-        //dataSend();
-        //dataRecv();
     }    
 
+    //연결 설정
     public void connect() {
         try{
             clientSocket=new Socket(serverIPv4, serverPort);
@@ -54,6 +52,7 @@ public class Client {
         }
     }
 
+    //입출력 스트림 설정
     public void streamSetting() {
         try{
             out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -71,35 +70,7 @@ public class Client {
         return this.owner;
     }
 
-    public void dataRecv() {
-        new Thread(new Runnable() {
-            boolean isThread = true;
-            @Override
-            public void run() {
-                while(isThread)
-                    try {
-                        String recvData=in.readLine();
-                        if(recvData.equals("/quit"))
-                            isThread=false;
-                        else
-                            System.out.println("Server : " + recvData);
-                    }
-                    catch (Exception e) {
-                        System.out.println(e.toString());
-                        try {
-                            if(clientSocket != null)
-                                clientSocket.close();
-                            in.close();
-                        } catch (IOException ioE) {
-                            ioE.printStackTrace();
-                        }
-                        isThread = false;
-                    }
-            }
-        }).start();
-    }
-
-
+    //업데이트
     public void update(final Crewmate2D user, final Room room, final World world, final TextureAtlas atlas, final Hud hud) {
         new Thread(new Runnable() {
             int i = 0;
@@ -131,6 +102,7 @@ public class Client {
         }).start();
     }
 
+    // 로그인
     public boolean login(String id, String pw) throws IOException {
         JSONObject json = new JSONObject();
         json.put("Header", "LOGIN");
@@ -144,6 +116,7 @@ public class Client {
         return recvData.equals("SUCCESS");
     }
 
+    //회원 가입
     public boolean create(String id, String pw, String name, String birth, String phone) throws IOException {
         JSONObject json = new JSONObject();
         json.put("Header", "CREATE");
@@ -161,6 +134,7 @@ public class Client {
         return recvData.equals("SUCCESS");
     }
 
+    //아이디 찾기
     public String idFind(String name, String birth) throws IOException {
         JSONObject json = new JSONObject();
         json.put("Header", "ID");
@@ -177,6 +151,7 @@ public class Client {
             return result;
     }
 
+    //패스워드 찾기
     public String pwFind(String id, String name) throws IOException {
         JSONObject json = new JSONObject();
         json.put("Header", "PW");
@@ -193,6 +168,7 @@ public class Client {
             return result;
     }
 
+    // 로그아웃
     public void logout(){
         JSONObject json = new JSONObject();
         json.put("Header", "LOGOUT");
@@ -201,6 +177,7 @@ public class Client {
         out.println(json.toJSONString());
     }
 
+    //처음 게임 입장할 때
     public JSONObject enter(String owner) throws IOException, ParseException {
         JSONObject json = new JSONObject();
         json.put("Header", "ENTER");
