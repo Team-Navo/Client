@@ -2,12 +2,9 @@ package dev.navo.game.Screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -17,20 +14,16 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.navo.game.ClientSocket.Client;
 import dev.navo.game.NavoGame;
+import dev.navo.game.Scenes.Result;
 import dev.navo.game.Tools.FontGenerator;
+import dev.navo.game.Tools.Images;
+import dev.navo.game.Tools.Sounds;
+import dev.navo.game.Tools.Util;
 
 import java.io.IOException;
 
 
 public class LoginScreen implements Screen {
-
-    // 사운드 변수들
-    private Sound backSound;
-    private Sound failSound;
-    private Sound succSound;
-    private Sound clickbtnSound;
-
-    private Texture background; // 배경
 
     private TextField idField; // 아이디 적는 필드
     private TextField pwField; // 패스워드 적는 필드
@@ -43,48 +36,49 @@ public class LoginScreen implements Screen {
     private TextButton signUpBtn; // 회원가입 버튼
     private TextButton IdPwFindBtn; // 아이디/패스워드 찾기 버튼
 
-    // 결과
-    private TextField resultField; // 결과 띄우는 배경 필드. 글자를 못쓰게 하고 배경으로 씀(꼼수)
-    private Label resultLabel; // 결과를 띄울 라벨
-    private TextButton resultBtn; // 결과 창 확인 버튼
-
     private NavoGame game; // Lib Gdx 게임 클래스 저장할 변수
     private Stage stage; // 텍스트 필드나 라벨 올릴 곳.
 
-    private Skin skin; // 텍스트 필드나 라벨의 기본 스킨으로 넣을 스킨 변수
     private Viewport viewport; // 화면 뷰포트
 
     private Client client; // 서버랑 통신하기 위한 클라이언트 소켓 클래스(클라이언트 안에 다 들어 있음
 
+    private Result resultScene; // 결과 창
+
     public LoginScreen(final NavoGame game){
         this.game = game; // Lig Gdx 게임 클래스 초기화
-        skin = new Skin(Gdx.files.internal("uiskin.json")); // 컴포넌트 스킨 파일 가져오기
         viewport = new FitViewport(NavoGame.V_WIDTH , NavoGame.V_HEIGHT , new OrthographicCamera()); // 뷰포트 생성
         stage = new Stage(viewport, game.batch); // 스테이지 생성
         Gdx.input.setInputProcessor(stage); // 스테이지에 마우스 및 키보드 입력을 받기
-        background = new Texture("data/GameBack.png"); // 배경 이미지 초기화
-        BitmapFont f = new BitmapFont(Gdx.files.internal("font/16Bold/hangulBold16.fnt")); //폰트 가져오기
 
         client = Client.getInstance(); // 서버랑 통신할 클라이언트 가져오기
 
-        backSound = Gdx.audio.newSound(Gdx.files.internal("sound/loginbgm.wav")); // 백그라운드 사운드 초기화
-        failSound = Gdx.audio.newSound(Gdx.files.internal("sound/fail.wav")); // 각종 실패 사운드 초기화
-        succSound = Gdx.audio.newSound(Gdx.files.internal("sound/succ.wav")); // 각종 성공 사운드 초기화
-        clickbtnSound = Gdx.audio.newSound(Gdx.files.internal("sound/clickbtn.wav")); // 각종 클릭 사운드 초기화
-        backSound.loop(); // 배경음악 반복재생
+        Sounds.background.loop(); // 배경음악 반복재생
 
+        initComponent(); // 필드, 라벨, 버튼 초기화
+
+        resultScene = new Result(); // 결과 창 생성
+
+        btnsAddListener(); // 버튼 리스너 초기화
+
+        initActorOnStage(); // 텍스트 필트 및 라벨 스테이지에 초기화
+
+        resultScene.resultOnStage(stage); // 결과 창 스테이지에 올리기
+    }
+
+    private void initComponent(){
         //라벨 및 텍스트 초기화 및 생성
         title = new Label( "Navo Ground", new Label.LabelStyle(FontGenerator.font32, Color.WHITE ));
         title.setFontScale(0.8f);
-        idField = new TextField("", skin);
-        pwField = new TextField("", skin);
+        idField = new TextField("", Util.skin);
+        pwField = new TextField("", Util.skin);
         pwField.setPasswordMode(true);
         pwField.setPasswordCharacter('*');
-        idLabel = new Label("I   D : ", new Label.LabelStyle(f, Color.WHITE));
-        pwLabel = new Label("PW : ", new Label.LabelStyle(f, Color.WHITE));
-        loginBtn = new TextButton( "LOG IN", skin );
-        signUpBtn = new TextButton( "SIGN UP", skin );
-        IdPwFindBtn = new TextButton( "Forgot ID/PW", skin );
+        idLabel = new Label("I   D : ", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE));
+        pwLabel = new Label("PW : ", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE));
+        loginBtn = new TextButton( "LOG IN", Util.skin );
+        signUpBtn = new TextButton( "SIGN UP", Util.skin );
+        IdPwFindBtn = new TextButton( "Forgot ID/PW", Util.skin );
 
         // 라벨 및 텍스트 위치 지정
         idField.setBounds(125 , 150 , 150 , 25 );
@@ -96,25 +90,6 @@ public class LoginScreen implements Screen {
         loginBtn.setBounds(135 , 85 , 130 , 25 );
         signUpBtn.setBounds(135 , 50 , 130 , 25 );
         IdPwFindBtn.setBounds(135 , 15 , 130 , 25 );
-
-        initResultSection(); // 결과 화면 초기화
-
-        btnsAddListener(); // 버튼 리스너 초기화
-
-        resultClose(); // 결과 화면 초기화 후 닫아 놓기
-
-        initActorOnStage(); // 텍스트 필트 및 라벨 스테이지에 초기화
-    }
-
-    private void initResultSection(){ // 결과창 띄울거 미리 생성
-        resultField = new TextField("", skin);
-        resultField.setBounds(40, 30, 320, 240);
-        resultField.setDisabled(true);
-        resultLabel = new Label("", new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
-        resultLabel.setBounds(40, 150, 320, 25);
-        resultLabel.setAlignment(Align.center);
-        resultBtn = new TextButton( "OK", skin );
-        resultBtn.setBounds(160, 50, 80, 25);
     }
 
     private void initActorOnStage(){ // 컴포넌트 스테이지에 초기화
@@ -126,10 +101,6 @@ public class LoginScreen implements Screen {
         stage.addActor(loginBtn);
         stage.addActor(signUpBtn);
         stage.addActor(IdPwFindBtn);
-
-        stage.addActor(resultField);
-        stage.addActor(resultLabel);
-        stage.addActor(resultBtn);
     }
 
     private void btnsAddListener() { // 리스너 초기화 메소드
@@ -138,13 +109,13 @@ public class LoginScreen implements Screen {
                 try {
                     if( client.login(idField.getText(), pwField.getText()) ){
                         Gdx.graphics.setWindowedMode(800 , 600 );
-                        succSound.play(0.7f); // 로그인 성공 시 효과음 출력
-                        game.setScreen(new LobbyScreen(game));
+                        Sounds.success.play(1); // 성공 소리
                         client.setOwner(idField.getText());
+                        game.setScreen(new LobbyScreen(game));
                     }else{
-                        resultLabel.setText("로그인 실패!");
-                        failSound.play(1); // 로그인 실패 시 효과음 출력
-                        resultShow();
+                        resultScene.setResultLabel("로그인 실패!");
+                        resultScene.resultShow();
+                        Sounds.fail.play(1); // 실패 소리
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -152,36 +123,19 @@ public class LoginScreen implements Screen {
             }
         });
         signUpBtn.addListener(new ClickListener(){ // 회원가입 화면 버튼 리스너
-            public void clicked (InputEvent event, float x, float y) {
-                clickbtnSound.play(0.7f); // 버튼 클릭 효과음
+            public void clicked (InputEvent event, float x, float y) { // 회원가입 버튼 리스너
+                Sounds.click.play(1);// 버튼 클릭 효과음
                 game.setScreen(new SignUpScreen(game));
             }
         });
 
         IdPwFindBtn.addListener(new ClickListener(){ // 아이디 패스워드 찾기 화면 버튼 리스너
-            public void clicked (InputEvent event, float x, float y) {
-                clickbtnSound.play(0.7f); // 버튼 클릭 효과음
+            public void clicked (InputEvent event, float x, float y) { // 아이디 패스워드 찾기 버튼 리스너
+                Sounds.click.play(1); // 버튼 클릭 효과음
                 game.setScreen(new IdPwFindScreen(game));
             }
         });
-        resultBtn.addListener(new ClickListener(){
-            public void clicked (InputEvent event, float x, float y) { // 결과 창 닫기 버튼 리스너
-                clickbtnSound.play(0.7f); // 버튼 클릭 효과음
-                resultClose();
-            }
-        });
-    }
 
-    private void resultShow(){ // 결과 창 띄우기
-        resultLabel.setVisible(true);
-        resultField.setVisible(true);
-        resultBtn.setVisible(true);
-    }
-
-    private void resultClose(){ // 결과 창 닫기
-        resultLabel.setVisible(false);
-        resultField.setVisible(false);
-        resultBtn.setVisible(false);
     }
 
     @Override
@@ -194,7 +148,7 @@ public class LoginScreen implements Screen {
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin(); // 배치에 그림 그리기 전에 시작하고 끝을 명시해줘야 함
-        game.batch.draw(background, 0 , 0 ); // 배치에다가 배경을 그림
+        game.batch.draw(Images.background, 0 , 0 ); // 배치에다가 배경을 그림
         game.batch.end(); // 배치의 끝
         stage.draw(); // 스테이지에 올라간 액터들을 그림(텍스트 필드나 라벨)
     }

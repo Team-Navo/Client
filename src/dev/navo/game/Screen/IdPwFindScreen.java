@@ -20,16 +20,15 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.navo.game.ClientSocket.Client;
 import dev.navo.game.NavoGame;
+import dev.navo.game.Scenes.Result;
 import dev.navo.game.Tools.FontGenerator;
+import dev.navo.game.Tools.Images;
+import dev.navo.game.Tools.Sounds;
+import dev.navo.game.Tools.Util;
 
 import java.io.IOException;
 
 public class IdPwFindScreen implements Screen {
-
-    // 사운드 변수들
-    private Sound clickbtnSound;
-    private Sound failSound;
-    private Sound succSound;
 
     // ID : 이름 생년월일
     private Label idFindLabel; // 아이디 찾기 라벨
@@ -49,53 +48,52 @@ public class IdPwFindScreen implements Screen {
     private TextField pwNameField; // 비밀번호 찾기 - 이름 적는 필드
     private TextButton pwFindBtn; // 비밀번호 찾기 버튼
 
-    // 결과
-    private TextField resultField; // 결과 띄우는 배경 필드. 글자를 못쓰게 하고 배경으로 씀(꼼수)
-    private Label resultLabel; // 결과를 띄울 라벨
-    private TextButton resultBtn; // 결과 창 확인 버튼
-
     private TextButton backBtn; // 뒤로가기 버튼
-
-    private Texture background; // 배경
 
     private NavoGame game; // Lib Gdx 게임 클래스 저장할 변수
     private Stage stage; // 텍스트 필드나 라벨 올릴 곳.
 
-    private Skin skin; // 텍스트 필드나 라벨의 기본 스킨으로 넣을 스킨 변수
     private Viewport viewport; // 화면 뷰포트
 
     private Client client; // 서버랑 통신하기 위한 클라이언트 소켓 클래스(클라이언트 안에 다 들어 있음
 
+    private Result resultScene; // 결과 창
+
     public IdPwFindScreen(final NavoGame game) {
         this.game = game; // Lig Gdx 게임 클래스 초기화
-        skin = new Skin(Gdx.files.internal("uiskin.json")); // 컴포넌트 스킨 파일 가져오기
-        background = new Texture("data/GameBack.png"); // 배경 이미지 초기화
         viewport = new FitViewport(NavoGame.V_WIDTH, NavoGame.V_HEIGHT, new OrthographicCamera()); // 뷰포트 생성
         stage = new Stage(viewport, game.batch); // 스테이지 생성
         Gdx.input.setInputProcessor(stage); // 스테이지에 마우스 및 키보드 입력을 받기
-        BitmapFont f = new BitmapFont(Gdx.files.internal("font/16Bold/hangulBold16.fnt")); //폰트 가져오기
-
-        clickbtnSound = Gdx.audio.newSound(Gdx.files.internal("sound/clickbtn.wav")); // 각종 클릭 사운드 초기화
-        failSound = Gdx.audio.newSound(Gdx.files.internal("sound/fail.wav")); // 각종 실패 사운드 초기화
-        succSound = Gdx.audio.newSound(Gdx.files.internal("sound/succ.wav")); // 각종 성공 사운드 초기화
 
         client = Client.getInstance(); // 서버랑 통신할 클라이언트 가져오기
 
+        initComponent(); // 컴포넌트 초기화
+
+        resultScene = new Result(); // 결과 창 생성
+
+        btnsAddListener(); // 버튼 리스너 초기화
+
+        initActorOnStage(); // 텍스트 필트 및 라벨 스테이지에 초기화
+
+        resultScene.resultOnStage(stage);
+    }
+
+    private void initComponent(){
         //라벨 및 텍스트 초기화 및 생성
-        idFindLabel = new Label("Find ID", new Label.LabelStyle(f, Color.WHITE));
-        idNameLabel = new Label("N A M E", new Label.LabelStyle(f, Color.WHITE));
-        idBirthLabel = new Label("B I R T H", new Label.LabelStyle(f, Color.WHITE));
-        idNameField = new TextField("", skin);
-        idBirthField = new TextField("", skin);
-        idFindBtn = new TextButton("Find ID", skin);
-        idFindBtn = new TextButton("Find ID", skin);
-        pwFindLabel = new Label("Find PW", new Label.LabelStyle(f, Color.WHITE));
-        pwIdLabel = new Label("I       D", new Label.LabelStyle(f, Color.WHITE));
-        pwNameLabel = new Label("N A M E", new Label.LabelStyle(f, Color.WHITE));
-        pwIdField = new TextField("", skin);
-        pwNameField = new TextField("", skin);
-        pwFindBtn = new TextButton("Find PW", skin);
-        backBtn = new TextButton("BACK", skin);
+        idFindLabel = new Label("Find ID", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE));
+        idNameLabel = new Label("N A M E", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE));
+        idBirthLabel = new Label("B I R T H", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE));
+        idNameField = new TextField("", Util.skin);
+        idBirthField = new TextField("", Util.skin);
+        idFindBtn = new TextButton("Find ID", Util.skin);
+        idFindBtn = new TextButton("Find ID", Util.skin);
+        pwFindLabel = new Label("Find PW", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE));
+        pwIdLabel = new Label("I       D", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE));
+        pwNameLabel = new Label("N A M E", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE));
+        pwIdField = new TextField("", Util.skin);
+        pwNameField = new TextField("", Util.skin);
+        pwFindBtn = new TextButton("Find PW", Util.skin);
+        backBtn = new TextButton("BACK", Util.skin);
 
         // 라벨 및 텍스트 위치 지정
         backBtn.setBounds(310, 10, 80, 25);
@@ -111,26 +109,8 @@ public class IdPwFindScreen implements Screen {
         idNameField.setBounds(80, 230, 150, 25);
         idBirthLabel.setBounds(20, 200, 50, 25);
         idBirthField.setBounds(80, 200, 150, 25);
-
-        initResultSection(); // 결과 화면 초기화
-
-        btnsAddListener(); // 버튼 리스너 초기화
-
-        resultClose(); // 결과 화면 초기화 후 닫아 놓기
-
-        initActorOnStage(); // 텍스트 필트 및 라벨 스테이지에 초기화
     }
-    private void initResultSection() { // 결과창 띄울거 미리 생성
-        resultField = new TextField("", skin);
-        resultField.setBounds(40, 30, 320, 240);
-        resultField.setDisabled(true);
-        resultLabel = new Label("", new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
-        resultLabel.setBounds(40, 150, 320, 25);
-        resultLabel.setAlignment(Align.center);
-        resultBtn = new TextButton("OK", skin);
-        resultBtn.setBounds(160, 50, 80, 25);
-        resultClose();
-    }
+
     private void initActorOnStage() { // 컴포넌트 스테이지에 초기화
         stage.addActor(idFindLabel);
         stage.addActor(idNameLabel);
@@ -145,23 +125,21 @@ public class IdPwFindScreen implements Screen {
         stage.addActor(pwNameField);
         stage.addActor(pwFindBtn);
         stage.addActor(backBtn);
-        stage.addActor(resultField);
-        stage.addActor(resultLabel);
-        stage.addActor(resultBtn);
     }
+
     private void btnsAddListener() { // 리스너 초기화 메소드
         idFindBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
                 try {
                     String result = client.idFind(idNameField.getText(), idBirthField.getText());
                     if(result != null){
-                        resultLabel.setText("아이디 : " + result);
-                        succSound.play(0.7f); // 아이디 찾기 성공 사운드
-                        resultShow();
+                        resultScene.setResultLabel("아이디 : " + result);
+                        resultScene.resultShow();
+                        Sounds.success.play(1); // 아이디 찾기 성공 사운드
                     }else{
-                        resultLabel.setText("아이디 찾기 실패");
-                        failSound.play(0.7f); // 아이디 찾기 실패 사운드
-                        resultShow();
+                        resultScene.setResultLabel("아이디 찾기 실패");
+                        resultScene.resultShow();
+                        Sounds.fail.play(1);// 아이디 찾기 실패 사운드
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -175,13 +153,13 @@ public class IdPwFindScreen implements Screen {
                 try {
                     String result = client.pwFind(pwIdField.getText(), pwNameField.getText());
                     if(result != null){
-                        resultLabel.setText("패스워드 : " + result);
-                        succSound.play(0.7f);
-                        resultShow();
+                        resultScene.setResultLabel("패스워드 : " + result);
+                        resultScene.resultShow();
+                        Sounds.success.play(1); // 패스워드 찾기 성공 사운드
                     }else{
-                        resultLabel.setText("패스워드 찾기 실패");
-                        failSound.play(0.7f);
-                        resultShow();
+                        resultScene.setResultLabel("패스워드 찾기 실패");
+                        resultScene.resultShow();
+                        Sounds.fail.play(1);// 패스워드 찾기 실패 사운드
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -190,29 +168,14 @@ public class IdPwFindScreen implements Screen {
                 pwNameField.setText("");
             }
         });
-        resultBtn.addListener(new ClickListener(){
-            public void clicked (InputEvent event, float x, float y) {
-                resultClose();
-            }
-        });
         backBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-                clickbtnSound.play(0.7f);
+                Sounds.click.play(1);
                 game.setScreen(new LoginScreen(game));
             }
         });
     }
-    private void resultShow(){ // 결과 창 띄우기
-        resultLabel.setVisible(true);
-        resultField.setVisible(true);
-        resultBtn.setVisible(true);
-    }
 
-    private void resultClose(){ // 결과 창 닫기
-        resultLabel.setVisible(false);
-        resultField.setVisible(false);
-        resultBtn.setVisible(false);
-    }
     @Override
     public void show() {
 
@@ -223,7 +186,7 @@ public class IdPwFindScreen implements Screen {
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
-        game.batch.draw(background, 0 , 0 );
+        game.batch.draw(Images.background, 0 , 0 );
         game.batch.end();
         stage.draw();
     }

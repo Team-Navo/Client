@@ -2,8 +2,14 @@ package dev.navo.game.Tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import dev.navo.game.NavoGame;
 import dev.navo.game.Sprites.Character.Crewmate2D;
 
 public class Util {
@@ -46,4 +52,8 @@ public class Util {
     public static void frameSet(World world){
         world.step(1/60f, 6, 2);
     }
+
+    //컴포넌트 기본 스킨
+    public static final Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+
 }

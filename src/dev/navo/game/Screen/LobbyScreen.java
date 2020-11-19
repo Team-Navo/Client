@@ -19,6 +19,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.navo.game.ClientSocket.Client;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Tools.FontGenerator;
+import dev.navo.game.Tools.Images;
+import dev.navo.game.Tools.Sounds;
+import dev.navo.game.Tools.Util;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -26,15 +29,10 @@ import java.io.IOException;
 
 public class LobbyScreen implements Screen {
 
-    private Sound clickbtnSound;
-
     private NavoGame game;
     private Stage stage;
 
-    private Skin skin;
     private Viewport viewport;
-
-    private Texture background;
 
     private Label title;
 
@@ -45,34 +43,44 @@ public class LobbyScreen implements Screen {
 
     public LobbyScreen(final NavoGame game){
         this.game = game;
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
         viewport = new FitViewport(NavoGame.V_WIDTH, NavoGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
         this.client = Client.getInstance();
 
-        clickbtnSound = Gdx.audio.newSound(Gdx.files.internal("sound/clickbtn.wav")); // 클릭 사운드 초기화
+        initComponent();
+        initActorOnStage();
+        btnsAddListener();
 
-        background = new Texture("data/GameBack.png");
+    }
 
+    private void initComponent(){
         title = new Label( "Navo Ground", new Label.LabelStyle(FontGenerator.font32, Color.WHITE ));
         title.setBounds(0, 500, 800, 40);
         title.setAlignment(Align.center);
 
-        startBtn = new TextButton( "GAME START", skin );
+        startBtn = new TextButton( "GAME START", Util.skin );
         startBtn.setBounds(300, 200, 200, 32);
 
-        backBtn = new TextButton( "BACK", skin );
+        backBtn = new TextButton( "BACK", Util.skin );
         backBtn.setBounds(300, 160, 200, 32);
+    }
 
+    private void initActorOnStage(){
+        stage.addActor(title);
+        stage.addActor(startBtn);
+        stage.addActor(backBtn);
+    }
+
+    private void btnsAddListener(){
         startBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
                 try {
                     JSONObject roomInfo = client.enter(client.getOwner());
                     startBtn.clear();
                     backBtn.clear();
-                    clickbtnSound.play();
+                    Sounds.click.play();
                     game.setScreen(new WaitScreen(game, roomInfo));
                 } catch (IOException | ParseException e) {
                     e.printStackTrace();
@@ -85,14 +93,11 @@ public class LobbyScreen implements Screen {
                 Gdx.graphics.setWindowedMode(400, 300);
                 startBtn.clear();
                 backBtn.clear();
-                clickbtnSound.play();
+                Sounds.click.play();
                 game.setScreen(new LoginScreen(game));
                 client.logout();
             }
         });
-        stage.addActor(title);
-        stage.addActor(startBtn);
-        stage.addActor(backBtn);
     }
 
     @Override
@@ -105,7 +110,7 @@ public class LobbyScreen implements Screen {
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
-        game.batch.draw(background, 0, 0);
+        game.batch.draw(Images.background, 0, 0);
         game.batch.end();
         stage.draw();
     }
