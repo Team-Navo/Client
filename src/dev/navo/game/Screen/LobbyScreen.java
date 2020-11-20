@@ -80,7 +80,7 @@ public class LobbyScreen implements Screen {
                     JSONObject roomInfo = client.enter(client.getOwner());
                     startBtn.clear();
                     backBtn.clear();
-                    Sounds.click.play();
+                    Sounds.wait.play(); // 대기실 입장 사운드
                     game.setScreen(new WaitScreen(game, roomInfo));
                 } catch (IOException | ParseException e) {
                     e.printStackTrace();
