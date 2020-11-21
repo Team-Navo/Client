@@ -1,4 +1,4 @@
-package dev.navo.game.Client;
+package dev.navo.game.ClientSocket;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.World;
@@ -15,26 +15,26 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 @SuppressWarnings("unchecked")
-public class ClientSocket {
+public class Client {
 
-    private static ClientSocket instance;
+    private static Client instance;
     private Socket clientSocket;
     BufferedReader in;
     PrintWriter out;
 
     String owner;
 
-    String serverIPv4 = "yjpcpa.ddns.net";
-    int serverPort = 1120;
+    String serverIPv4 = "118.39.171.111";
+    int serverPort = 10002;
 
     //싱글톤 객체 접근자
-    public static ClientSocket getInstance(){
+    public static Client getInstance(){
         if(instance == null)
-            instance = new ClientSocket();
+            instance = new Client();
         return instance;
     }
 
-    public ClientSocket() {
+    public Client() {
         connect();
         streamSetting();
     }    
@@ -71,7 +71,7 @@ public class ClientSocket {
     }
 
     //업데이트
-    public void update(final Crewmate2D user, final dev.navo.game.Client.Room room, final World world, final TextureAtlas atlas, final Hud hud) {
+    public void update(final Crewmate2D user, final Room room, final World world, final TextureAtlas atlas, final Hud hud) {
         new Thread(new Runnable() {
             int i = 0;
             boolean isThread=true;
@@ -111,8 +111,8 @@ public class ClientSocket {
 
         System.out.println(json.toJSONString());
         out.println(json.toJSONString());
-
         String recvData= in.readLine();
+
         return recvData.equals("SUCCESS");
     }
 

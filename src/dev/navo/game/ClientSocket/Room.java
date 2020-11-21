@@ -1,4 +1,4 @@
-package dev.navo.game.Client;
+package dev.navo.game.ClientSocket;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
