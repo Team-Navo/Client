@@ -50,21 +50,28 @@ public class Client {
             instance = new Client();
         return instance;
     }
-    //로그인
+    // SIGN IN
     public boolean login(String id, String pw) throws IOException {
-        JSONObject json = new JSONObject();
-        json.put("Header", "LOGIN");
-        json.put("id", id);
-        json.put("pw", pw);
-        System.out.println(json.toJSONString());
-        channel.writeAndFlush(json.toJSONString() + "\n");
+
+        JSONObject dupJson = new JSONObject();
+        dupJson.put("Header", "1");
+        dupJson.put("id", id);
+        dupJson.put("pw", pw);
+
+        JSONObject mainJson = new JSONObject();
+        mainJson.put("Auth", "1");
+        mainJson.put("Body", dupJson.toJSONString());
+
+        System.out.println(mainJson.toJSONString());
+        channel.writeAndFlush(mainJson.toJSONString() + "\n");
+
         String recvData = buffer.get();
         return recvData.equals("SUCCESS");
     }
-    //회원가입
+    // SIGN UP
     public boolean create(String id, String pw, String name, String birth, String phone) throws IOException {
         JSONObject json = new JSONObject();
-        json.put("Header", "CREATE");
+        json.put("Header", "2");
         json.put("id", id);
         json.put("pw", pw);
         json.put("name", name);
@@ -72,13 +79,13 @@ public class Client {
         json.put("phone", phone);
         System.out.println(json.toJSONString());
         channel.writeAndFlush(json.toJSONString() + "\n");
-        String recvData= buffer.get();
+        String recvData = buffer.get();
         return recvData.equals("SUCCESS");
     }
-    //아이디 찾기
+    // FIND ID
     public String idFind(String name, String birth) throws IOException {
         JSONObject json = new JSONObject();
-        json.put("Header", "ID");
+        json.put("Header", "3");
         json.put("name", name);
         json.put("birth", birth);
         System.out.println(json.toJSONString());
@@ -89,10 +96,10 @@ public class Client {
         else
             return result;
     }
-    //패스워드 찾기
+    // FIND PW
     public String pwFind(String id, String name) throws IOException {
         JSONObject json = new JSONObject();
-        json.put("Header", "PW");
+        json.put("Header", "4");
         json.put("id", id);
         json.put("name", name);
         System.out.println(json.toJSONString());
