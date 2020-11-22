@@ -21,7 +21,7 @@ public class ClientHandler  extends ChannelInboundHandlerAdapter {
         String header = json.get("Header").toString();
 
         if(header.equals("Auth")) {
-            loginBuffer.put( JsonParser.createJson(json.get("body").toString()) );
+            loginBuffer.put( JsonParser.createJson(json.get("Body").toString()) );
         }
 
     }
