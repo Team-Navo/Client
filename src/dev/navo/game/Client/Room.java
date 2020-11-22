@@ -19,6 +19,7 @@ public class Room { // 게임 방
         crewmates = new ArrayList<>();
 
         this.roomCode = Integer.parseInt(roomInfo.get("code").toString()) ;
+
         JSONObject crewmatesJson = (JSONObject)roomInfo.get("crewmates");
 
         int i = 0;

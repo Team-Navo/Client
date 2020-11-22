@@ -1,14 +1,16 @@
 package dev.navo.game.Buffer;
 
+import org.json.simple.JSONObject;
+
 public class InGameBuffer {
-    private String inGameData;
+    private JSONObject inGameData;
     private static InGameBuffer instance=null;
     public static InGameBuffer getInstance() {
         if(instance==null) instance=new InGameBuffer();
         return instance;
     }
     private boolean empty = true;
-    public synchronized String get() {
+    public synchronized JSONObject get() {
         while (empty) {
             try {
                 wait();
@@ -19,7 +21,7 @@ public class InGameBuffer {
         notifyAll();
         return inGameData;
     }
-    public synchronized void put(String data) {
+    public synchronized void put(JSONObject data) {
         while (!empty) {
             try {
                 wait();

@@ -35,6 +35,7 @@ public class Crewmate2D extends Sprite{
     private Label nameLabel;
     private float maxHP;
     private float HP;
+
     private float attackDelay;
     private boolean isStop;
     private float stateTimer;
@@ -171,8 +172,8 @@ public class Crewmate2D extends Sprite{
     // 업데이트
     public void update(float dt){
         if(attackDelay > 0) attackDelay -= dt;
-        drmX = b2Body.getLinearVelocity().x * dt;
-        drmY = b2Body.getLinearVelocity().y * dt;
+        drmX = b2Body.getLinearVelocity().x * dt; // 1초당 80만큼 움직임 = velocity.X = 80 * dt = 1 Frame 당 움직일 X 거리
+        drmY = b2Body.getLinearVelocity().y * dt;// 1초당 80만큼 움직임 = velocity.Y = 80 * dt = 1 Frame 당 움직일 Y 거리
         setPosition(b2Body.getPosition().x - getWidth() /2 -1, b2Body.getPosition().y - getHeight() / 2);
 
         setRegion(getFrame(dt));
@@ -243,9 +244,9 @@ public class Crewmate2D extends Sprite{
         }
     }
 
-    //크루메이트 정보 JSON으로 출력
+    //크루메이트 초기화 정보 JSON으로 출력
     @SuppressWarnings("unchecked")
-    public JSONObject getCrewmateJson(){
+    public JSONObject getCrewmateInitJson(){
         JSONObject result = new JSONObject();
 
         result.put("owner", owner);
@@ -258,8 +259,6 @@ public class Crewmate2D extends Sprite{
         result.put("state", currentState.toString());
         result.put("maxHP", maxHP);
         result.put("HP", HP);
-        result.put("isStop", isStop);
-        result.put("stateTimer", stateTimer);
         result.put("frameNum", getFrameNum());
         return result;
     }

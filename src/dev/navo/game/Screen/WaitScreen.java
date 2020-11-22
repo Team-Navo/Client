@@ -19,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import dev.navo.game.Buffer.InGameBuffer;
 import dev.navo.game.Client.Client;
 import dev.navo.game.Client.Room;
 import dev.navo.game.NavoGame;
@@ -69,8 +70,10 @@ public class WaitScreen implements Screen {    private NavoGame game;
     private static final int moveSpeed = 10;
     private static int maxSpeed = 80;
 
-    public WaitScreen(NavoGame game, JSONObject roomInfo){
+    public WaitScreen(NavoGame game){
         client = Client.getInstance();
+        myCrewmate = new Crewmate2D(world, atlas, new Vector2(100, 100), "상민이", "Purple", client.getOwner());
+
         atlas = new TextureAtlas("Image.atlas");
         centerHP = new Vector2(375, 325);
         shapeRenderer = new ShapeRenderer();
@@ -94,10 +97,8 @@ public class WaitScreen implements Screen {    private NavoGame game;
         blocks = new ArrayList<>();
         blocks = b2.getRecList();
 
-        System.out.println(roomInfo.toJSONString());
-        room = new Room(world, atlas, roomInfo);
+        //room = new Room(world, atlas, InGameBuffer.getInstance().get());
 
-        myCrewmate = new Crewmate2D(world, atlas, new Vector2(100, 100), "상민이", "Purple", client.getOwner());
 
         hud.addLabel(myCrewmate.getLabel());
         //client.update(myCrewmate, room, world, atlas, hud);

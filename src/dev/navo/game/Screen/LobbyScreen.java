@@ -73,15 +73,10 @@ public class LobbyScreen implements Screen {
     private void btnsAddListener(){
         startBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-                try {
-                    JSONObject roomInfo = client.enter(client.getOwner());
-                    startBtn.clear();
-                    backBtn.clear();
-                    Sounds.click.play();
-                    game.setScreen(new WaitScreen(game, roomInfo));
-                } catch (IOException | ParseException e) {
-                    e.printStackTrace();
-                }
+                startBtn.clear();
+                backBtn.clear();
+                Sounds.click.play();
+                game.setScreen(new WaitScreen(game));
             }
         });
 
@@ -92,7 +87,7 @@ public class LobbyScreen implements Screen {
                 backBtn.clear();
                 Sounds.click.play();
                 game.setScreen(new LoginScreen(game));
-                client.logout();
+                //client.logout();
             }
         });
     }

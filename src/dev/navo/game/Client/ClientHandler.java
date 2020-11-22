@@ -1,19 +1,29 @@
 package dev.navo.game.Client;
 
+import dev.navo.game.Buffer.EventBuffer;
+import dev.navo.game.Buffer.InGameBuffer;
+import dev.navo.game.Buffer.LoginBuffer;
+import dev.navo.game.Tools.JsonParser;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.json.simple.JSONObject;
 
 public class ClientHandler  extends ChannelInboundHandlerAdapter {
 
-    dev.navo.game.Client.Buffer buffer;
-
-    public ClientHandler(dev.navo.game.Client.Buffer buffer){
-        this.buffer = buffer;
-    }
-
+    EventBuffer eventBuffer = EventBuffer.getInstance();
+    InGameBuffer inGameBuffer = InGameBuffer.getInstance();
+    LoginBuffer loginBuffer = LoginBuffer.getInstance();
     @Override
     public void channelRead(ChannelHandlerContext arg0, Object arg1) throws Exception {
-        buffer.put(arg1.toString());
+        String msg = arg1.toString();
+        JSONObject json = JsonParser.createJson(msg);
+
+        String header = json.get("Header").toString();
+
+        if(header.equals("Auth")) {
+            loginBuffer.put( JsonParser.createJson(json.get("body").toString()) );
+        }
+
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Tools.JsonParser;
+import io.netty.handler.codec.json.JsonObjectDecoder;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -78,7 +79,7 @@ public class ClientSocket {
             @Override
             public void run() {
                 while(isThread){
-                    JSONObject json = user.getCrewmateJson();
+                    JSONObject json = user.getCrewmateInitJson();
                     json.put("Header", "UPDATE");
 
                     out.println(json.toJSONString());
@@ -178,10 +179,14 @@ public class ClientSocket {
     }
 
     //처음 게임 입장할 때
-    public JSONObject enter(String owner) throws IOException, ParseException {
+    public JSONObject enter(JSONObject crewmateJson) throws IOException, ParseException {
         JSONObject json = new JSONObject();
-        json.put("Header", "ENTER");
-        json.put("owner", owner);
+        json.put("Header", "Ingame");
+
+        JSONObject body = new JSONObject();
+        body.put("Funtion", "ENTER");
+        body.put("crewmate", crewmateJson);
+        json.put("body", body);
 
 
         System.out.println(json.toJSONString());

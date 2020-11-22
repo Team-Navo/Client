@@ -1,19 +1,22 @@
 package dev.navo.game.Buffer;
 
+import org.json.simple.JSONObject;
+
 public class EventBuffer {
-    private String eventCareData;
+    private JSONObject eventCareData;
     private boolean empty = true;
 
     private static EventBuffer instance=null;
     public static EventBuffer getInstance() {
-        if(instance==null) instance=new EventBuffer();
+        if(instance == null) instance = new EventBuffer();
         return instance;
     }
-    public synchronized String get() {
+    public synchronized JSONObject get() {
         while (empty) {
             try {
                 wait();
             } catch (InterruptedException e) {
+
             }
         }
         empty = true;
@@ -21,11 +24,12 @@ public class EventBuffer {
         return eventCareData;
     }
 
-    public synchronized void put(String data) {
+    public synchronized void put(JSONObject data) {
         while (!empty) {
             try {
                 wait();
             } catch (InterruptedException e) {
+
             }
         }
         empty = false;

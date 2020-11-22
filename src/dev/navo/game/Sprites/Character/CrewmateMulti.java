@@ -35,6 +35,7 @@ public class CrewmateMulti extends Sprite {
     private float maxHP;
     private float HP;
 
+    //움직임 표현
     private int frameNum;
 
     private float drmX;
@@ -45,6 +46,7 @@ public class CrewmateMulti extends Sprite {
     //Getter
     public float getMaxHP() { return maxHP;}
     public float getHP() { return HP;}
+
     public Label getLabel(){
         return nameLabel;
     }
