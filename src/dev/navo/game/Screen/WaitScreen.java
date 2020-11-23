@@ -19,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import dev.navo.game.Buffer.EventBuffer;
 import dev.navo.game.Buffer.InGameBuffer;
 import dev.navo.game.Client.Client;
 import dev.navo.game.Client.Room;
@@ -28,13 +29,13 @@ import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
 import dev.navo.game.Tools.B2WorldCreator;
 import dev.navo.game.Tools.Util;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class WaitScreen implements Screen {    private NavoGame game;
+public class WaitScreen implements Screen {
+    private NavoGame game;
 
     // 사운드 변수
     private Sound clickbtnSound;
@@ -70,9 +71,8 @@ public class WaitScreen implements Screen {    private NavoGame game;
     private static final int moveSpeed = 10;
     private static int maxSpeed = 80;
 
-    public WaitScreen(NavoGame game){
+    public WaitScreen(NavoGame game) throws ParseException {
         client = Client.getInstance();
-        myCrewmate = new Crewmate2D(world, atlas, new Vector2(100, 100), "상민이", "Purple", client.getOwner());
 
         atlas = new TextureAtlas("Image.atlas");
         centerHP = new Vector2(375, 325);
@@ -97,31 +97,38 @@ public class WaitScreen implements Screen {    private NavoGame game;
         blocks = new ArrayList<>();
         blocks = b2.getRecList();
 
-        //room = new Room(world, atlas, InGameBuffer.getInstance().get());
 
+        myCrewmate = new Crewmate2D(world, atlas, new Vector2(100, 100), "sangmin", "Purple", client.getOwner()); // 유저 생성
+        client.enter(myCrewmate.getCrewmateInitJson()); // 초기화 정보를 서버에 전달
+
+        room = new Room(world, atlas, EventBuffer.getInstance().get());
 
         hud.addLabel(myCrewmate.getLabel());
-        //client.update(myCrewmate, room, world, atlas, hud);
+
+        client.updateSender(myCrewmate);
+        client.updateReceiver(room, world, atlas, hud);
     }
+
     // 키 입력 처리 메소드
     public void handleInput(float dt){
         Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed); // 내 캐릭터 움직임 처리
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.C)){
             startSound.play(); // 게임 시작 사운드 출력
-            game.setScreen(new PlayScreen(game)); // PlayScreen으로 넘어가기
+            game.setScreen(new PlayScreen(game)); // PlayScreen 으로 넘어가기
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) game.setScreen(new LobbyScreen(game)); // 나가기
 
     }
 
-    public void update(float dt) throws IOException, ParseException {
+    public void update(float dt) {
         handleInput(dt);
         Util.frameSet(world); // FSP 60으로 설정
 
         myCrewmate.update(dt); // 내 캐릭터 업데이트
-        for(CrewmateMulti c :  room.getCrewmates()) c.update(dt); // 방에 있는 캐릭터들 업데이트
+        for(CrewmateMulti c :  room.getCrewmates())
+            c.update(dt); // 방에 있는 캐릭터들 업데이트
 
         hud.showMessage("Room Code : "+ room.getRoomCode());
 
@@ -140,7 +147,7 @@ public class WaitScreen implements Screen {    private NavoGame game;
     public void render(float delta) {
         try {
             update(delta);
-        } catch (IOException | ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

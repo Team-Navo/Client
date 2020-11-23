@@ -25,23 +25,23 @@ import java.io.IOException;
 
 public class LoginScreen implements Screen {
 
-    private TextField idField; // 아이디 적는 필드
-    private TextField pwField; // 패스워드 적는 필드
+    private TextField idField; // ID 필드
+    private TextField pwField; // PW 필드
 
     private Label title; // 제목 라벨
     private Label idLabel; // ID 라벨
     private Label pwLabel; // PW 라벨
 
-    private TextButton loginBtn; // 로그인 버튼
-    private TextButton signUpBtn; // 회원가입 버튼
-    private TextButton IdPwFindBtn; // 아이디/패스워드 찾기 버튼
+    private TextButton loginBtn; // SIGN IN 버튼
+    private TextButton signUpBtn; // SIGN UP 버튼
+    private TextButton IdPwFindBtn; // ID, PW 찾기 버튼
 
     private NavoGame game; // Lib Gdx 게임 클래스 저장할 변수
-    private Stage stage; // 텍스트 필드나 라벨 올릴 곳.
+    private Stage stage; // 텍스트 필드 or 라벨 올릴 곳
 
     private Viewport viewport; // 화면 뷰포트
 
-    private Client client; // 서버랑 통신하기 위한 클라이언트 소켓 클래스(클라이언트 안에 다 들어 있음
+    private Client client; // 서버랑 통신하기 위한 클라이언트 소켓 클래스(클라이언트 안에 다 들어 있음)
 
     private Result resultScene; // 결과 창
 
@@ -61,7 +61,7 @@ public class LoginScreen implements Screen {
 
         btnsAddListener(); // 버튼 리스너 초기화
 
-        initActorOnStage(); // 텍스트 필트 및 라벨 스테이지에 초기화
+        initActorOnStage(); // 텍스트 필드 및 라벨 스테이지에 초기화
 
         resultScene.resultOnStage(stage); // 결과 창 스테이지에 올리기
     }
@@ -110,18 +110,19 @@ public class LoginScreen implements Screen {
                     if( client.login(idField.getText(), pwField.getText()) ){
                         Gdx.graphics.setWindowedMode(800 , 600 );
                         Sounds.success.play(1); // 성공 소리
-                        client.setOwner(idField.getText());
+                        client.setOwner(idField.getText()); // owner 에 id 설정
                         game.setScreen(new LobbyScreen(game));
                     }else{
                         resultScene.setResultLabel("로그인 실패!");
                         resultScene.resultShow();
                         Sounds.fail.play(1); // 실패 소리
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
+
         signUpBtn.addListener(new ClickListener(){ // 회원가입 화면 버튼 리스너
             public void clicked (InputEvent event, float x, float y) { // 회원가입 버튼 리스너
                 Sounds.click.play(1);// 버튼 클릭 효과음
