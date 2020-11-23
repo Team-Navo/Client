@@ -19,10 +19,8 @@ import dev.navo.game.Tools.FontGenerator;
 import dev.navo.game.Tools.Images;
 import dev.navo.game.Tools.Sounds;
 import dev.navo.game.Tools.Util;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
-import java.io.IOException;
+import java.text.ParseException;
 
 public class LobbyScreen implements Screen {
 
@@ -70,13 +68,17 @@ public class LobbyScreen implements Screen {
         stage.addActor(backBtn);
     }
 
-    private void btnsAddListener(){
-        startBtn.addListener(new ClickListener(){
+    private void btnsAddListener() {
+        startBtn.addListener(new ClickListener() {
             public void clicked (InputEvent event, float x, float y) {
                 startBtn.clear();
                 backBtn.clear();
                 Sounds.click.play();
-                game.setScreen(new WaitScreen(game));
+                try {
+                    game.setScreen(new WaitScreen(game));
+                } catch (org.json.simple.parser.ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
