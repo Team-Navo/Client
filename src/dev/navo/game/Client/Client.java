@@ -15,8 +15,8 @@ import java.io.IOException;
 @SuppressWarnings("unchecked")
 public class Client {
     private static Client instance;
-    static final String HOST = System.getProperty("host", "127.0.0.1");
-    static final int PORT = Integer.parseInt(System.getProperty("port", "5001"));
+    static final String HOST = System.getProperty("host", "yjpcpa.ddns.net");
+    static final int PORT = Integer.parseInt(System.getProperty("port", "1120"));
     Channel channel;
 
     String owner; //로그인 한 아이디
@@ -72,7 +72,7 @@ public class Client {
         body.put("id", id);
         body.put("pw", pw);
 
-        json.put("body", body);
+        json.put("Body", body);
 
         System.out.println(json.toJSONString());
         channel.writeAndFlush(json.toJSONString() + "\n");
@@ -95,7 +95,7 @@ public class Client {
         body.put("birth", birth);
         body.put("phone", phone);
 
-        json.put("body", body);
+        json.put("Body", body);
 
         System.out.println(json.toJSONString());
         channel.writeAndFlush(json.toJSONString() + "\n");
@@ -115,7 +115,7 @@ public class Client {
         body.put("name", name);
         body.put("birth", birth);
 
-        json.put("body", body);
+        json.put("Body", body);
 
         System.out.println(json.toJSONString());
         channel.writeAndFlush(json.toJSONString() + "\n");
@@ -139,7 +139,7 @@ public class Client {
         body.put("id", id);
         body.put("name", name);
 
-        json.put("body", body);
+        json.put("Body", body);
 
         System.out.println(json.toJSONString());
         channel.writeAndFlush(json.toJSONString() + "\n");
