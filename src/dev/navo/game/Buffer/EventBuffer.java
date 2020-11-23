@@ -5,13 +5,12 @@ import org.json.simple.JSONObject;
 public class EventBuffer {
     private JSONObject eventCareData;
     private boolean empty = true;
-    private static EventBuffer instance = null;
 
+    private static EventBuffer instance=null;
     public static EventBuffer getInstance() {
         if(instance == null) instance = new EventBuffer();
         return instance;
     }
-
     public synchronized JSONObject get() {
         while (empty) {
             try {
@@ -34,7 +33,7 @@ public class EventBuffer {
             }
         }
         empty = false;
-        this.eventCareData = data;
+        this.eventCareData=data;
         notifyAll();
     }
 }

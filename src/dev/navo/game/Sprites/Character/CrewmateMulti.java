@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.Array;
 import dev.navo.game.Tools.FontGenerator;
 import org.json.simple.JSONObject;
 
-// 다른 crewmate
 public class CrewmateMulti extends Sprite {
 
     public World world;
@@ -61,24 +60,17 @@ public class CrewmateMulti extends Sprite {
     public CrewmateMulti(World world, TextureAtlas atlas, JSONObject crewmateJson) {
         super(atlas.findRegion(crewmateJson.get("color").toString()));
         this.world = world;
-
-        this.owner = crewmateJson.get("owner").toString();
-        this.name = crewmateJson.get("name").toString();
-        this.color = crewmateJson.get("color").toString();
-
-        this.drmX = Float.parseFloat(crewmateJson.get("drmX").toString());
-        this.drmY = Float.parseFloat(crewmateJson.get("drmY").toString());
-
         this.maxHP = Integer.parseInt(crewmateJson.get("maxHP").toString());
         this.HP = Integer.parseInt(crewmateJson.get("HP").toString());
+        this.color = crewmateJson.get("color").toString();
+        this.name = crewmateJson.get("name").toString();
+        owner = crewmateJson.get("owner").toString();
 
-        nameLabel = new Label(this.name, new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
+        nameLabel = new Label("Other", new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
         nameLabel.setWidth(50);
         nameLabel.setHeight(15);
         nameLabel.setFontScale(0.25f);
         nameLabel.setAlignment(Align.center);
-
-        this.frameNum = Integer.parseInt(crewmateJson.get("frameNum").toString());
 
         initFrame();
 
@@ -142,7 +134,8 @@ public class CrewmateMulti extends Sprite {
     // 매 프레임마다 업데이트
     public void update(float dt){
         //DRM으로 이동하는 로직 추가
-        setPosition(getX() + drmX,getY() + drmY);
+        setPosition(getX() + drmX
+                ,getY() + drmY);
         setRegion(getFrame());
     }
 
@@ -161,6 +154,7 @@ public class CrewmateMulti extends Sprite {
         this.color = crewmateJson.get("color").toString();
         this.drmX = Float.parseFloat(crewmateJson.get("drmX").toString());
         this.drmY = Float.parseFloat(crewmateJson.get("drmY").toString());
+
     }
 
     //번호로 프레임 설정하기
@@ -169,16 +163,16 @@ public class CrewmateMulti extends Sprite {
         if(frameNum/4 == 0){ //RIGHT
             if(frameNum%4 == 0) return crewmateRightStand; // 오른쪽인데 멈춰 있다면
             return (TextureRegion)crewmateRight.getKeyFrame(dt); // 오른쪽인데 움직이고 있다면
-        } else if(frameNum / 4 == 1){ //LEFT
+        }else if(frameNum / 4 == 1){ //LEFT
             if(frameNum%4 == 0) return crewmateLeftStand; // 왼쪽인데 멈춰 있다면
             return (TextureRegion)crewmateLeft.getKeyFrame(dt); // 오른쪽인데 움직이고 있다면
-        } else if(frameNum / 4 == 2){ //DOWN
+        }else if(frameNum / 4 == 2){ //DOWN
             if(frameNum%4 == 0) return crewmateFrontStand; // 앞쪽인데 멈춰 있다면
             return (TextureRegion)crewmateFront.getKeyFrame(dt); // 오른쪽인데 움직이고 있다면
-        } else if(frameNum / 4 == 3){ // UP
+        }else if(frameNum / 4 == 3){ // UP
             if(frameNum%4 == 0) return crewmateBackStand; // 뒤쪽인데 멈춰 있다면
             return (TextureRegion)crewmateBack.getKeyFrame(dt); // 오른쪽인데 움직이고 있다면
-        } else{
+        }else{
             return crewmateFrontStand;
         }
     }

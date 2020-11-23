@@ -227,7 +227,7 @@ public class Crewmate2D extends Sprite{
         return region;
     }
 
-    //현재 스테이트 업데이트
+    //현재 스테이트 없데이트
     public State getState(){
         isStop = false;
         if(b2Body.getLinearVelocity().x > 0)
@@ -250,18 +250,15 @@ public class Crewmate2D extends Sprite{
         JSONObject result = new JSONObject();
 
         result.put("owner", owner);
-        result.put("name", name);
-        result.put("color", color);
-
         result.put("x", getX());
         result.put("y", getY());
-
         result.put("drmX", drmX);
         result.put("drmY", drmY);
-
+        result.put("name", name);
+        result.put("color", color);
+        result.put("state", currentState.toString());
         result.put("maxHP", maxHP);
         result.put("HP", HP);
-
         result.put("frameNum", getFrameNum());
         return result;
     }

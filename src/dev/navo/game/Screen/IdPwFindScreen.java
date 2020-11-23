@@ -136,7 +136,7 @@ public class IdPwFindScreen implements Screen {
                         resultScene.resultShow();
                         Sounds.fail.play(1);// 아이디 찾기 실패 사운드
                     }
-                } catch (Exception e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 idNameField.setText("");
@@ -156,7 +156,7 @@ public class IdPwFindScreen implements Screen {
                         resultScene.resultShow();
                         Sounds.fail.play(1);// 패스워드 찾기 실패 사운드
                     }
-                } catch (Exception e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 pwIdField.setText("");

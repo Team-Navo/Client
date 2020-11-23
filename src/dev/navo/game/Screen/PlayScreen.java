@@ -118,7 +118,7 @@ public class PlayScreen implements Screen {
         bullets = new ArrayList<>();
 
         initItem(); // 아이템 초기화
-        createSideBlock();
+        createSideBlock(); //
     }
 
     private void initAtlas() {
@@ -126,18 +126,18 @@ public class PlayScreen implements Screen {
         item = new TextureAtlas("Item.atlas");
     }
 
-    public void handleInput (float dt){
+    public void handleInput ( float dt){
         Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.X) && myCrewmate.getAttackDelay() <= 0) {
             gunShotSound.play();
             bullets.add(new Bullet(world, this, new Vector2(myCrewmate.getX(), myCrewmate.getY()), myCrewmate.currentState)); // 총알 생성
-            myCrewmate.setAttackDelay(0.3f); //공격 딜레이 설정
+            myCrewmate.setAttackDelay(0.3f);//공격 딜레이 설정
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) game.setScreen(new LobbyScreen(game));
 
-        //z로 템줍
+            //z로 템줍
         if(Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
             ItemSample is;
             for(int i = 0 ; i< isList.size() ; i++) {
