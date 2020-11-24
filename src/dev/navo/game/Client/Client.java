@@ -183,22 +183,25 @@ public class Client {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    JSONObject header = new JSONObject();
-                    header.put("Header", "InGame");
+                boolean isThread=true;
+                while(isThread) {
+                    try {
+                        JSONObject header = new JSONObject();
+                        header.put("Header", "InGame");
 
-                    JSONObject body = new JSONObject();
-                    body.put("Function", "UPDATE");
-                    body.put("update", user.getCrewmateInitJson());
+                        JSONObject body = new JSONObject();
+                        body.put("Function", "UPDATE");
+                        body.put("update", user.getCrewmateInitJson());
 
-                    header.put("Body", body);
+                        header.put("Body", body);
 
-                    channel.writeAndFlush(header.toJSONString() + "\n");
-                    System.out.println("[Client updateSender] : " + header.toJSONString());
+                        channel.writeAndFlush(header.toJSONString() + "\n");
+                        System.out.println("[Client updateSender] : " + header.toJSONString());
 
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        Thread.sleep(100);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }).start();
@@ -209,19 +212,22 @@ public class Client {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                JSONObject recvData = InGameBuffer.getInstance().get();
+                boolean isThread=true;
+                System.out.println("serverReceive created");
+                while(isThread) {
+                    JSONObject recvData = InGameBuffer.getInstance().get();
+                    try {
+                        JSONObject json = JsonParser.createJson(recvData.get("update").toString());
+                        System.out.println("[Client updateReceiver Body] : " + json);
 
-                try {
-                    JSONObject json = JsonParser.createJson(recvData.get("update").toString());
-                    System.out.println("[Client updateReceiver Body] : " + json);
+                        if(recvData != null) {
+                            System.out.println("[Client roomUpdate] : " + json.toJSONString());
+                            room.roomUpdate(json, world, atlas, hud);
+                        }
 
-                    if(recvData != null) {
-                        System.out.println("[Client roomUpdate] : " + json.toJSONString());
-                        room.roomUpdate(json, world, atlas, hud);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 }
             }
         }).start();

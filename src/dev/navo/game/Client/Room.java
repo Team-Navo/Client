@@ -47,10 +47,10 @@ public class Room {
     }
 
     public void roomUpdate(JSONObject roomInfo, World world, TextureAtlas atlas, Hud hud){
-
+        System.out.println(roomInfo.toJSONString());
         if(this.roomCode == Integer.parseInt(roomInfo.get("code").toString()) ){
             JSONObject crewmatesJson = (JSONObject)roomInfo.get("crewmates");
-
+            System.out.println("updated crewmates"+crewmatesJson.toJSONString());
             int size = Integer.parseInt(crewmatesJson.get("crewmates_size").toString());
 
             for(int i = 0 ; i < size ; i++){
