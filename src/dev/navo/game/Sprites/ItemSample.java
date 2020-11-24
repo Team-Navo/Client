@@ -22,11 +22,11 @@ public class ItemSample  extends Sprite {
 
 
     public ItemSample(World world, PlayScreen screen, Vector2 v){
-        super(screen.getItemAtlas().findRegion("pill_blue"));
+        super(screen.getLaserAtlas().findRegion("laserRed"));
         this.world = world;
 
-        setBounds(v.x, v.y, 15, 14);
-        setRegion(new TextureRegion(getTexture(), 26, 2, 22 ,21));
+        setBounds(v.x, v.y, 14, 14);
+        setRegion(new TextureRegion(getTexture(), 80,  3, 37, 37));
     }
 
     public void update(float dt){

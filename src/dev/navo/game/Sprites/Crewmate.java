@@ -42,6 +42,8 @@ public class Crewmate  extends Sprite {
     private boolean isStop;
     private float stateTimer;
     private int speed;
+    private int weapon;
+    private int shoot;
 
     private final static float frameDuration = (float) 0.2;
     public float getStateTimer(){
@@ -67,6 +69,22 @@ public class Crewmate  extends Sprite {
         return nameLabel;
     }
 
+    public void setWeapon(int weapon){
+        this.weapon = weapon;
+    }
+    public int getWeapon(){
+        return weapon;
+    }
+    public void setShoot(int shoot) {
+        this.shoot = shoot;
+    }
+
+    public void shootDown(){
+        this.shoot--;
+    }
+    public int getShoot(){
+        return this.shoot;
+    }
     public void setAttackDelay(float delay){
          this.attackDelay = delay;
     }
@@ -77,6 +95,8 @@ public class Crewmate  extends Sprite {
         maxHP = 10;
         HP = 10;
         speed = 80;
+        this.weapon = 0;
+        this.shoot = 0;
         this.name = name;
         nameLabel = new Label(name, new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
         nameLabel.setWidth(50);

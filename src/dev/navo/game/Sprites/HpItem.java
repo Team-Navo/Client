@@ -20,28 +20,12 @@ public class HpItem  extends Sprite {
     public World world;
     public Body b2Body;
 
-
     public HpItem(World world, PlayScreen screen, Vector2 v){
         super(screen.getItemAtlas().findRegion("pill_red"));
         this.world = world;
-//        defineHpItem(v);
         setBounds(v.x, v.y, 15, 14);
         setRegion(new TextureRegion(getTexture(), 1, 2, 22 ,21));
     }
-
-//    public void defineHpItem(Vector2 v){
-//        BodyDef bDef = new BodyDef();
-//        bDef.position.set(v.x,v.y);
-//        bDef.type = BodyDef.BodyType.StaticBody;
-//        b2Body = world.createBody(bDef);
-//
-//        FixtureDef fDef = new FixtureDef();
-//        PolygonShape shape = new PolygonShape();
-//        shape.setAsBox(11, 11);
-//
-//        fDef.shape = shape;
-//        b2Body.createFixture(fDef);
-//    }
     public void update(float dt){
         setPosition(this.getX(), this.getY());
     }

@@ -1,0 +1,27 @@
+
+laser.png
+size: 128,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+laserBlue
+  rotate: false
+  xy: 41, 2
+  size: 37, 37
+  orig: 37, 37
+  offset: 0, 0
+  index: -1
+laserGreen
+  rotate: false
+  xy: 2, 2
+  size: 37, 37
+  orig: 37, 37
+  offset: 0, 0
+  index: -1
+laserRed
+  rotate: false
+  xy: 80, 3
+  size: 37, 36
+  orig: 37, 36
+  offset: 0, 0
+  index: -1
