@@ -1,6 +1,6 @@
 package dev.navo.game.Buffer;
 
-public class LoginBuffer  extends Buffer {
+public class LoginBuffer extends Buffer {
 
     private static LoginBuffer instance = null;
 

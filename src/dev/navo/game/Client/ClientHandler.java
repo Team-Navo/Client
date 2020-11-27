@@ -1,25 +1,15 @@
 package dev.navo.game.Client;
 
-import dev.navo.game.Buffer.EventBuffer;
-import dev.navo.game.Buffer.InGameBuffer;
 import dev.navo.game.Buffer.LoginBuffer;
-import dev.navo.game.Sprites.Character.Crewmate2D;
+import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
-import dev.navo.game.Tools.Images;
 import dev.navo.game.Tools.JsonParser;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import static dev.navo.game.Client.Room.myCrewmate;
-
 public class ClientHandler extends ChannelInboundHandlerAdapter {
-
-    // buffer 사용X --> 스레드
-    EventBuffer eventBuffer = EventBuffer.getInstance();
-    InGameBuffer inGameBuffer = InGameBuffer.getInstance();
-    LoginBuffer loginBuffer = LoginBuffer.getInstance();
 
     @Override
     public void channelRead(ChannelHandlerContext arg0, Object arg1) throws Exception {
@@ -30,15 +20,20 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
         switch(header) {
             case "Auth": // 로그인 작업류
-                loginBuffer.put(json);
+                LoginBuffer.getInstance().put(json);
                 break;
             case "Update": // 구 InGame, 게임 진행 중 변경 사항 업데이트
-                inGameBuffer.put(JsonParser.createJson(json.get("Body").toString()));
+                updateHandler(json);
+                //inGameBuffer.put(JsonParser.createJson(json.get("Body").toString()));
                 break;
-            case "Event": // 초기화, 충돌 감지
+            case "Event": // 초기화, 방장, 색 변경, 충돌 감지
                 eventHandler(json);
                 break;
         }
+    }
+
+    private void updateHandler(JSONObject json) {
+
     }
 
     private void eventHandler(JSONObject json) throws ParseException {
@@ -46,12 +41,19 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         JSONObject body = (JsonParser.createJson(json.get("Body").toString()));
 
         switch (function) {
-            case "0":
+            case "0": // 나의 crewmate + 접속해 있던 crewmate 생성
                 Room.getRoom().roomInit(json);
                 break;
-            case "1":
+            case "1": // 새로 접속한 crewmate 생성
                 Room.getRoom().roomNewUserEnter(body);
                 break;
+            case "2": // 색 변경
+                // 크루메이트 하나씩 불러서 this.color = json.get("color").toString;
+                break;
+            /*
+            case "3": // 방장
+                break;
+             */
         }
     }
 

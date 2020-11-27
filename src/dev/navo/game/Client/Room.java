@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
 import dev.navo.game.Tools.Images;
-import dev.navo.game.Tools.JsonParser;
 import org.json.simple.JSONObject;
 import java.util.ArrayList;
 
@@ -52,26 +51,21 @@ public class Room { // 게임 방
     }
 
     // room 안에 있는 crewmate들 업데이트
-    public void roomUpdate(JSONObject json) {
-
-        if(this.roomCode == Integer.parseInt(json.get("roomCode").toString()) ){
-            JSONObject body = (JSONObject)json.get("Body");
-
-            int size = Integer.parseInt(body.get("crewmates_size").toString()); // crewmate 번호로 반복 -> 나중에 수정
-
-            for(int i = 0 ; i < size ; i++) {
+    public void roomUpdate(JSONObject roomInfo) {
+        if (this.roomCode == Integer.parseInt(roomInfo.get("code").toString())) {
+            JSONObject crewmatesJson = (JSONObject) roomInfo.get("crewmates");
+            int size = Integer.parseInt(crewmatesJson.get("crewmates_size").toString());
+            for (int i = 0; i < size; i++) {
                 boolean isFine = false;
-                JSONObject temp = (JSONObject)body.get("" + i);
+                JSONObject temp = (JSONObject) crewmatesJson.get("" + i);
                 String owner = temp.get("owner").toString();
-
-                for(CrewmateMulti crewmate : crewmates) {
-                    if(crewmate.owner.equals(owner)) {
+                for (CrewmateMulti crewmate : crewmates) {
+                    if (crewmate.owner.equals(owner)) {
                         crewmate.updateInfo(temp);
                         isFine = true;
                     }
                 }
-                if (!isFine)
-                    addCrewmate(temp);
+                if (!isFine) addCrewmate(temp);
             }
         }
     }

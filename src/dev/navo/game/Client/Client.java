@@ -2,8 +2,6 @@ package dev.navo.game.Client;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.World;
-import dev.navo.game.Buffer.EventBuffer;
-import dev.navo.game.Buffer.InGameBuffer;
 import dev.navo.game.Buffer.LoginBuffer;
 import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Sprites.Character.Crewmate2D;
@@ -24,9 +22,6 @@ public class Client {
 
     String owner; //로그인 한 아이디
 
-    //버퍼들
-    EventBuffer eventBuffer = EventBuffer.getInstance();
-    InGameBuffer inGameBuffer = InGameBuffer.getInstance();
     LoginBuffer loginBuffer = LoginBuffer.getInstance();
 
     Thread updateSend;
@@ -94,6 +89,7 @@ public class Client {
 
         return recvJson.get("Function").equals("0") && recvBody.get("result").equals("1");
     }
+
     //회원가입
     public boolean create(String id, String pw, String name, String birth, String phone) {
         JSONObject parentJson = new JSONObject();
@@ -193,7 +189,7 @@ public class Client {
                 while(inGameThread){
                     JSONObject json = new JSONObject();
                     JSONObject body = new JSONObject();
-                    json.put("Header", "InGame");
+                    json.put("Header", "Update");
 
                     // UPDATE 6
                     body.put("Function", "6");
@@ -216,7 +212,8 @@ public class Client {
         System.out.println("updateSender start");
     }
 
-    //업데이트
+    /*
+    // 업데이트 받기 --> Buffer를 JSON으로 변경
     public void updateReceiver(final Room room, final World world, final TextureAtlas atlas, final Hud hud) {
         updateReceive = new Thread(new Runnable() {
             @Override
@@ -234,8 +231,9 @@ public class Client {
         updateReceive.start();
         System.out.println("updateReceiver start");
     }
+     */
 
-    //In Game Event Handler
+    /*
     public void eventHandler(final Room room, final Hud hud) {
         eventHandler = new Thread(new Runnable() {
             @Override
@@ -269,6 +267,8 @@ public class Client {
         eventHandler.start();
         System.out.println("eventHandler start");
     }
+
+     */
 
     public void exit(int code) {
         JSONObject json = new JSONObject();
