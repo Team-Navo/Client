@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import dev.navo.game.Tools.FontGenerator;
+import dev.navo.game.Tools.Sounds;
 import org.json.simple.JSONObject;
 
 public class Crewmate2D extends Sprite{
@@ -36,12 +37,23 @@ public class Crewmate2D extends Sprite{
     private float maxHP;
     private float HP;
 
+    private float stepDelay;
     private float attackDelay;
     private boolean isStop;
     private float stateTimer;
 
-    private float drmX;
-    private float drmY;
+    private float drmX = 0;
+    private float drmY = 0;
+
+    private int maxSpeed;
+
+    public int getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public void setMaxSpeed(int maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
 
     public enum State { UP, DOWN, LEFT, RIGHT };
     public State currentState;
@@ -50,10 +62,6 @@ public class Crewmate2D extends Sprite{
     private final static float frameDuration = (float) 0.2;
 
     //Getter
-    public float getStateTimer(){
-        return stateTimer;
-    }
-
     public float getAttackDelay(){
         return attackDelay;
     }
@@ -67,26 +75,35 @@ public class Crewmate2D extends Sprite{
     public void hit() {
         if(HP != 0) this.HP--;
     }
+
     public void setAttackDelay(float delay){
         this.attackDelay = delay;
     }
+
     public void heal(){
         if( HP != 0 && HP != this.getMaxHP()){
             this.HP++;
         }
     }
 
+    public void setWorld(World world){
+        this.world = world;
+        defineCrewmate(new Vector2(this.getX(), this.getY()));
+    }
+
     //생성자
-    public Crewmate2D(World world, TextureAtlas atlas, Vector2 v, String name, String color, String owner){
-        super(atlas.findRegion(color));
+    public Crewmate2D(World world, TextureAtlas atlas, Vector2 v, String owner, String name) {
+        super(atlas.findRegion("Blue"));
+        this.world = world;
 
         this.owner = owner;
-        this.world = world;
+        this.name = name;
+        this.color = "Blue";
+
         this.maxHP = 10;
         this.HP = 10;
-        this.color = color;
-        this.name = name;
-        nameLabel = new Label(name, new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
+
+        nameLabel = new Label(name, new Label.LabelStyle(FontGenerator.font32, Color.BLUE));
         nameLabel.setWidth(50);
         nameLabel.setHeight(15);
         nameLabel.setFontScale(0.25f);
@@ -97,10 +114,9 @@ public class Crewmate2D extends Sprite{
         stateTimer = 0;
         attackDelay = 0f;
 
+        maxSpeed = 50;
         initFrame();
-
-        defineCrewmate(v);
-        setBounds(200-11, 500-12, 20, 25);
+        setBounds(v.x, v.y, 20, 25);
         setRegion(crewmateFrontStand);
     }
 
@@ -172,10 +188,17 @@ public class Crewmate2D extends Sprite{
     // 업데이트
     public void update(float dt){
         if(attackDelay > 0) attackDelay -= dt;
+        if(stepDelay > 0) stepDelay -= dt;
         drmX = b2Body.getLinearVelocity().x * dt; // 1초당 80만큼 움직임 = velocity.X = 80 * dt = 1 Frame 당 움직일 X 거리
         drmY = b2Body.getLinearVelocity().y * dt;// 1초당 80만큼 움직임 = velocity.Y = 80 * dt = 1 Frame 당 움직일 Y 거리
         setPosition(b2Body.getPosition().x - getWidth() /2 -1, b2Body.getPosition().y - getHeight() / 2);
 
+        if(!isStop){
+            if(stepDelay <= 0){
+                Sounds.footstep.play();
+                stepDelay = 0.3f;
+            }
+        }
         setRegion(getFrame(dt));
     }
 
@@ -227,9 +250,10 @@ public class Crewmate2D extends Sprite{
         return region;
     }
 
-    //현재 스테이트 업데이트
+    //현재 스테이트 없데이트
     public State getState(){
         isStop = false;
+
         if(b2Body.getLinearVelocity().x > 0)
             return State.RIGHT;
         else if(b2Body.getLinearVelocity().x < 0)
@@ -247,23 +271,25 @@ public class Crewmate2D extends Sprite{
     //크루메이트 초기화 정보 JSON으로 출력
     @SuppressWarnings("unchecked")
     public JSONObject getCrewmateInitJson(){
-        JSONObject result = new JSONObject();
+        JSONObject childJson = new JSONObject();
 
-        result.put("owner", owner);
-        result.put("name", name);
-        result.put("color", color);
+        childJson.put("owner", owner);
+        childJson.put("name", name);
+        //childJson.put("color", color); 서버에서도 기본 Blue 설정
 
-        result.put("x", getX());
-        result.put("y", getY());
+        /*
+        첫 입장 시 client가 server에게 보낼 필요 없다고 판단
+        childJson.put("x", getX());
+        childJson.put("y", getY());
+        childJson.put("drmX", drmX);
+        childJson.put("drmY", drmY);
+        childJson.put("frameNum", getFrameNum());
+         */
 
-        result.put("drmX", drmX);
-        result.put("drmY", drmY);
+        //childJson.put("maxHP", maxHP); 전송 x
+        //childJson.put("HP", HP); update 할 때 전송
 
-        result.put("maxHP", maxHP);
-        result.put("HP", HP);
-
-        result.put("frameNum", getFrameNum());
-        return result;
+        return childJson;
     }
 
     // 멀티에 사용할 프레임 번호 생성

@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.Array;
 import dev.navo.game.Tools.FontGenerator;
 import org.json.simple.JSONObject;
 
-// 다른 crewmate
 public class CrewmateMulti extends Sprite {
 
     public World world;
@@ -47,6 +46,7 @@ public class CrewmateMulti extends Sprite {
     //Getter
     public float getMaxHP() { return maxHP;}
     public float getHP() { return HP;}
+    public String getName() { return name;}
 
     public Label getLabel(){
         return nameLabel;
@@ -58,32 +58,30 @@ public class CrewmateMulti extends Sprite {
     }
 
     //Constructor
-    public CrewmateMulti(World world, TextureAtlas atlas, JSONObject crewmateJson) {
-        super(atlas.findRegion(crewmateJson.get("color").toString()));
-        this.world = world;
+    public CrewmateMulti(TextureAtlas atlas, JSONObject crewmate) {
+        super(atlas.findRegion(crewmate.get("color").toString()));
+        this.world = new World(new Vector2(0, 0), true);
 
-        this.owner = crewmateJson.get("owner").toString();
-        this.name = crewmateJson.get("name").toString();
-        this.color = crewmateJson.get("color").toString();
+        this.owner = crewmate.get("owner").toString();
+        this.name = crewmate.get("name").toString();
+        this.color = crewmate.get("color").toString();
 
-        this.drmX = Float.parseFloat(crewmateJson.get("drmX").toString());
-        this.drmY = Float.parseFloat(crewmateJson.get("drmY").toString());
+        this.maxHP = Integer.parseInt(crewmate.get("maxHP").toString());
+        this.HP = Integer.parseInt(crewmate.get("HP").toString());
 
-        this.maxHP = Integer.parseInt(crewmateJson.get("maxHP").toString());
-        this.HP = Integer.parseInt(crewmateJson.get("HP").toString());
+        this.drmX = Float.parseFloat(crewmate.get("drmX").toString());
+        this.drmY = Float.parseFloat(crewmate.get("drmY").toString());
 
-        nameLabel = new Label(this.name, new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
+        nameLabel = new Label("Other", new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
         nameLabel.setWidth(50);
         nameLabel.setHeight(15);
         nameLabel.setFontScale(0.25f);
         nameLabel.setAlignment(Align.center);
 
-        this.frameNum = Integer.parseInt(crewmateJson.get("frameNum").toString());
-
         initFrame();
 
-        setBounds( Integer.parseInt(crewmateJson.get("x").toString())
-                , Integer.parseInt(crewmateJson.get("y").toString())
+        setBounds( Integer.parseInt(crewmate.get("x").toString())
+                , Integer.parseInt(crewmate.get("y").toString())
                 , 20
                 , 25);
         setRegion(crewmateFrontStand);
@@ -142,7 +140,8 @@ public class CrewmateMulti extends Sprite {
     // 매 프레임마다 업데이트
     public void update(float dt){
         //DRM으로 이동하는 로직 추가
-        setPosition(getX() + drmX,getY() + drmY);
+        setPosition(getX() + drmX
+                ,getY() + drmY);
         setRegion(getFrame());
     }
 
@@ -159,8 +158,10 @@ public class CrewmateMulti extends Sprite {
         this.name = crewmateJson.get("name").toString();
         nameLabel.setText(name);
         this.color = crewmateJson.get("color").toString();
+
         this.drmX = Float.parseFloat(crewmateJson.get("drmX").toString());
         this.drmY = Float.parseFloat(crewmateJson.get("drmY").toString());
+
     }
 
     //번호로 프레임 설정하기
@@ -169,16 +170,16 @@ public class CrewmateMulti extends Sprite {
         if(frameNum/4 == 0){ //RIGHT
             if(frameNum%4 == 0) return crewmateRightStand; // 오른쪽인데 멈춰 있다면
             return (TextureRegion)crewmateRight.getKeyFrame(dt); // 오른쪽인데 움직이고 있다면
-        } else if(frameNum / 4 == 1){ //LEFT
+        }else if(frameNum / 4 == 1){ //LEFT
             if(frameNum%4 == 0) return crewmateLeftStand; // 왼쪽인데 멈춰 있다면
             return (TextureRegion)crewmateLeft.getKeyFrame(dt); // 오른쪽인데 움직이고 있다면
-        } else if(frameNum / 4 == 2){ //DOWN
+        }else if(frameNum / 4 == 2){ //DOWN
             if(frameNum%4 == 0) return crewmateFrontStand; // 앞쪽인데 멈춰 있다면
             return (TextureRegion)crewmateFront.getKeyFrame(dt); // 오른쪽인데 움직이고 있다면
-        } else if(frameNum / 4 == 3){ // UP
+        }else if(frameNum / 4 == 3){ // UP
             if(frameNum%4 == 0) return crewmateBackStand; // 뒤쪽인데 멈춰 있다면
             return (TextureRegion)crewmateBack.getKeyFrame(dt); // 오른쪽인데 움직이고 있다면
-        } else{
+        }else{
             return crewmateFrontStand;
         }
     }

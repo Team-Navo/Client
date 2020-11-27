@@ -48,8 +48,8 @@ public class Hud implements Disposable{
         posLabel.setText(str);
     }
 
-    public void addLabel(Label label){
-        stage.addActor(label);
+    public void addActor(Actor actor){
+        stage.addActor(actor);
     }
 
     public <T> void removeActor(T actor){

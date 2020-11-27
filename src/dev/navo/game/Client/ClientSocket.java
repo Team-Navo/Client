@@ -72,7 +72,7 @@ public class ClientSocket {
     }
 
     //업데이트
-    public void update(final Crewmate2D user, final dev.navo.game.Client.Room room, final World world, final TextureAtlas atlas, final Hud hud) {
+    public void update(final Crewmate2D user, final Room room) {
         new Thread(new Runnable() {
             int i = 0;
             boolean isThread=true;
@@ -92,7 +92,7 @@ public class ClientSocket {
                             roomJson = JsonParser.createJson(result);
                         if(roomJson != null){
                             System.out.println(roomJson.toJSONString());
-                            room.roomUpdate(roomJson, world, atlas, hud);
+                            room.roomUpdate(roomJson);
                             Thread.sleep(75);
                         }
                     } catch (IOException | ParseException | InterruptedException e) {
@@ -197,3 +197,5 @@ public class ClientSocket {
     }
 
 }
+
+

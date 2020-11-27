@@ -10,8 +10,6 @@ public class JsonParser {
     private static JSONParser jParser = new JSONParser();
 
     public static JSONObject createJson(String data) throws ParseException {
-        JSONObject result = (JSONObject)jParser.parse(data);
-
-        return result;
+        return (JSONObject)jParser.parse(data);
     }
 }

@@ -17,13 +17,13 @@ public class NavoGame extends Game {
 	public SpriteBatch batch; // 스프라이트들을 배치하는 곳
 
 	@Override
-	public void create() {
+	public void create () {
 		batch = new SpriteBatch();
 		setScreen(new LoginScreen(this)); // 로그인 스크린을 띄워줌
 	}
 
 	@Override
-	public void render() {
+	public void render () {
 		super.render();
 	}
 

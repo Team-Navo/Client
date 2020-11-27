@@ -3,12 +3,11 @@ package dev.navo.game.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -19,6 +18,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.navo.game.Client.Client;
+import dev.navo.game.Client.Room;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Sprites.Bullet;
@@ -28,13 +28,12 @@ import dev.navo.game.Sprites.Items.ItemSample;
 import dev.navo.game.Sprites.Items.SpeedItem;
 import dev.navo.game.Sprites.Items.TrapItem;
 import dev.navo.game.Tools.B2WorldCreator;
+import dev.navo.game.Tools.Images;
 import dev.navo.game.Tools.Util;
 
 import java.util.ArrayList;
 
 public class PlayScreen implements Screen {
-
-    private Sound gunShotSound;
 
     private NavoGame game;
     private TextureAtlas atlas, item;
@@ -42,8 +41,6 @@ public class PlayScreen implements Screen {
     private OrthographicCamera gameCam;
     private Viewport gamePort;
     private Hud hud;
-
-    private Texture background;
 
     private TmxMapLoader mapLoader;
     private TiledMap map;
@@ -71,11 +68,15 @@ public class PlayScreen implements Screen {
     private ArrayList<Rectangle> recList;
     private Vector2 centerHP;
 
+    TextureRegion minimap;
+
     ShapeRenderer shapeRenderer;
 
     private String mapType = "Navo32.tmx";
     private static final int moveSpeed = 10;
     private static int maxSpeed = 80;
+
+    boolean isShowMinimap = false;
 
     //Getter
     public TextureAtlas getAtlas () {
@@ -89,15 +90,12 @@ public class PlayScreen implements Screen {
         initAtlas();
         this.game = game;
         shapeRenderer = new ShapeRenderer();
-        background = new Texture("data/GameBack.png");
         gameCam = new OrthographicCamera();
         gamePort = new FitViewport(NavoGame.V_WIDTH, NavoGame.V_HEIGHT, gameCam);
         mapLoader = new TmxMapLoader();
         map = mapLoader.load(mapType);
         renderer = new OrthogonalTiledMapRenderer(map);
         gameCam.position.set(200, 1130, 0); // 200, 1130 = Left Top
-
-        gunShotSound = Gdx.audio.newSound(Gdx.files.internal("sound/gunshot.wav")); // 총알 발사 사운드
 
         centerHP = new Vector2(375, 325);
         hud = new Hud(game.batch);
@@ -107,9 +105,9 @@ public class PlayScreen implements Screen {
 
         B2WorldCreator b2 = new B2WorldCreator(world, map);
         blocks = b2.getRecList();
-
-        myCrewmate = new Crewmate2D(world, atlas, new Vector2(200, 500), "상민이", "Purple", Client.getInstance().getOwner());
-        hud.addLabel(myCrewmate.getLabel());
+        myCrewmate = Room.getRoom().getMyCrewmate();
+        myCrewmate.setWorld(world);
+        hud.addActor(myCrewmate.getLabel());
 
         crewmates = new ArrayList<>();
 
@@ -118,7 +116,7 @@ public class PlayScreen implements Screen {
         bullets = new ArrayList<>();
 
         initItem(); // 아이템 초기화
-        createSideBlock();
+        createSideBlock(); //
     }
 
     private void initAtlas() {
@@ -126,18 +124,18 @@ public class PlayScreen implements Screen {
         item = new TextureAtlas("Item.atlas");
     }
 
-    public void handleInput (float dt){
+    public void handleInput ( float dt){
         Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.X) && myCrewmate.getAttackDelay() <= 0) {
-            gunShotSound.play();
             bullets.add(new Bullet(world, this, new Vector2(myCrewmate.getX(), myCrewmate.getY()), myCrewmate.currentState)); // 총알 생성
-            myCrewmate.setAttackDelay(0.3f); //공격 딜레이 설정
+            myCrewmate.setAttackDelay(0.3f);//공격 딜레이 설정
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) game.setScreen(new LobbyScreen(game));
 
-        //z로 템줍
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) isShowMinimap = !isShowMinimap;
+            //z로 템줍
         if(Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
             ItemSample is;
             for(int i = 0 ; i< isList.size() ; i++) {
@@ -147,6 +145,7 @@ public class PlayScreen implements Screen {
                     if (myCrewmate.getY() >= is.getY() - myCrewmate.getHeight() && myCrewmate.getY() <= is.getY() + is.getHeight()) {
                         isList.remove(i--);
                         myCrewmate.heal();
+                        myCrewmate.setMaxSpeed(myCrewmate.getMaxSpeed() + 10);
                         break;
                     }
                 }
@@ -164,17 +163,14 @@ public class PlayScreen implements Screen {
 
         //총알과 벽 충돌체크
         Bullet bullet;
-        Rectangle rect;
-        for (int i = 0; i < bullets.size(); i++) {
+        for(int i = 0 ; i < bullets.size() ; i++){
             bullet = bullets.get(i);
-            for (int j = 0; j < blocks.size(); j++) {
-                rect = blocks.get(j);
-                if (bullet.getX() >= rect.getX() - bullet.getWidth() && bullet.getX() <= rect.getX() + rect.getWidth())
-                    if (bullet.getY() >= rect.getY() - bullet.getHeight() && bullet.getY() <= rect.getY() + rect.getHeight())
+            for (Rectangle block : blocks) {
+                if (bullet.getX() >= block.getX() - bullet.getWidth() && bullet.getX() <= block.getX() + block.getWidth())
+                    if (bullet.getY() >= block.getY() - bullet.getHeight() && bullet.getY() <= block.getY() + block.getHeight())
                         bullets.remove(i--);
             }
         }
-
 //                Crewmate2D crewmate;
 ////                for (int i = 0; i < bullets.size(); i++) {
 ////                    bullet = bullets.get(i);
@@ -377,7 +373,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.batch.begin();
-        game.batch.draw(background, 0, 0);
+        Images.renderBackground(delta, game.batch);
         game.batch.end();
 
         renderer.render();
@@ -389,7 +385,9 @@ public class PlayScreen implements Screen {
 
         game.batch.begin();
         myCrewmate.draw(game.batch);
-        shapeRenderer.rect(centerHP.x, centerHP.y, 50 * (myCrewmate.getHP() / myCrewmate.getMaxHP()), 10);
+        if(!isShowMinimap)
+            shapeRenderer.rect(centerHP.x, centerHP.y, 50 * (myCrewmate.getHP() / myCrewmate.getMaxHP()), 10);
+
         myCrewmate.getLabel().setPosition(174, 166);
 
 //        for (Crewmate2D c : crewmates) {
@@ -420,12 +418,27 @@ public class PlayScreen implements Screen {
         for (ItemSample i : isList)
             i.draw(game.batch);
 
+        minimap = new TextureRegion(Images.minimap,
+                (int)(myCrewmate.b2Body.getPosition().x) / 4 - gamePort.getScreenWidth() / 16,
+                (int)(1280 - myCrewmate.b2Body.getPosition().y) / 4 - gamePort.getScreenHeight() / 16,
+                gamePort.getScreenWidth() / 4 ,
+                gamePort.getScreenHeight() / 4);
+
+        if(isShowMinimap) {
+            game.batch.draw(Images.minimap, myCrewmate.b2Body.getPosition().x - 200, myCrewmate.b2Body.getPosition().y - 150);
+            shapeRenderer.circle((myCrewmate.b2Body.getPosition().x / 2),
+                    (myCrewmate.b2Body.getPosition().y / 2),
+                    10
+                    );
+        }
         game.batch.end();
 
         shapeRenderer.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.stage.draw();
+        if(!isShowMinimap) {
+            hud.stage.draw();
+        }
     }
     @Override
     public void resize ( int width, int height){

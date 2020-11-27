@@ -9,12 +9,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import dev.navo.game.Client.Client;
+import dev.navo.game.Client.Room;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Sprites.Character.Crewmate2D;
 
 public class Util {
     // 캐릭터 움직임 처리
     public static void moveInputHandle(Crewmate2D crewmate, int maxSpeed, int moveSpeed){
+        maxSpeed = crewmate.getMaxSpeed();
         if(Gdx.input.isKeyPressed(Input.Keys.UP) && crewmate.b2Body.getLinearVelocity().y  < maxSpeed){
             crewmate.b2Body.applyLinearImpulse(new Vector2(0, moveSpeed), crewmate.b2Body.getWorldCenter(), true);
         }else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)  && crewmate.b2Body.getLinearVelocity().y  > -maxSpeed){

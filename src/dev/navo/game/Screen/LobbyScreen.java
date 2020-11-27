@@ -5,22 +5,30 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.navo.game.Client.Client;
+import dev.navo.game.Client.Room;
 import dev.navo.game.NavoGame;
+import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Tools.FontGenerator;
 import dev.navo.game.Tools.Images;
 import dev.navo.game.Tools.Sounds;
 import dev.navo.game.Tools.Util;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
-import java.text.ParseException;
+import java.io.IOException;
 
 public class LobbyScreen implements Screen {
 
@@ -33,6 +41,8 @@ public class LobbyScreen implements Screen {
 
     private TextButton startBtn;
     private TextButton backBtn;
+
+    private TextField nickname;
 
     Client client;
 
@@ -55,6 +65,11 @@ public class LobbyScreen implements Screen {
         title.setBounds(0, 500, 800, 40);
         title.setAlignment(Align.center);
 
+        nickname = new TextField("", Util.skin);
+        nickname.setBounds(250, 400, 300, 40);
+        nickname.setAlignment(Align.center);
+        nickname.getStyle().font = FontGenerator.font32;
+
         startBtn = new TextButton( "GAME START", Util.skin );
         startBtn.setBounds(300, 200, 200, 32);
 
@@ -64,19 +79,28 @@ public class LobbyScreen implements Screen {
 
     private void initActorOnStage(){
         stage.addActor(title);
+        stage.addActor(nickname);
         stage.addActor(startBtn);
         stage.addActor(backBtn);
     }
 
-    private void btnsAddListener() {
-        startBtn.addListener(new ClickListener() {
+    private void btnsAddListener(){
+        startBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
+                Room.setMyCrewmate(new Crewmate2D(new World(new Vector2(0, 0), true),
+                        Images.mainAtlas,
+                        new Vector2(100, 100),
+                        Client.getInstance().getOwner(),
+                        nickname.getText()
+                ));
                 startBtn.clear();
                 backBtn.clear();
-                Sounds.click.play();
+                Sounds.wait.play();
+
                 try {
-                    game.setScreen(new WaitScreen(game));
-                } catch (org.json.simple.parser.ParseException e) {
+                    game.setScreen(new WaitScreen(game, nickname.getText()));
+                    dispose();
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
@@ -89,6 +113,7 @@ public class LobbyScreen implements Screen {
                 backBtn.clear();
                 Sounds.click.play();
                 game.setScreen(new LoginScreen(game));
+                dispose();
                 //client.logout();
             }
         });
@@ -104,7 +129,7 @@ public class LobbyScreen implements Screen {
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
-        game.batch.draw(Images.background, 0, 0);
+        Images.renderBackground(delta, game.batch);
         game.batch.end();
         stage.draw();
     }

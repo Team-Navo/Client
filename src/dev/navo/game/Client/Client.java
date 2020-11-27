@@ -7,17 +7,13 @@ import dev.navo.game.Buffer.InGameBuffer;
 import dev.navo.game.Buffer.LoginBuffer;
 import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Sprites.Character.Crewmate2D;
-import dev.navo.game.Tools.JsonParser;
+import dev.navo.game.Sprites.Character.CrewmateMulti;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import javafx.scene.chart.ScatterChart;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-
-import java.io.IOException;
 
 @SuppressWarnings("unchecked")
 public class Client {
@@ -33,12 +29,27 @@ public class Client {
     InGameBuffer inGameBuffer = InGameBuffer.getInstance();
     LoginBuffer loginBuffer = LoginBuffer.getInstance();
 
-    public void setOwner(String owner) { this.owner = owner; }
-    public String getOwner() { return this.owner; }
+    Thread updateSend;
+    Thread updateReceive;
+    Thread eventHandler;
+
+    boolean inGameThread = false;
+
+    public void setIsInGameThread(boolean is){
+        this.inGameThread = is;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getOwner() {
+        return this.owner;
+    }
 
     public Client(){
-
         EventLoopGroup group = new NioEventLoopGroup();
+
         try {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
@@ -65,171 +76,220 @@ public class Client {
 
     //로그인
     public boolean login(String id, String pw) {
-        JSONObject json = new JSONObject();
-        JSONObject body = new JSONObject();
+        JSONObject parentJson = new JSONObject();
+        JSONObject childJson = new JSONObject();
 
-        json.put("Header", "Auth");
+        // LOGIN 0
+        parentJson.put("Header", "Auth");
+        parentJson.put("Function", "0");
 
-        // LOGIN 1
-        body.put("Function", "1");
-        body.put("id", id);
-        body.put("pw", pw);
+        childJson.put("id", id);
+        childJson.put("pw", pw);
 
-        json.put("Body", body);
+        parentJson.put("Body", childJson);
 
-        System.out.println(json.toJSONString());
-        channel.writeAndFlush(json.toJSONString() + "\n"); // writeAndFlush: 내부적으로 채널에 데이터 기록(write) + 기록된 데이터를 서버로 전송(flush)
-        JSONObject recvData = loginBuffer.get();
+        System.out.println("[Client] : " + parentJson.toJSONString());
+        channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
 
-        return recvData.get("Function").equals("1") && recvData.get("result").equals("SUCCESS");
+        JSONObject recvJson = loginBuffer.get();
+        JSONObject recvBody = (JSONObject)recvJson.get("Body");
+
+        return recvJson.get("Function").equals("0") && recvBody.get("result").equals("1");
     }
     //회원가입
     public boolean create(String id, String pw, String name, String birth, String phone) {
-        JSONObject json = new JSONObject();
-        JSONObject body = new JSONObject();
-
-        json.put("Header", "Auth");
+        JSONObject parentJson = new JSONObject();
+        JSONObject childJson = new JSONObject();
 
         // SIGN UP 2
-        body.put("Function", "2");
-        body.put("id", id);
-        body.put("pw", pw);
-        body.put("name", name);
-        body.put("birth", birth);
-        body.put("phone", phone);
+        parentJson.put("Header", "Auth");
+        parentJson.put("Function", "1");
 
-        json.put("Body", body);
+        childJson.put("id", id);
+        childJson.put("pw", pw);
+        childJson.put("name", name);
+        childJson.put("birth", birth);
+        childJson.put("phone", phone);
 
-        System.out.println(json.toJSONString());
-        channel.writeAndFlush(json.toJSONString() + "\n");
-        JSONObject recvData = loginBuffer.get();
+        parentJson.put("Body", childJson);
 
-        return recvData.get("Function").equals("2") && recvData.get("result").equals("SUCCESS");
+        System.out.println("[Client] : " + parentJson.toJSONString());
+        channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
+
+        JSONObject recvJson = loginBuffer.get();
+        JSONObject recvBody = (JSONObject)recvJson.get("Body");
+
+        return recvJson.get("Function").equals("1") && recvBody.get("result").equals("1");
     }
+
     //아이디 찾기
     public String idFind(String name, String birth) {
-        JSONObject json = new JSONObject();
-        JSONObject body = new JSONObject();
-
-        json.put("Header", "Auth");
+        JSONObject parentJson = new JSONObject();
+        JSONObject childJson = new JSONObject();
 
         // ID FIND 3
-        body.put("Function", "3");
-        body.put("name", name);
-        body.put("birth", birth);
+        parentJson.put("Header", "Auth");
+        parentJson.put("Function", "2");
 
-        json.put("Body", body);
+        childJson.put("name", name);
+        childJson.put("birth", birth);
 
-        System.out.println(json.toJSONString());
-        channel.writeAndFlush(json.toJSONString() + "\n");
-        JSONObject recvData = loginBuffer.get();
+        parentJson.put("Body", childJson);
+
+        System.out.println("[Client] : " + parentJson.toJSONString());
+        channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
+
+        JSONObject recvJson = loginBuffer.get();
+        JSONObject recvBody = (JSONObject)recvJson.get("Body");
 
 
-        if(recvData.get("Function").equals("3") && !recvData.get("result").equals("FAIL"))
-            return recvData.get("result").toString();
+        if(recvJson.get("Function").equals("2") && !recvBody.get("result").equals("0"))
+            return recvBody.get("result").toString();
         else
             return null;
     }
+
     //패스워드 찾기
     public String pwFind(String id, String name) {
-        JSONObject json = new JSONObject();
-        JSONObject body = new JSONObject();
+        JSONObject parentJson = new JSONObject();
+        JSONObject childJson = new JSONObject();
 
-        json.put("Header", "Auth");
+        // PW FIND 3
+        parentJson.put("Header", "Auth");
+        parentJson.put("Function", "3");
 
-        // PW FIND 4
-        body.put("Function", "4");
-        body.put("id", id);
-        body.put("name", name);
+        childJson.put("id", id);
+        childJson.put("name", name);
 
-        json.put("Body", body);
+        parentJson.put("Body", childJson);
 
-        System.out.println(json.toJSONString());
-        channel.writeAndFlush(json.toJSONString() + "\n");
-        JSONObject recvData = loginBuffer.get();
+        System.out.println("[Client] : " + parentJson.toJSONString());
+        channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
 
-        if(recvData.get("Function").equals("4") && !recvData.get("result").equals("FAIL"))
-            return recvData.get("result").toString();
+        JSONObject recvJson = loginBuffer.get();
+        JSONObject recvBody = (JSONObject)recvJson.get("Body");
+
+        if(recvJson.get("Function").equals("3") && !recvBody.get("result").equals("0"))
+            return recvBody.get("result").toString();
         else
             return null;
     }
 
-    // 로그아웃
-   /*public void logout(){
-        JSONObject json = new JSONObject();
-        json.put("Header", "LOGOUT");
+    //처음 입장
+    public void enter(JSONObject childJson) {
+        JSONObject parentJson = new JSONObject();
 
-        System.out.println(json.toJSONString());
-        channel.writeAndFlush(json.toJSONString() + "\n");
-    }*/
+        parentJson.put("Header", "Event");
+        parentJson.put("Function", "0");  // ENTER 0
+        parentJson.put("Body", childJson);
 
-    //처음 게임 입장할 때
-    public void enter(JSONObject crewmateJson) {
-        JSONObject json = new JSONObject();
-        json.put("Header", "Event");
-
-        JSONObject body = new JSONObject();
-        body.put("Function", "5");
-        body.put("crewmate", crewmateJson);
-        json.put("Body", body);
-
-        System.out.println(json.toJSONString());
-        channel.writeAndFlush(json.toJSONString() + "\n");
+        channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
     }
 
-
-    // 업데이트 정보 발신
-    public void updateSender(final Crewmate2D user) {
-        new Thread(new Runnable() {
+    //업데이트 보내기
+    public void updateSender(final Crewmate2D user, final Room room) {
+        System.out.println("updateSender set");
+        updateSend = new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean isThread=true;
-                while(isThread) {
+                while(inGameThread){
+                    JSONObject json = new JSONObject();
+                    JSONObject body = new JSONObject();
+                    json.put("Header", "InGame");
+
+                    // UPDATE 6
+                    body.put("Function", "6");
+                    body.put("code", room.getRoomCode());
+                    body.put("crewmate", user.getCrewmateInitJson());
+
+                    json.put("Body", body);
+                    channel.writeAndFlush(json.toJSONString() + "\n");
                     try {
-                        JSONObject header = new JSONObject();
-                        header.put("Header", "InGame");
-
-                        JSONObject body = new JSONObject();
-                        body.put("Function", "UPDATE");
-                        body.put("update", user.getCrewmateInitJson());
-
-                        header.put("Body", body);
-
-                        channel.writeAndFlush(header.toJSONString() + "\n");
-                        System.out.println("[Client updateSender] : " + header.toJSONString());
-
                         Thread.sleep(100);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        inGameThread = false;
+                        e.toString();
                     }
                 }
             }
-        }).start();
+        });
+
+        updateSend.start();
+        System.out.println("updateSender start");
     }
 
-    // 업데이트 정보 수신
-    public void updateReceiver(final Room room, final World world, final TextureAtlas atlas, final Hud hud)  {
-        new Thread(new Runnable() {
+    //업데이트
+    public void updateReceiver(final Room room, final World world, final TextureAtlas atlas, final Hud hud) {
+        updateReceive = new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean isThread=true;
-                System.out.println("serverReceive created");
-                while(isThread) {
-                    JSONObject recvData = InGameBuffer.getInstance().get();
-                    try {
-                        JSONObject json = JsonParser.createJson(recvData.get("update").toString());
-                        System.out.println("[Client updateReceiver Body] : " + json);
+                while(inGameThread){
+                    JSONObject roomJson = InGameBuffer.getInstance().get();
+                    if(roomJson != null){
+                        //System.out.println("UPDATE GET : " + roomJson.toJSONString());
+                        room.roomUpdate(roomJson);
+                    }
 
-                        if(recvData != null) {
-                            System.out.println("[Client roomUpdate] : " + json.toJSONString());
-                            room.roomUpdate(json, world, atlas, hud);
+                }
+            }
+        });
+        updateReceive.start();
+        System.out.println("updateReceiver start");
+    }
+
+    //In Game Event Handler
+    public void eventHandler(final Room room, final Hud hud) {
+        eventHandler = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(inGameThread){
+                    final JSONObject event = EventBuffer.getInstance().get();
+                    if(event != null){
+                        System.out.println("Event Handler : " + event);
+                        String function = event.get("Function").toString();
+                        if(function.equals("5")){
+                            EventBuffer.getInstance().put(event);
+                            continue;
                         }
 
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                        String owner = event.get("owner").toString();
+
+                        if(owner != null){
+                            for(CrewmateMulti multi : room.getCrewmates()){
+                                if(multi.owner.equals(owner)){
+                                    System.out.println("Event Handler, remove Crewmate " + multi.owner);
+                                    room.getCrewmates().remove(multi);
+                                    hud.removeActor(multi.getLabel());
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
-        }).start();
+        });
+        eventHandler.start();
+        System.out.println("eventHandler start");
     }
+
+    public void exit(int code) {
+        JSONObject json = new JSONObject();
+        JSONObject body = new JSONObject();
+
+        json.put("Header", "Event");
+
+        // EXIT 9
+        body.put("Function", "9");
+        body.put("owner", this.owner);
+        body.put("code", code);
+
+        json.put("Body", body);
+
+        channel.writeAndFlush(json.toJSONString() + "\n");
+
+        updateReceive.stop();
+        eventHandler.stop();
+        setIsInGameThread(false);
+    }
+
 }

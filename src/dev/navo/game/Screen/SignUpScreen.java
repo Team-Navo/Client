@@ -26,24 +26,24 @@ import java.io.IOException;
 
 public class SignUpScreen implements Screen {
 
-    private TextField idField; // ID 필드
-    private TextField pwField; // PW 필드
-    private TextField nameField; // NAME 필드
-    private TextField birthField; // BIRTH 필드
-    private TextField phoneField; // PHONE 필드
+    private TextField idField; // 아이디 적는 필드
+    private TextField pwField; // 비밀번호 적는 필드
+    private TextField nameField; // 이름 적는 필드
+    private TextField birthField; // 생일 적는 필드
+    private TextField phoneField; // 전화번호 적는 필드
 
     private Label singUpLabel; // 회원가입 라벨
-    private Label idLabel; // ID 라벨
-    private Label pwLabel; // PW 라벨
-    private Label nameLabel; // NAME 라벨
-    private Label birthLabel; // BIRTH 라벨
-    private Label phoneLabel; // PHONE 라벨
+    private Label idLabel; // 아이디 라벨
+    private Label pwLabel; // 비밀번호 라벨
+    private Label nameLabel; // 이름 라벨
+    private Label birthLabel; // 생일 라벨
+    private Label phoneLabel; // 전화번호 라벨
 
     private TextButton submitBtn; // 제출 버튼
     private TextButton backBtn; // 뒤로가기 버튼
 
     private NavoGame game; // Lib Gdx 게임 클래스 저장할 변수
-    private Stage stage; // 텍스트 필드나 라벨 올릴 곳
+    private Stage stage; // 텍스트 필드나 라벨 올릴 곳.
 
     private Viewport viewport; // 화면 뷰포트
 
@@ -136,9 +136,8 @@ public class SignUpScreen implements Screen {
 
         backBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-                Gdx.graphics.setWindowedMode(400, 300);
-                Sounds.click.play(1);
                 game.setScreen(new LoginScreen(game));
+                Sounds.click.play(1);
             }
         });
 
@@ -182,7 +181,7 @@ public class SignUpScreen implements Screen {
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
-        game.batch.draw(Images.background, 0 , 0 );
+        Images.renderBackground(delta, game.batch);
         game.batch.end();
         stage.draw();
     }

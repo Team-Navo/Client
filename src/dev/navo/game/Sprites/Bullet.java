@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import dev.navo.game.Screen.PlayScreen;
 import dev.navo.game.Sprites.Character.Crewmate2D;
+import dev.navo.game.Tools.Sounds;
 
 public class Bullet extends Sprite {
 
@@ -25,6 +26,15 @@ public class Bullet extends Sprite {
         startV = v;
         dir = crewmateState;
         stackDistance = 0;
+        //v1 - v2 = len(400) = min, len(0) = max\
+        // 400 = 0%
+        // 300 = 25%
+        // 200 = 50%
+        // 100 = 75%
+        // 0 = 100%
+        // 4 = 1%
+        //  | len / 4 - 100 | / 100
+        Sounds.gunShotSound.play(0.7f);
         setBounds(v.x+6.5f, v.y+7.25f, 9, 9);
         setRegion(new TextureRegion(getTexture(), 1,  1, 9, 9));
     }

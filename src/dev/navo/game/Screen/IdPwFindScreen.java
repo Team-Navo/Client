@@ -79,6 +79,8 @@ public class IdPwFindScreen implements Screen {
         idNameLabel = new Label("N A M E", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE));
         idBirthLabel = new Label("B I R T H", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE));
         idNameField = new TextField("", Util.skin);
+        idNameField.getStyle().font = FontGenerator.fontBold16;
+
         idBirthField = new TextField("", Util.skin);
         idFindBtn = new TextButton("Find ID", Util.skin);
         idFindBtn = new TextButton("Find ID", Util.skin);
@@ -167,6 +169,7 @@ public class IdPwFindScreen implements Screen {
             public void clicked (InputEvent event, float x, float y) {
                 Sounds.click.play(1);
                 game.setScreen(new LoginScreen(game));
+                dispose();
             }
         });
     }
@@ -181,7 +184,7 @@ public class IdPwFindScreen implements Screen {
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
-        game.batch.draw(Images.background, 0 , 0 );
+        Images.renderBackground(delta, game.batch);
         game.batch.end();
         stage.draw();
     }
