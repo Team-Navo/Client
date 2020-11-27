@@ -223,11 +223,11 @@ public class Client {
             public void run() {
                 while(inGameThread){
                     JSONObject roomJson = InGameBuffer.getInstance().get();
+
                     if(roomJson != null){
                         //System.out.println("UPDATE GET : " + roomJson.toJSONString());
                         room.roomUpdate(roomJson);
                     }
-
                 }
             }
         });

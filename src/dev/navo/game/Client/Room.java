@@ -10,20 +10,13 @@ import java.util.ArrayList;
 
 public class Room { // 게임 방
 
+    public Room() { this.crewmates = new ArrayList<>(); }
     private static Room room;
-
-    public static Crewmate2D myCrewmate;
-
     int roomCode;
+
     ArrayList<CrewmateMulti> crewmates;
 
-    public Room(){
-        this.crewmates = new ArrayList<>();
-    }
-
-    public Crewmate2D getMyCrewmate(){
-        return myCrewmate;
-    }
+    public static Crewmate2D myCrewmate;
 
     // 싱글톤 게터
     public static Room getRoom(){
@@ -33,23 +26,20 @@ public class Room { // 게임 방
         return room;
     }
 
-    public ArrayList<CrewmateMulti> getCrewmates() {
-        return crewmates;
-    }
+    public ArrayList<CrewmateMulti> getCrewmates() { return crewmates; }
 
-    public int getRoomCode() {
-        return roomCode;
-    }
+    public Crewmate2D getMyCrewmate(){ return myCrewmate; }
 
+    public int getRoomCode() { return roomCode; }
 
+    // 나의 crewmate 기본 정보 생성 (owner, name)
     public static void setMyCrewmate(Crewmate2D crewmate) {
         myCrewmate = crewmate;
-        Client.getInstance().enter(crewmate.getCrewmateInitJson());
+        Client.getInstance().enter(crewmate.getCrewmateEnterJson());
     }
 
-
-    public void drawCrewmates(SpriteBatch batch, String user){
-        for(CrewmateMulti crewmate : crewmates){
+    public void drawCrewmates(SpriteBatch batch, String user) {
+        for(CrewmateMulti crewmate : crewmates) {
             if(!user.equals(crewmate.owner)) {
                 crewmate.draw(batch);
             }
@@ -61,16 +51,17 @@ public class Room { // 게임 방
         crewmates.add(temp);
     }
 
-    public void roomUpdate(JSONObject roomInfo){
+    // room 안에 있는 crewmate들 업데이트
+    public void roomUpdate(JSONObject json) {
 
-        if(this.roomCode == Integer.parseInt(roomInfo.get("code").toString()) ){
-            JSONObject crewmatesJson = (JSONObject)roomInfo.get("crewmates");
+        if(this.roomCode == Integer.parseInt(json.get("roomCode").toString()) ){
+            JSONObject body = (JSONObject)json.get("Body");
 
-            int size = Integer.parseInt(crewmatesJson.get("crewmates_size").toString());
+            int size = Integer.parseInt(body.get("crewmates_size").toString()); // crewmate 번호로 반복 -> 나중에 수정
 
-            for(int i = 0 ; i < size ; i++){
+            for(int i = 0 ; i < size ; i++) {
                 boolean isFine = false;
-                JSONObject temp = (JSONObject)crewmatesJson.get("" + i);
+                JSONObject temp = (JSONObject)body.get("" + i);
                 String owner = temp.get("owner").toString();
 
                 for(CrewmateMulti crewmate : crewmates) {
@@ -85,24 +76,22 @@ public class Room { // 게임 방
         }
     }
 
-    public void roomInit(String roomCode){
-        this.roomCode =  Integer.parseInt(roomCode);
+    // 나의 crewmate + 접속해 있던 crewmate 생성
+    public void roomInit(JSONObject json) {
+        this.roomCode = Integer.parseInt(json.get("roomCode").toString());
+        JSONObject crewmatesJson = (JSONObject)json.get("Body");
 
-        CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, Room.getRoom().getMyCrewmate().getCrewmateInitJson());
-        crewmates.add(temp);
-        System.out.println("Room 93 crewmates : " + getCrewmates());
-    }
-
-    public void roomNewUserEnter(JSONObject json) {
         int i = 0;
-        while(json.get("" + i) != null) {
-            JSONObject crewmate = (JSONObject)json.get("" + i);
-
-            if(crewmate.get("owner").toString() != myCrewmate.owner) {
-                CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, crewmate);
-                crewmates.add(temp);
-            }
+        while(crewmatesJson.get("" + i) != null){
+            CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, (JSONObject)crewmatesJson.get("" + i));
+            crewmates.add(temp);
             i++;
         }
+    }
+
+    // 새로 접속하는 crewmate 생성
+    public void roomNewUserEnter(JSONObject json) {
+        CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, json);
+        crewmates.add(temp);
     }
 }

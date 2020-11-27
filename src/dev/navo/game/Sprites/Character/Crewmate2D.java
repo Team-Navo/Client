@@ -250,7 +250,7 @@ public class Crewmate2D extends Sprite{
         return region;
     }
 
-    //현재 스테이트 없데이트
+    //현재 스테이트 업데이트
     public State getState(){
         isStop = false;
 
@@ -266,6 +266,15 @@ public class Crewmate2D extends Sprite{
             isStop = true;
             return currentState;
         }
+    }
+
+    public JSONObject getCrewmateEnterJson() {
+        JSONObject json = new JSONObject();
+
+        json.put("owner", owner);
+        json.put("name", name);
+
+        return json;
     }
 
     //크루메이트 초기화 정보 JSON으로 출력
@@ -284,8 +293,8 @@ public class Crewmate2D extends Sprite{
         childJson.put("drmY", drmY);
         //childJson.put("frameNum", getFrameNum());
 
-        //childJson.put("maxHP", maxHP);
-        //childJson.put("HP", HP);
+        childJson.put("maxHP", maxHP);
+        childJson.put("HP", HP);
 
         return childJson;
     }

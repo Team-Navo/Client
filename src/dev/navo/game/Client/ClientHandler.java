@@ -45,35 +45,18 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         String function = json.get("Function").toString();
         JSONObject body = (JsonParser.createJson(json.get("Body").toString()));
 
-        System.out.println("ClientHandler 48 SERVER : " + json);
-
-        // 나의 crewmate + 새로 접속한 crewmate 안보임 / 접속해 있던 crewmate 보임
         switch (function) {
             case "0":
-
-                int i = 0;
-                while (body.get("" + i) != null) {
-                    JSONObject crewmate = (JsonParser.createJson(body.get("" + i).toString()));
-                    System.out.println("ClientHandler 57 : "+json.toJSONString());
-                    if (crewmate.get("owner").toString().equals(myCrewmate.owner)) {//?
-                        Room.getRoom().roomInit(json.get("roomCode").toString());// 내가 들어간 방 번호 저장
-
-                    } else {
-                        Room.getRoom().roomNewUserEnter(body);
-                    }
-                    for(CrewmateMulti c:Room.getRoom().getCrewmates())
-                        System.out.println("ClientHandler 63 crewmates : " + c.getOwner());
-                    i++;
-                }
+                Room.getRoom().roomInit(json);
+                break;
+            case "1":
+                Room.getRoom().roomNewUserEnter(body);
                 break;
         }
-            /*case "1":
-                Room.getRoom().roomNewUserEnter(body);
-                break;*/
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
         ctx.close();
     }

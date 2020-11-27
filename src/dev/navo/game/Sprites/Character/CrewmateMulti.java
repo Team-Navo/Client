@@ -151,21 +151,22 @@ public class CrewmateMulti extends Sprite {
     }
 
     //받아온 정보로 초기화
-    public void updateInfo(JSONObject crewmateJson) {
-        setPosition(Integer.parseInt(crewmateJson.get("x").toString())
-                ,Integer.parseInt(crewmateJson.get("y").toString()));
+    public void updateInfo(JSONObject updateJson) {
 
-        this.maxHP = Integer.parseInt(crewmateJson.get("maxHP").toString());
-        this.HP = Integer.parseInt(crewmateJson.get("HP").toString());
-
-        this.frameNum = Integer.parseInt(crewmateJson.get("frameNum").toString());
-
-        this.name = crewmateJson.get("name").toString();
+        this.name = updateJson.get("name").toString();
         nameLabel.setText(name);
-        this.color = crewmateJson.get("color").toString();
+        //this.color = crewmateJson.get("color").toString();
 
-        this.drmX = Float.parseFloat(crewmateJson.get("drmX").toString());
-        this.drmY = Float.parseFloat(crewmateJson.get("drmY").toString());
+        setPosition(Integer.parseInt(updateJson.get("x").toString())
+                ,Integer.parseInt(updateJson.get("y").toString()));
+
+        this.drmX = Float.parseFloat(updateJson.get("drmX").toString());
+        this.drmY = Float.parseFloat(updateJson.get("drmY").toString());
+
+        //this.maxHP = Integer.parseInt(crewmateJson.get("maxHP").toString());
+        this.HP = Integer.parseInt(updateJson.get("HP").toString());
+
+        this.frameNum = Integer.parseInt(updateJson.get("frameNum").toString());
 
     }
 
