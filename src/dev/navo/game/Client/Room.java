@@ -1,24 +1,18 @@
 package dev.navo.game.Client;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.physics.box2d.World;
-import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
 import dev.navo.game.Tools.Images;
 import dev.navo.game.Tools.JsonParser;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Room { // 게임 방
 
     private static Room room;
 
-    private static Crewmate2D myCrewmate;
+    public static Crewmate2D myCrewmate;
 
     int roomCode;
     ArrayList<CrewmateMulti> crewmates;
@@ -39,7 +33,16 @@ public class Room { // 게임 방
         return room;
     }
 
-    public static void setMyCrewmate(Crewmate2D crewmate){
+    public ArrayList<CrewmateMulti> getCrewmates() {
+        return crewmates;
+    }
+
+    public int getRoomCode() {
+        return roomCode;
+    }
+
+
+    public static void setMyCrewmate(Crewmate2D crewmate) {
         myCrewmate = crewmate;
         Client.getInstance().enter(crewmate.getCrewmateInitJson());
     }
@@ -53,12 +56,9 @@ public class Room { // 게임 방
         }
     }
 
-    public ArrayList<CrewmateMulti> getCrewmates() {
-        return crewmates;
-    }
-
-    public int getRoomCode() {
-        return roomCode;
+    public void addCrewmate(JSONObject crewmateJson){
+        CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, crewmateJson);
+        crewmates.add(temp);
     }
 
     public void roomUpdate(JSONObject roomInfo){
@@ -85,29 +85,24 @@ public class Room { // 게임 방
         }
     }
 
-    public void roomInit(JSONObject json){
-        this.roomCode = Integer.parseInt(json.get("roomCode").toString());
+    public void roomInit(String roomCode){
+        this.roomCode =  Integer.parseInt(roomCode);
 
-        int i = 0;
-        while(json.get("" + i) != null){
-            CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, (JSONObject)json.get("" + i));
-            crewmates.add(temp);
-            i++;
-        }
-    }
-
-    public void addCrewmate(JSONObject crewmateJson){
-        CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, crewmateJson);
+        CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, Room.getRoom().getMyCrewmate().getCrewmateInitJson());
         crewmates.add(temp);
+        System.out.println("Room 93 crewmates : " + getCrewmates());
     }
 
-    public void roomNewUserEnter(JSONObject body) {
+    public void roomNewUserEnter(JSONObject json) {
         int i = 0;
-        while(body.get("" + i) != null) {
-            CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, (JSONObject)body.get("" + i));
-            crewmates.add(temp);
+        while(json.get("" + i) != null) {
+            JSONObject crewmate = (JSONObject)json.get("" + i);
+
+            if(crewmate.get("owner").toString() != myCrewmate.owner) {
+                CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, crewmate);
+                crewmates.add(temp);
+            }
             i++;
         }
     }
 }
-

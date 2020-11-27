@@ -39,9 +39,7 @@ public class Client {
         this.inGameThread = is;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
+    public void setOwner(String owner) { this.owner = owner; }
 
     public String getOwner() {
         return this.owner;

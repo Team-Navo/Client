@@ -47,7 +47,7 @@ public class CrewmateMulti extends Sprite {
     public float getMaxHP() { return maxHP;}
     public float getHP() { return HP;}
     public String getName() { return name;}
-
+    public String getOwner() { return owner; }
     public Label getLabel(){
         return nameLabel;
     }
@@ -59,18 +59,18 @@ public class CrewmateMulti extends Sprite {
 
     //Constructor
     public CrewmateMulti(TextureAtlas atlas, JSONObject crewmate) {
-        super(atlas.findRegion(crewmate.get("color").toString()));
+        super(atlas.findRegion("Blue"));
         this.world = new World(new Vector2(0, 0), true);
 
         this.owner = crewmate.get("owner").toString();
         this.name = crewmate.get("name").toString();
-        this.color = crewmate.get("color").toString();
+        this.color = "Blue";
 
-        this.maxHP = Integer.parseInt(crewmate.get("maxHP").toString());
-        this.HP = Integer.parseInt(crewmate.get("HP").toString());
+        this.maxHP = 10;
+        this.HP = 10;
 
-        this.drmX = Float.parseFloat(crewmate.get("drmX").toString());
-        this.drmY = Float.parseFloat(crewmate.get("drmY").toString());
+        this.drmX = 0f;
+        this.drmY = 0f;
 
         nameLabel = new Label("Other", new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
         nameLabel.setWidth(50);
@@ -80,10 +80,15 @@ public class CrewmateMulti extends Sprite {
 
         initFrame();
 
+        setBounds( 0, 0, 20,25);
+
+        /*
         setBounds( Integer.parseInt(crewmate.get("x").toString())
                 , Integer.parseInt(crewmate.get("y").toString())
                 , 20
                 , 25);
+
+         */
         setRegion(crewmateFrontStand);
     }
 

@@ -46,8 +46,7 @@ public class WaitScreen implements Screen {    private NavoGame game;
         Gdx.input.setInputProcessor(stage); // 스테이지에 마우스 및 키보드 입력을 받기
 
         users = new ArrayList<>();
-
-        //this.nickname = nickname;
+        this.nickname = nickname;
 
         shapeRenderer = new ShapeRenderer();
 

@@ -275,19 +275,17 @@ public class Crewmate2D extends Sprite{
 
         childJson.put("owner", owner);
         childJson.put("name", name);
-        //childJson.put("color", color); 서버에서도 기본 Blue 설정
+        childJson.put("color", "Blue");
 
-        /*
-        첫 입장 시 client가 server에게 보낼 필요 없다고 판단
+
         childJson.put("x", getX());
         childJson.put("y", getY());
         childJson.put("drmX", drmX);
         childJson.put("drmY", drmY);
-        childJson.put("frameNum", getFrameNum());
-         */
+        //childJson.put("frameNum", getFrameNum());
 
-        //childJson.put("maxHP", maxHP); 전송 x
-        //childJson.put("HP", HP); update 할 때 전송
+        //childJson.put("maxHP", maxHP);
+        //childJson.put("HP", HP);
 
         return childJson;
     }
