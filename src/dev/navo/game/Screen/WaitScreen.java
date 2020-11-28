@@ -5,7 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -38,8 +40,22 @@ public class WaitScreen implements Screen {
 
     private Viewport viewport;
 
+    TextureRegion blue;
+    TextureRegion green;
+    TextureRegion red;
+
+    Vector2 blueV;
+    Vector2 greenV;
+    Vector2 redV;
+
+    Vector2 now;
+
+    Label testLabel;
     Client client;
 
+    boolean isBlueHover = false;
+    boolean isGreenHover = false;
+    boolean isRedHover = false;
     public WaitScreen(NavoGame game, String nickname) throws ParseException {
         this.game = game; // Lig Gdx 게임 클래스 초기화
         viewport = new FitViewport(NavoGame.V_WIDTH , NavoGame.V_HEIGHT , new OrthographicCamera()); // 뷰포트 생성
@@ -54,6 +70,15 @@ public class WaitScreen implements Screen {
         initComponent();
         btnsAddListener();
 
+        blue = Images.header[0];
+        green = Images.header[2];
+        red = Images.header[4];
+
+        blueV = new Vector2(260, 95);
+        greenV = new Vector2(320, 95);
+        redV = new Vector2(380, 95);
+
+        now = new Vector2(0, 0);
         //client.enter(myCrewmate.getCrewmateInitJson());
         //JSONObject roomInfo = EventBuffer.getInstance().get();
         //room = new Room(world, atlas, roomInfo, hud);
@@ -74,14 +99,20 @@ public class WaitScreen implements Screen {
         backBtn.setBounds(350, 10, 40, 17);
 
         for(int i = 0 ; i < 5 ; i++){ // Room.getRoom().getCrewmates().size
-            Label temp = new Label("", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE));
+            Label temp = new Label("", new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
+            temp.setFontScale(0.5f);
             temp.setBounds(80, 200- i * 30, 200, 20);
             users.add(temp);
         }
+        testLabel = new Label("", new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
+        testLabel.setFontScale(0.5f);
+        testLabel.setBounds(0, 0, 400, 20);
+
 
         for(Label label : users)
             stage.addActor(label);
 
+        stage.addActor(testLabel);
         stage.addActor(startBtn);
         stage.addActor(backBtn);
 
@@ -120,8 +151,38 @@ public class WaitScreen implements Screen {
 
     }
 
-    private void update(float delta){
+    private void handleInput(){
+        now.set(Gdx.input.getX(), Gdx.input.getY());
 
+        if(Gdx.input.isTouched()){
+            if( Math.abs(new Vector2(blueV.x - now.x, blueV.y - now.y).len()) <= 20){
+                for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()){
+                    if(crewmateMulti.owner.equals(Room.myCrewmate.owner)){
+                        crewmateMulti.setColorName("Blue");
+                    }
+                }
+                //TO DO : Color Change
+            }
+            if( Math.abs(new Vector2(greenV.x - now.x, greenV.y - now.y).len()) <= 20){
+                for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()){
+                    if(crewmateMulti.owner.equals(Room.myCrewmate.owner)){
+                        crewmateMulti.setColorName("Green");
+                    }
+                }
+                //TO DO : Color Change
+            }
+            if( Math.abs(new Vector2(redV.x - now.x, redV.y - now.y).len()) <= 20){
+                for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()){
+                    if(crewmateMulti.owner.equals(Room.myCrewmate.owner)){
+                        crewmateMulti.setColorName("Red");
+                    }
+                }
+                //TO DO : Color Change
+            }
+        }
+    }
+    private void update(float delta){
+        handleInput();
     }
 
     @Override
@@ -141,16 +202,64 @@ public class WaitScreen implements Screen {
             CrewmateMulti temp;
             if(i < Room.getRoom().getCrewmates().size() ){
                 temp = Room.getRoom().getCrewmates().get(i);
-                game.batch.draw(Images.header[0],270,198 - i * 30);
+                int color = getColorIndex(temp.getColorName());
+                game.batch.draw(Images.header[color],270,198 - i * 30);
                 users.get(i).setText(temp.getName());
                 continue;
             }
             users.get(i).setText("");
         }
+        if( Math.abs(new Vector2(blueV.x - now.x, blueV.y - now.y).len()) <= 20){
+            game.batch.draw(blue, 118, 237.5f, 0, 0, 20, 25, 1.2f, 1.2f, 0);
+            if(!isBlueHover){
+                Sounds.click.play();
+                isBlueHover = true;
+            }
+        }else{
+            if(isBlueHover)
+                isBlueHover =false;
+            game.batch.draw(blue, 120, 240);
+        }
+
+        if( Math.abs(new Vector2(greenV.x - now.x, greenV.y - now.y).len()) <= 20){
+            game.batch.draw(green, 148, 237.5f, 0, 0, 20, 25, 1.2f, 1.2f, 0);
+            if(!isGreenHover){
+                Sounds.click.play();
+                isGreenHover = true;
+            }
+        }else{
+            if(isGreenHover)
+                isGreenHover =false;
+            game.batch.draw(green, 150, 240);
+        }
+
+        if( Math.abs(new Vector2(redV.x - now.x, redV.y - now.y).len()) <= 20){
+            game.batch.draw(red, 178, 237.5f, 0, 0, 20, 25, 1.2f, 1.2f, 0);
+            if(!isRedHover){
+                Sounds.click.play();
+                isRedHover = true;
+            }
+        }else{
+            if(isRedHover)
+                isRedHover =false;
+            game.batch.draw(red, 180, 240);
+        }
 
         game.batch.end();
 
         stage.draw();
+    }
+
+    private int getColorIndex(String color) {
+        if ("Blue".equals(color)) {
+            return 0;
+        } else if ("Green".equals(color)) {
+            return 2;
+        } else if ("Red".equals(color)) {
+            return 4;
+        }else{
+            return 1;
+        }
     }
 
     private void drawRect() {

@@ -51,11 +51,17 @@ public class CrewmateMulti extends Sprite {
     public Label getLabel(){
         return nameLabel;
     }
-
+    public String getColorName(){
+        return color;
+    }
     //Setter
     public void hit() {
         if(HP != 0) this.HP--;
     }
+    public void setColorName(String color){
+        this.color = color;
+    }
+
 
     //Constructor
     public CrewmateMulti(TextureAtlas atlas, JSONObject crewmate) {
@@ -64,7 +70,7 @@ public class CrewmateMulti extends Sprite {
 
         this.owner = crewmate.get("owner").toString();
         this.name = crewmate.get("name").toString();
-        this.color = "Blue";
+        this.color = "Red";
 
         this.maxHP = 10;
         this.HP = 10;
