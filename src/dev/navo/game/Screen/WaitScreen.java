@@ -21,7 +21,8 @@ import dev.navo.game.Tools.*;
 import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 
-public class WaitScreen implements Screen {    private NavoGame game;
+public class WaitScreen implements Screen {
+    private NavoGame game;
 
     private Room room;
 
@@ -104,10 +105,14 @@ public class WaitScreen implements Screen {    private NavoGame game;
                 backBtn.clear();
                 Sounds.click.play();
                 game.setScreen(new LobbyScreen(game));
-                //client.exit(room.getRoomCode());
+//                client.exit();
+                System.out.println("Exit");
+                Client.getInstance().exit();
                 dispose();
             }
         });
+
+
     }
 
     @Override

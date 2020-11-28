@@ -38,17 +38,20 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
     private void eventHandler(JSONObject json) throws ParseException {
         String function = json.get("Function").toString();
-        JSONObject body = (JsonParser.createJson(json.get("Body").toString()));
+//        JSONObject body = (JsonParser.createJson(json.get("Body").toString()));
 
         switch (function) {
             case "0": // 나의 crewmate + 접속해 있던 crewmate 생성
                 Room.getRoom().roomInit(json);
                 break;
             case "1": // 새로 접속한 crewmate 생성
-                Room.getRoom().roomNewUserEnter(body);
+                Room.getRoom().roomNewUserEnter(JsonParser.createJson(json.get("Body").toString()));
                 break;
             case "2": // 색 변경
                 // 크루메이트 하나씩 불러서 this.color = json.get("color").toString;
+                break;
+            case "4":
+                Room.getRoom().deleteUser(json.get("Body").toString());
                 break;
             /*
             case "3": // 방장

@@ -1,11 +1,13 @@
 package dev.navo.game.Client;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import dev.navo.game.Screen.WaitScreen;
 import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
 import dev.navo.game.Tools.Images;
 import org.json.simple.JSONObject;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Room { // 게임 방
 
@@ -24,6 +26,7 @@ public class Room { // 게임 방
         }
         return room;
     }
+
 
     public ArrayList<CrewmateMulti> getCrewmates() { return crewmates; }
 
@@ -45,6 +48,17 @@ public class Room { // 게임 방
         }
     }
 
+    public void deleteUser(String owner) {
+        for(int i=0;i<room.getCrewmates().size();i++) {
+            if(crewmates.get(i).getOwner().equals(owner)) {
+                System.out.println("Deleted :" +crewmates.get(i).owner);
+                crewmates.remove(i);
+
+            }
+
+        }
+
+    }
     public void addCrewmate(JSONObject crewmateJson){
         CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, crewmateJson);
         crewmates.add(temp);

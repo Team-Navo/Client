@@ -270,24 +270,23 @@ public class Client {
 
      */
 
-    public void exit(int code) {
+    public void exit() {
         JSONObject json = new JSONObject();
-        JSONObject body = new JSONObject();
-
+//        JSONObject body = new JSONObject();
         json.put("Header", "Event");
 
         // EXIT 9
-        body.put("Function", "9");
-        body.put("owner", this.owner);
-        body.put("code", code);
+        json.put("Function", "4");
+//        body.put("owner", this.owner);
+//        body.put("code", code);
+        json.put("roomCode",Room.getRoom().roomCode);
+        json.put("Body", this.owner);
+        Room.getRoom().getCrewmates().clear();
+        channel.writeAndFlush(json.toJSONString() + "\r\n");
 
-        json.put("Body", body);
-
-        channel.writeAndFlush(json.toJSONString() + "\n");
-
-        updateReceive.stop();
-        eventHandler.stop();
-        setIsInGameThread(false);
+//        updateReceive.stop();
+//        eventHandler.stop();
+//        setIsInGameThread(false);
     }
 
 }
