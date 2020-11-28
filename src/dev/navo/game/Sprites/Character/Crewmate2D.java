@@ -71,6 +71,8 @@ public class Crewmate2D extends Sprite{
     }
 
     //Setter
+    public void setColor(String color) { this.color = color; }
+
     public void hit() {
         if(HP != 0) this.HP--;
     }
@@ -267,6 +269,7 @@ public class Crewmate2D extends Sprite{
         }
     }
 
+    // 크루메이트 생성 정보
     public JSONObject getCrewmateEnterJson() {
         JSONObject json = new JSONObject();
 
@@ -276,7 +279,7 @@ public class Crewmate2D extends Sprite{
         return json;
     }
 
-    //크루메이트 초기화 정보 JSON으로 출력
+    //크루메이트 초기화 정보
     @SuppressWarnings("unchecked")
     public JSONObject getCrewmateInitJson(){
         JSONObject childJson = new JSONObject();

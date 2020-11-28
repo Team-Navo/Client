@@ -18,8 +18,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.navo.game.Client.Client;
 import dev.navo.game.Client.Room;
 import dev.navo.game.NavoGame;
+import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
 import dev.navo.game.Tools.*;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 
@@ -146,41 +148,22 @@ public class WaitScreen implements Screen {
 
     }
 
-    @Override
-    public void show() {
-
-    }
-
-    private void handleInput(){
+    private void handleInput() {
         now.set(Gdx.input.getX(), Gdx.input.getY());
 
-        if(Gdx.input.isTouched()){
-            if( Math.abs(new Vector2(blueV.x - now.x, blueV.y - now.y).len()) <= 20){
-                for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()){
-                    if(crewmateMulti.owner.equals(Room.myCrewmate.owner)){
-                        crewmateMulti.setColorName("Blue");
-                    }
-                }
-                //TO DO : Color Change
+        if (Gdx.input.isTouched()) {
+            if (Math.abs(new Vector2(blueV.x - now.x, blueV.y - now.y).len()) <= 20) {
+                selectColor("Blue");
             }
-            if( Math.abs(new Vector2(greenV.x - now.x, greenV.y - now.y).len()) <= 20){
-                for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()){
-                    if(crewmateMulti.owner.equals(Room.myCrewmate.owner)){
-                        crewmateMulti.setColorName("Green");
-                    }
-                }
-                //TO DO : Color Change
+            if (Math.abs(new Vector2(greenV.x - now.x, greenV.y - now.y).len()) <= 20) {
+                selectColor("Green");
             }
-            if( Math.abs(new Vector2(redV.x - now.x, redV.y - now.y).len()) <= 20){
-                for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()){
-                    if(crewmateMulti.owner.equals(Room.myCrewmate.owner)){
-                        crewmateMulti.setColorName("Red");
-                    }
-                }
-                //TO DO : Color Change
+            if (Math.abs(new Vector2(redV.x - now.x, redV.y - now.y).len()) <= 20) {
+                selectColor("Red");
             }
         }
     }
+
     private void update(float delta){
         handleInput();
     }
@@ -217,7 +200,7 @@ public class WaitScreen implements Screen {
             }
         }else{
             if(isBlueHover)
-                isBlueHover =false;
+                isBlueHover = false;
             game.batch.draw(blue, 120, 240);
         }
 
@@ -229,7 +212,7 @@ public class WaitScreen implements Screen {
             }
         }else{
             if(isGreenHover)
-                isGreenHover =false;
+                isGreenHover = false;
             game.batch.draw(green, 150, 240);
         }
 
@@ -241,13 +224,29 @@ public class WaitScreen implements Screen {
             }
         }else{
             if(isRedHover)
-                isRedHover =false;
+                isRedHover = false;
             game.batch.draw(red, 180, 240);
         }
 
         game.batch.end();
 
         stage.draw();
+    }
+
+    private void selectColor(String colorName) {
+        // 나의 crewmate 색상 변경
+        for (CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()) {
+            if (crewmateMulti.owner.equals(Room.myCrewmate.owner)) {
+                crewmateMulti.setColor(colorName);
+                break;
+            }
+        }
+        // 서버에게 알리기
+        JSONObject json = new JSONObject();
+        json.put("owner", Room.myCrewmate.owner);
+        json.put("color", colorName);
+
+        Client.getInstance().changeColor(json);
     }
 
     private int getColorIndex(String color) {
@@ -270,6 +269,11 @@ public class WaitScreen implements Screen {
             shapeRenderer.rect(150, 400 - i * 60, 500, 40);// 사각형 그리기
         }
         shapeRenderer.end();
+    }
+
+    @Override
+    public void show() {
+
     }
 
     @Override

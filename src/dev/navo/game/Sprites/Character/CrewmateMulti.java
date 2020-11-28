@@ -54,11 +54,12 @@ public class CrewmateMulti extends Sprite {
     public String getColorName(){
         return color;
     }
+
     //Setter
     public void hit() {
         if(HP != 0) this.HP--;
     }
-    public void setColorName(String color){
+    public void setColor(String color){
         this.color = color;
     }
 
@@ -70,7 +71,7 @@ public class CrewmateMulti extends Sprite {
 
         this.owner = crewmate.get("owner").toString();
         this.name = crewmate.get("name").toString();
-        this.color = "Red";
+        this.color = "Blue";
 
         this.maxHP = 10;
         this.HP = 10;

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.World;
 import dev.navo.game.Buffer.LoginBuffer;
 import dev.navo.game.Scenes.Hud;
+import dev.navo.game.Screen.WaitScreen;
 import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
 import io.netty.bootstrap.Bootstrap;
@@ -25,8 +26,6 @@ public class Client {
     LoginBuffer loginBuffer = LoginBuffer.getInstance();
 
     Thread updateSend;
-    Thread updateReceive;
-    Thread eventHandler;
 
     boolean inGameThread = false;
 
@@ -170,13 +169,39 @@ public class Client {
     }
 
     //처음 입장
-    public void enter(JSONObject childJson) {
+    public void enter(JSONObject json) {
         JSONObject parentJson = new JSONObject();
 
         parentJson.put("Header", "Event");
         parentJson.put("Function", "0");  // ENTER 0
-        parentJson.put("Body", childJson);
+        parentJson.put("Body", json);
 
+        channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
+    }
+
+    // 게임 대기실 나가기
+    public void exit() {
+        JSONObject parentJson = new JSONObject();
+        parentJson.put("Header", "Event");
+        parentJson.put("Function", "1"); // EXIT 1
+        parentJson.put("roomCode",Room.getRoom().roomCode);
+        parentJson.put("Body", this.owner);
+
+        Room.getRoom().getCrewmates().clear();
+
+        channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
+    }
+
+    // crewmate 색 변경
+    public void changeColor(JSONObject json) {
+        JSONObject parentJson = new JSONObject();
+
+        parentJson.put("Header", "Event");
+        parentJson.put("Function", "2");  // CHANGE COLOR 2
+        parentJson.put("roomCode", Room.getRoom().getRoomCode());
+        parentJson.put("Body", json); // owner, color
+
+        System.out.println("Client 204: " + parentJson);
         channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
     }
 
@@ -193,7 +218,7 @@ public class Client {
 
                     // UPDATE 6
                     body.put("Function", "6");
-                    body.put("code", room.getRoomCode());
+                    body.put("roomCode", room.getRoomCode());
                     body.put("crewmate", user.getCrewmateInitJson());
 
                     json.put("Body", body);
@@ -269,24 +294,4 @@ public class Client {
     }
 
      */
-
-    public void exit() {
-        JSONObject json = new JSONObject();
-//        JSONObject body = new JSONObject();
-        json.put("Header", "Event");
-
-        // EXIT 9
-        json.put("Function", "4");
-//        body.put("owner", this.owner);
-//        body.put("code", code);
-        json.put("roomCode",Room.getRoom().roomCode);
-        json.put("Body", this.owner);
-        Room.getRoom().getCrewmates().clear();
-        channel.writeAndFlush(json.toJSONString() + "\r\n");
-
-//        updateReceive.stop();
-//        eventHandler.stop();
-//        setIsInGameThread(false);
-    }
-
 }

@@ -105,6 +105,7 @@ public class PlayScreen implements Screen {
 
         B2WorldCreator b2 = new B2WorldCreator(world, map);
         blocks = b2.getRecList();
+
         myCrewmate = Room.getRoom().getMyCrewmate();
         myCrewmate.setWorld(world);
         hud.addActor(myCrewmate.getLabel());

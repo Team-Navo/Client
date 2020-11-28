@@ -20,13 +20,12 @@ public class Room { // 게임 방
     public static Crewmate2D myCrewmate;
 
     // 싱글톤 게터
-    public static Room getRoom(){
+    public static Room getRoom() {
         if(room == null){
             room = new Room();
         }
         return room;
     }
-
 
     public ArrayList<CrewmateMulti> getCrewmates() { return crewmates; }
 
@@ -53,12 +52,10 @@ public class Room { // 게임 방
             if(crewmates.get(i).getOwner().equals(owner)) {
                 System.out.println("Deleted :" +crewmates.get(i).owner);
                 crewmates.remove(i);
-
             }
-
         }
-
     }
+
     public void addCrewmate(JSONObject crewmateJson){
         CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, crewmateJson);
         crewmates.add(temp);
@@ -101,5 +98,13 @@ public class Room { // 게임 방
     public void roomNewUserEnter(JSONObject json) {
         CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, json);
         crewmates.add(temp);
+    }
+
+    public void changeUserColor(JSONObject json) {
+        for (CrewmateMulti crewmateMulti : crewmates) {
+            if (crewmateMulti.owner.equals(json.get("owner").toString())) {
+                crewmateMulti.setColor(json.get("color").toString());
+            }
+        }
     }
 }
