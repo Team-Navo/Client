@@ -79,12 +79,12 @@ public class PlayScreen implements Screen {
     boolean isShowMinimap = false;
 
     //Getter
-    public TextureAtlas getAtlas () {
-        return atlas;
-    }
-    public TextureAtlas getItemAtlas () {
-        return item;
-    }
+//    public TextureAtlas getAtlas () {
+//        return atlas;
+//    }
+//    public TextureAtlas getItemAtlas () {
+//        return item;
+//    }
 
     public PlayScreen(NavoGame game) {
         initAtlas();
@@ -126,10 +126,10 @@ public class PlayScreen implements Screen {
                 gamePort.getScreenHeight() / 4);
     }
 
-    private void initAtlas() {
-        atlas = new TextureAtlas("Image.atlas");
-        item = new TextureAtlas("Item.atlas");
-    }
+//    private void initAtlas() {
+//        atlas = new TextureAtlas("Image.atlas");
+//        item = new TextureAtlas("Item.atlas");
+//    }
 
     public void handleInput ( float dt){
         Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed);

@@ -129,6 +129,9 @@ public class WaitScreen implements Screen {
                     backBtn.clear();
                     Sounds.start.play(); // 게임 시작 사운드 출력
                     game.setScreen(new PlayScreen(game)); // PlayScreen으로 넘어가기
+
+//                    Sounds.start.play(); // 게임 시작 사운드 출력
+//                    game.setScreen(new PlayScreen(NavoGame.game)); // PlayScreen으로 넘어가기
                     dispose();
                 }
             }

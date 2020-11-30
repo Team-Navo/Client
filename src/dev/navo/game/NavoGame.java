@@ -16,10 +16,16 @@ public class NavoGame extends Game {
 
 	public SpriteBatch batch; // 스프라이트들을 배치하는 곳
 
+	private static NavoGame game;
+
+	public static NavoGame getGame(){
+		if(game == null) game = new NavoGame();
+		return game;
+	}
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		setScreen(new LoginScreen(this)); // 로그인 스크린을 띄워줌
+		setScreen(new LoginScreen(game)); // 로그인 스크린을 띄워줌
 	}
 
 	@Override

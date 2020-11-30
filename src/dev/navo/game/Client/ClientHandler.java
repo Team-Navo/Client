@@ -52,11 +52,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             case "4":
                 Room.getRoom().deleteUser(json.get("Body").toString());
                 break;
-            case "5":
-                Room.getRoom().changeSuper(json.get("Super").toString());
-                break;
-            case "6":
-//                gameStart
+
         }
     }
 

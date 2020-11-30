@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import dev.navo.game.Screen.PlayScreen;
 import dev.navo.game.Sprites.Character.Crewmate2D;
+import dev.navo.game.Tools.Images;
 import dev.navo.game.Tools.Sounds;
 
 public class Bullet extends Sprite {
@@ -20,7 +21,7 @@ public class Bullet extends Sprite {
     private final static int RANGE = 150; // 총알 사거리
 
     public Bullet(World world, PlayScreen screen, Vector2 v, Crewmate2D.State crewmateState){
-        super(screen.getAtlas().findRegion("Bullet"));
+        super(Images.mainAtlas.findRegion("Bullet"));
         isCollision = false;
         this.world = world;
         startV = v;

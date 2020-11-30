@@ -13,10 +13,11 @@ public class Images {
 
     public static final Texture crewmate = new Texture("Image.png");
 
-    public static final TextureAtlas mainAtlas = new TextureAtlas("Image.atlas");
 
     private static float[] backgroundOffsets = {0, 0, 0, 0};
 
+    public static final TextureAtlas mainAtlas = new TextureAtlas("Image.atlas");
+    public static final TextureAtlas item = new TextureAtlas("Item.atlas");
     //BLUE GRAY GREEN PURPLE RED
     public static final TextureRegion[] header = {
             new TextureRegion(crewmate, 1, 25+12, 20, 25),

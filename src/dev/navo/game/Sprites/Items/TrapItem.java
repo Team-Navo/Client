@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import dev.navo.game.Screen.PlayScreen;
 import dev.navo.game.Tools.FontGenerator;
+import dev.navo.game.Tools.Images;
 
 public class TrapItem  extends Sprite {
 
@@ -21,7 +22,7 @@ public class TrapItem  extends Sprite {
 
 
     public TrapItem(World world, PlayScreen screen, Vector2 v){
-        super(screen.getItemAtlas().findRegion("pill_yellow"));
+        super(Images.item.findRegion("pill_yellow"));
         this.world = world;
         setBounds(v.x, v.y, 15, 14);
         setRegion(new TextureRegion(getTexture(), 50, 2, 22 ,21));
