@@ -117,15 +117,15 @@ public class Crewmate2D extends Sprite{
         previousState = State.DOWN;
         stateTimer = 0;
         attackDelay = 0f;
-
-        maxSpeed = 50;
         initFrame();
+        maxSpeed = 50;
+
         setBounds(v.x, v.y, 20, 25);
         setRegion(crewmateFrontStand);
     }
 
     //캐릭터 움직임 프레임 초기화
-    private void initFrame(){
+    public void initFrame(){
         int regionX = getImageStartX(color);
         Array<TextureRegion> frames = new Array<>();
         //Down animation create

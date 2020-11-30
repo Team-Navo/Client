@@ -86,8 +86,6 @@ public class CrewmateMulti extends Sprite {
         nameLabel.setFontScale(0.25f);
         nameLabel.setAlignment(Align.center);
 
-        initFrame();
-
         setBounds( 0, 0, 20,25);
 
         /*
@@ -97,11 +95,12 @@ public class CrewmateMulti extends Sprite {
                 , 25);
 
          */
+        initFrame();
         setRegion(crewmateFrontStand);
     }
 
     //캐릭터 움직임 애니메이션 초기화
-    private void initFrame(){
+    public void initFrame(){
         int regionX = getImageStartX(color);
         Array<TextureRegion> frames = new Array<>();
         //Down animation create

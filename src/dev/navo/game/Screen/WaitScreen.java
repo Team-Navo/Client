@@ -131,6 +131,7 @@ public class WaitScreen implements Screen {
                     backBtn.clear();
                     Client.getInstance().startGame();
                     Sounds.start.play(); // 게임 시작 사운드 출력
+                    Room.myCrewmate.initFrame();
                     game.setScreen(new PlayScreen(game)); // PlayScreen으로 넘어가기
 //                    game.setScreen(new PlayScreen(NavoGame.game));
                     dispose();
@@ -179,6 +180,9 @@ public class WaitScreen implements Screen {
             startBtn.clear();
             backBtn.clear();
 //            Client.getInstance().startGame();
+            for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()){
+                crewmateMulti.initFrame();
+            }
             Sounds.start.play(); // 게임 시작 사운드 출력
             game.setScreen(new PlayScreen(game)); // PlayScreen으로 넘어가기
         }
@@ -208,6 +212,15 @@ public class WaitScreen implements Screen {
             }
             users.get(i).setText("");
         }
+
+        buttonHover();
+
+        game.batch.end();
+
+        stage.draw();
+    }
+
+    private void buttonHover(){
         if( Math.abs(new Vector2(blueV.x - now.x, blueV.y - now.y).len()) <= 20){
             game.batch.draw(blue, 118, 237.5f, 0, 0, 20, 25, 1.2f, 1.2f, 0);
             if(!isBlueHover){
@@ -243,12 +256,7 @@ public class WaitScreen implements Screen {
                 isRedHover = false;
             game.batch.draw(red, 180, 240);
         }
-
-        game.batch.end();
-
-        stage.draw();
     }
-
     private void selectColor(String colorName) {
         // 나의 crewmate 색상 변경
         for (CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()) {

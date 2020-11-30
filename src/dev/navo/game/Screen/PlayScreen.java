@@ -17,7 +17,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import dev.navo.game.Client.Client;
 import dev.navo.game.Client.Room;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Scenes.Hud;
@@ -53,7 +52,8 @@ public class PlayScreen implements Screen {
     private Crewmate2D myCrewmate;
     private ArrayList<Crewmate2D> crewmates;
 
-    private ArrayList<Bullet> bullets;
+    private ArrayList<Bullet> myBullets;
+    private ArrayList<Bullet> otherBullets;
 
     private ArrayList<Rectangle> blocks;
     private HpItem h1;
@@ -115,8 +115,8 @@ public class PlayScreen implements Screen {
 
         recList = b2.getRecList();
 
-        bullets = new ArrayList<>();
-
+        myBullets = new ArrayList<>();
+        otherBullets = Room.getRoom().getBullets();
         initItem(); // 아이템 초기화
         createSideBlock(); //
 
@@ -136,8 +136,9 @@ public class PlayScreen implements Screen {
         Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.X) && myCrewmate.getAttackDelay() <= 0) {
-            bullets.add(new Bullet(world, this, new Vector2(myCrewmate.getX(), myCrewmate.getY()), myCrewmate.currentState)); // 총알 생성
+            myBullets.add(new Bullet(world, this, new Vector2(myCrewmate.getX(), myCrewmate.getY()), myCrewmate.currentState)); // 총알 생성
             myCrewmate.setAttackDelay(0.3f);//공격 딜레이 설정
+            // To DO : Client.getInstance().shoot(); 쏘는 방향, x, y, type
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) game.setScreen(new LobbyScreen(game));
@@ -166,7 +167,9 @@ public class PlayScreen implements Screen {
         handleInput(dt);
         Util.frameSet(world);
         myCrewmate.update(dt);
-        for (int i = 0; i < bullets.size(); i++) if (bullets.get(i).distanceOverCheck()) bullets.remove(i--);
+        for (int i = 0; i < myBullets.size(); i++) if (myBullets.get(i).distanceOverCheck()) myBullets.remove(i--);
+        for (int i = 0; i < otherBullets.size(); i++) if (otherBullets.get(i).distanceOverCheck()) otherBullets.remove(i--);
+
         for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()) {
             crewmateMulti.update(dt);
         }
@@ -174,16 +177,26 @@ public class PlayScreen implements Screen {
 
         //총알과 벽 충돌체크
         Bullet bullet;
-        for(int i = 0 ; i < bullets.size() ; i++){
-            bullet = bullets.get(i);
+        for(int i = 0; i < myBullets.size() ; i++){
+            bullet = myBullets.get(i);
             for (Rectangle block : blocks) {
                 if (bullet.getX() >= block.getX() - bullet.getWidth() && bullet.getX() <= block.getX() + block.getWidth())
                     if (bullet.getY() >= block.getY() - bullet.getHeight() && bullet.getY() <= block.getY() + block.getHeight()) {
-                        bullets.remove(i--);
+                        myBullets.remove(i--);
+                        break;
+                    }
+            }
+        }for(int i = 0; i < otherBullets.size() ; i++){
+            bullet = otherBullets.get(i);
+            for (Rectangle block : blocks) {
+                if (bullet.getX() >= block.getX() - bullet.getWidth() && bullet.getX() <= block.getX() + block.getWidth())
+                    if (bullet.getY() >= block.getY() - bullet.getHeight() && bullet.getY() <= block.getY() + block.getHeight()) {
+                        myBullets.remove(i--);
                         break;
                     }
             }
         }
+
 //                Crewmate2D crewmate;
 ////                for (int i = 0; i < bullets.size(); i++) {
 ////                    bullet = bullets.get(i);
@@ -193,21 +206,18 @@ public class PlayScreen implements Screen {
 ////                            if (bullet.getX() >= crewmate.getX() - bullet.getWidth() && bullet.getX() <= crewmate.getX() + crewmate.getWidth())
 ////                                if (bullet.getY() >= crewmate.getY() - bullet.getHeight() && bullet.getY() <= crewmate.getY() + crewmate.getHeight()) {
 ////                                    bullets.remove(i--);
+
                                     //총알과 캐릭터 충돌체크
-//        Crewmate crewmate;
-//        for(int i = 0 ; i< bList.size() ; i++) {
-//            bullet = bList.get(i);
-//            for (int j = 0; j < cList.size(); j++){
-//                crewmate = cList.get(j);
-//                if(!c1.equals(crewmate)){
-//                    if (bullet.getX() >= crewmate.getX()-bullet.getWidth() && bullet.getX() <= crewmate.getX()+crewmate.getWidth())
-//                        if (bullet.getY() >= crewmate.getY()-bullet.getHeight() && bullet.getY() <= crewmate.getY()+crewmate.getHeight()) {
-//                            bList.remove(i--);
-//                            crewmate.hit();
-//                        }
-//                }
-//            }
-//        }
+
+        for(int i = 0 ; i< otherBullets.size() ; i++) {
+            bullet = otherBullets.get(i);
+            if (bullet.getX() >= myCrewmate.getX() - bullet.getWidth() && bullet.getX() <= myCrewmate.getX() + myCrewmate.getWidth()){
+                if (bullet.getY() >= myCrewmate.getY() - bullet.getHeight() && bullet.getY() <= myCrewmate.getY() + myCrewmate.getHeight()) {
+                    otherBullets.remove(i--);
+                    myCrewmate.hit();
+                }
+            }
+        }
 
         for (int i = 0; i < crewmates.size(); i++) {
             Crewmate2D temp = crewmates.get(i);
@@ -260,7 +270,8 @@ public class PlayScreen implements Screen {
 //            }
 //        }
 
-        for (Bullet b : bullets) b.update(dt);
+        for (Bullet b : myBullets) b.update(dt);
+        for (Bullet b : otherBullets) b.update(dt);
         for (HpItem h : hList) h.update(dt);
         for (SpeedItem s : sList) s.update(dt);
         for (TrapItem t : tList) t.update(dt);
@@ -418,7 +429,10 @@ public class PlayScreen implements Screen {
 //            }
 //        }
 
-        for (Bullet b : bullets)
+        for (Bullet b : myBullets)
+            b.draw(game.batch);
+
+        for (Bullet b : otherBullets)
             b.draw(game.batch);
 
         for (HpItem h : hList)

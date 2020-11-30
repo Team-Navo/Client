@@ -2,6 +2,7 @@ package dev.navo.game.Client;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.navo.game.Screen.WaitScreen;
+import dev.navo.game.Sprites.Bullet;
 import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
 import dev.navo.game.Tools.Images;
@@ -23,12 +24,18 @@ public class Room { // 게임 방
 
     public boolean isStart = false;
 
+    private ArrayList<Bullet> bullets = new ArrayList<>();
+
     // 싱글톤 게터
     public static Room getRoom() {
         if(room == null){
             room = new Room();
         }
         return room;
+    }
+
+    public ArrayList<Bullet> getBullets(){
+        return bullets;
     }
 
     public boolean isSuperUser() {
