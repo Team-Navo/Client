@@ -98,6 +98,7 @@ public class Room { // 게임 방
             crewmates.add(temp);
             i++;
         }
+        this.superUser=json.get("Super").toString();
     }
 
     // 새로 접속하는 crewmate 생성

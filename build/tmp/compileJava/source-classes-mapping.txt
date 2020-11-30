@@ -11,57 +11,16 @@ dev/navo/game/Buffer/LoginBuffer.java
  dev.navo.game.Buffer.LoginBuffer
 dev/navo/game/Sprites/Items/TrapItem.java
  dev.navo.game.Sprites.Items.TrapItem
-dev/navo/game/Sprites/Items/ItemSample.java
- dev.navo.game.Sprites.Items.ItemSample
-dev/navo/game/Buffer/EventBuffer.java
- dev.navo.game.Buffer.EventBuffer
-dev/navo/game/Sprites/Weapon.java
- dev.navo.game.Sprites.Weapon
-dev/navo/game/Sprites/InteractiveTileObject.java
- dev.navo.game.Sprites.InteractiveTileObject
-dev/navo/game/Tools/B2WorldCreator.java
- dev.navo.game.Tools.B2WorldCreator
-dev/navo/game/Sprites/Character/Crewmate2D.java
- dev.navo.game.Sprites.Character.Crewmate2D
- dev.navo.game.Sprites.Character.Crewmate2D$1
- dev.navo.game.Sprites.Character.Crewmate2D$State
-dev/navo/game/Sprites/Items/HpItem.java
- dev.navo.game.Sprites.Items.HpItem
-dev/navo/game/Client/ClientInitializer.java
- dev.navo.game.Client.ClientInitializer
-dev/navo/game/Sprites/Character/CrewmateMulti.java
- dev.navo.game.Sprites.Character.CrewmateMulti
-dev/navo/game/NavoGame.java
- dev.navo.game.NavoGame
-dev/navo/game/Scenes/Hud.java
- dev.navo.game.Scenes.Hud
-dev/navo/game/Tools/Util.java
- dev.navo.game.Tools.Util
-dev/navo/game/Tools/Sounds.java
- dev.navo.game.Tools.Sounds
-dev/navo/game/Tools/JsonParser.java
- dev.navo.game.Tools.JsonParser
-dev/navo/game/Buffer/InGameBuffer.java
- dev.navo.game.Buffer.InGameBuffer
-dev/navo/game/Sprites/Bullet.java
- dev.navo.game.Sprites.Bullet
-dev/navo/game/Tools/Images.java
- dev.navo.game.Tools.Images
 dev/navo/game/Screen/LoginScreen.java
  dev.navo.game.Screen.LoginScreen
  dev.navo.game.Screen.LoginScreen$1
  dev.navo.game.Screen.LoginScreen$2
  dev.navo.game.Screen.LoginScreen$3
-dev/navo/game/Client/Room.java
- dev.navo.game.Client.Room
 dev/navo/game/Client/ClientSocket.java
  dev.navo.game.Client.ClientSocket
  dev.navo.game.Client.ClientSocket$1
-dev/navo/game/Screen/IdPwFindScreen.java
- dev.navo.game.Screen.IdPwFindScreen
- dev.navo.game.Screen.IdPwFindScreen$1
- dev.navo.game.Screen.IdPwFindScreen$2
- dev.navo.game.Screen.IdPwFindScreen$3
+dev/navo/game/Sprites/Weapon.java
+ dev.navo.game.Sprites.Weapon
 dev/navo/game/Client/Client.java
  dev.navo.game.Client.Client
  dev.navo.game.Client.Client$1
@@ -71,13 +30,58 @@ dev/navo/game/Screen/SignUpScreen.java
  dev.navo.game.Screen.SignUpScreen$2
 dev/navo/game/Client/ClientHandler.java
  dev.navo.game.Client.ClientHandler
-dev/navo/game/Screen/WaitScreen.java
- dev.navo.game.Screen.WaitScreen
- dev.navo.game.Screen.WaitScreen$1
- dev.navo.game.Screen.WaitScreen$2
-dev/navo/game/Screen/PlayScreen.java
- dev.navo.game.Screen.PlayScreen
+dev/navo/game/Sprites/Items/HpItem.java
+ dev.navo.game.Sprites.Items.HpItem
+dev/navo/game/Client/ClientInitializer.java
+ dev.navo.game.Client.ClientInitializer
+dev/navo/game/Sprites/Character/CrewmateMulti.java
+ dev.navo.game.Sprites.Character.CrewmateMulti
+dev/navo/game/NavoGame.java
+ dev.navo.game.NavoGame
+dev/navo/game/Client/Room.java
+ dev.navo.game.Client.Room
+dev/navo/game/Tools/Util.java
+ dev.navo.game.Tools.Util
+dev/navo/game/Screen/IdPwFindScreen.java
+ dev.navo.game.Screen.IdPwFindScreen
+ dev.navo.game.Screen.IdPwFindScreen$1
+ dev.navo.game.Screen.IdPwFindScreen$2
+ dev.navo.game.Screen.IdPwFindScreen$3
+dev/navo/game/Tools/JsonParser.java
+ dev.navo.game.Tools.JsonParser
+dev/navo/game/Buffer/InGameBuffer.java
+ dev.navo.game.Buffer.InGameBuffer
 dev/navo/game/Screen/LobbyScreen.java
  dev.navo.game.Screen.LobbyScreen
  dev.navo.game.Screen.LobbyScreen$1
  dev.navo.game.Screen.LobbyScreen$2
+dev/navo/game/Tools/Images.java
+ dev.navo.game.Tools.Images
+dev/navo/game/Sprites/Bullet.java
+ dev.navo.game.Sprites.Bullet
+dev/navo/game/Sprites/Items/ItemSample.java
+ dev.navo.game.Sprites.Items.ItemSample
+dev/navo/game/Sprites/InteractiveTileObject.java
+ dev.navo.game.Sprites.InteractiveTileObject
+dev/navo/game/Sprites/Character/Cat.java
+ dev.navo.game.Sprites.Character.Cat
+ dev.navo.game.Sprites.Character.Cat$1
+ dev.navo.game.Sprites.Character.Cat$State
+dev/navo/game/Sprites/Character/Crewmate2D.java
+ dev.navo.game.Sprites.Character.Crewmate2D
+ dev.navo.game.Sprites.Character.Crewmate2D$1
+ dev.navo.game.Sprites.Character.Crewmate2D$State
+dev/navo/game/Tools/B2WorldCreator.java
+ dev.navo.game.Tools.B2WorldCreator
+dev/navo/game/Screen/WaitScreen.java
+ dev.navo.game.Screen.WaitScreen
+ dev.navo.game.Screen.WaitScreen$1
+ dev.navo.game.Screen.WaitScreen$2
+dev/navo/game/Tools/Sounds.java
+ dev.navo.game.Tools.Sounds
+dev/navo/game/Buffer/EventBuffer.java
+ dev.navo.game.Buffer.EventBuffer
+dev/navo/game/Scenes/Hud.java
+ dev.navo.game.Scenes.Hud
+dev/navo/game/Screen/PlayScreen.java
+ dev.navo.game.Screen.PlayScreen
