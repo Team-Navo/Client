@@ -1,7 +1,9 @@
 package dev.navo.game.Client;
 
 import dev.navo.game.Buffer.LoginBuffer;
+import dev.navo.game.NavoGame;
 import dev.navo.game.Scenes.Hud;
+import dev.navo.game.Screen.PlayScreen;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
 import dev.navo.game.Tools.JsonParser;
 import io.netty.channel.ChannelHandlerContext;
@@ -56,7 +58,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
                 Room.getRoom().changeSuper(json.get("Super").toString());
                 break;
             case "6":
-//                gameStart
+                NavoGame.getGame().setScreen(new PlayScreen(NavoGame.getGame()));
+                break;
         }
     }
 

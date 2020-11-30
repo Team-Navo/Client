@@ -178,7 +178,13 @@ public class Client {
 
         channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
     }
-
+    public void startGame() {
+        JSONObject parentJson=new JSONObject();
+        parentJson.put("Header","Event");
+        parentJson.put("Function","6");
+        parentJson.put("roomCode",Room.getRoom().roomCode);
+        channel.writeAndFlush(parentJson.toJSONString()+"\r\n");
+    }
     // 게임 대기실 나가기
     public void exit() {
         JSONObject parentJson = new JSONObject();
