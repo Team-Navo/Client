@@ -69,9 +69,10 @@ public class CrewmateMulti extends Sprite {
         super(atlas.findRegion("Blue"));
         this.world = new World(new Vector2(0, 0), true);
 
+        System.out.println(crewmate);
         this.owner = crewmate.get("owner").toString();
         this.name = crewmate.get("name").toString();
-        this.color = "Blue";
+        this.color = crewmate.get("color").toString();
 
         this.maxHP = 10;
         this.HP = 10;

@@ -147,11 +147,10 @@ public class WaitScreen implements Screen {
 
 
     }
-
     private void handleInput() {
         now.set(Gdx.input.getX(), Gdx.input.getY());
 
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.justTouched()) {
             if (Math.abs(new Vector2(blueV.x - now.x, blueV.y - now.y).len()) <= 20) {
                 selectColor("Blue");
             }

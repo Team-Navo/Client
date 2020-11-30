@@ -275,6 +275,7 @@ public class Crewmate2D extends Sprite{
 
         json.put("owner", owner);
         json.put("name", name);
+        json.put("color", color);
 
         return json;
     }
