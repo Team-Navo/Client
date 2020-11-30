@@ -127,6 +127,7 @@ public class WaitScreen implements Screen {
                 if(!startBtn.isDisabled()) {
                     startBtn.clear();
                     backBtn.clear();
+                    //Client.getInstance().startGame();
                     Sounds.start.play(); // 게임 시작 사운드 출력
                     game.setScreen(new PlayScreen(game)); // PlayScreen으로 넘어가기
 

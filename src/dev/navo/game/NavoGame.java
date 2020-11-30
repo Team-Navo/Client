@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.navo.game.Screen.LoginScreen;
 import dev.navo.game.Screen.PlayScreen;
 
+
 public class NavoGame extends Game {
 	public static final int V_WIDTH = 400; // 화면 가상의 넓이
 	public static final int V_HEIGHT = 300; // 화면 가상의 높이
@@ -22,6 +23,7 @@ public class NavoGame extends Game {
 		if(game == null) game = new NavoGame();
 		return game;
 	}
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
