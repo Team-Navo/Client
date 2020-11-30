@@ -153,12 +153,15 @@ public class WaitScreen implements Screen {
         if (Gdx.input.justTouched()) {
             if (Math.abs(new Vector2(blueV.x - now.x, blueV.y - now.y).len()) <= 20) {
                 selectColor("Blue");
+                Sounds.click.play();
             }
             if (Math.abs(new Vector2(greenV.x - now.x, greenV.y - now.y).len()) <= 20) {
                 selectColor("Green");
+                Sounds.click.play();
             }
             if (Math.abs(new Vector2(redV.x - now.x, redV.y - now.y).len()) <= 20) {
                 selectColor("Red");
+                Sounds.click.play();
             }
         }
     }
@@ -194,7 +197,7 @@ public class WaitScreen implements Screen {
         if( Math.abs(new Vector2(blueV.x - now.x, blueV.y - now.y).len()) <= 20){
             game.batch.draw(blue, 118, 237.5f, 0, 0, 20, 25, 1.2f, 1.2f, 0);
             if(!isBlueHover){
-                Sounds.click.play();
+                Sounds.hover.play();
                 isBlueHover = true;
             }
         }else{
@@ -206,7 +209,7 @@ public class WaitScreen implements Screen {
         if( Math.abs(new Vector2(greenV.x - now.x, greenV.y - now.y).len()) <= 20){
             game.batch.draw(green, 148, 237.5f, 0, 0, 20, 25, 1.2f, 1.2f, 0);
             if(!isGreenHover){
-                Sounds.click.play();
+                Sounds.hover.play();
                 isGreenHover = true;
             }
         }else{
@@ -218,7 +221,7 @@ public class WaitScreen implements Screen {
         if( Math.abs(new Vector2(redV.x - now.x, redV.y - now.y).len()) <= 20){
             game.batch.draw(red, 178, 237.5f, 0, 0, 20, 25, 1.2f, 1.2f, 0);
             if(!isRedHover){
-                Sounds.click.play();
+                Sounds.hover.play();
                 isRedHover = true;
             }
         }else{

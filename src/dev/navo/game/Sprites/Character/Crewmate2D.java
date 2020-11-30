@@ -270,6 +270,7 @@ public class Crewmate2D extends Sprite{
     }
 
     // 크루메이트 생성 정보
+    @SuppressWarnings("unchecked")
     public JSONObject getCrewmateEnterJson() {
         JSONObject json = new JSONObject();
 

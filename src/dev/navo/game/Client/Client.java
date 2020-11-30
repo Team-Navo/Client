@@ -183,8 +183,10 @@ public class Client {
     public void exit() {
         JSONObject parentJson = new JSONObject();
         parentJson.put("Header", "Event");
-        parentJson.put("Function", "1"); // EXIT 1
+        parentJson.put("Function", "4"); // EXIT
         parentJson.put("roomCode",Room.getRoom().roomCode);
+//        JSONObject body = new JSONObject();
+//        body.put("owner", this.owner);
         parentJson.put("Body", this.owner);
 
         Room.getRoom().getCrewmates().clear();

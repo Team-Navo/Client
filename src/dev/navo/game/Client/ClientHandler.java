@@ -38,7 +38,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
     private void eventHandler(JSONObject json) {
         String function = json.get("Function").toString();
-
+        System.out.println("eventHandler json : " + json);
         switch (function) {
             case "0": // 나의 crewmate + 접속해 있던 crewmate 생성
                 Room.getRoom().roomInit(json);
