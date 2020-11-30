@@ -30,7 +30,7 @@ public class Cat extends Sprite {
     }
 
     public Cat(World world, PlayScreen screen){
-        super(screen.getAtlas().findRegion("CatFront"));
+//        super(screen.getAtlas().findRegion("CatFront"));
         this.world = world;
         currentState = Cat.State.DOWN;
         previousState = Cat.State.DOWN;

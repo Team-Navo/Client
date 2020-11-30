@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import dev.navo.game.Screen.PlayScreen;
 import dev.navo.game.Tools.FontGenerator;
+import dev.navo.game.Tools.Images;
 
 public class HpItem  extends Sprite {
 
@@ -22,7 +23,8 @@ public class HpItem  extends Sprite {
 
 
     public HpItem(World world, PlayScreen screen, Vector2 v){
-        super(screen.getItemAtlas().findRegion("pill_red"));
+//        super(screen.getItemAtlas().findRegion("pill_red"));
+        super(Images.item.findRegion("pill_red")); //images.item이 안 돼. 왜?
         this.world = world;
 //        defineHpItem(v);
         setBounds(v.x, v.y, 15, 14);

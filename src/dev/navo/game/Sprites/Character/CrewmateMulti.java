@@ -66,7 +66,7 @@ public class CrewmateMulti extends Sprite {
 
     //Constructor
     public CrewmateMulti(TextureAtlas atlas, JSONObject crewmate) {
-        super(atlas.findRegion("Blue"));
+        super(atlas.findRegion(crewmate.get("color").toString()));
         this.world = new World(new Vector2(0, 0), true);
 
         System.out.println(crewmate);
@@ -161,8 +161,8 @@ public class CrewmateMulti extends Sprite {
     //받아온 정보로 초기화
     public void updateInfo(JSONObject updateJson) {
 
-        this.name = updateJson.get("name").toString();
-        nameLabel.setText(name);
+//        this.name = updateJson.get("name").toString();
+//        nameLabel.setText(name);
         //this.color = crewmateJson.get("color").toString();
 
         setPosition(Integer.parseInt(updateJson.get("x").toString())

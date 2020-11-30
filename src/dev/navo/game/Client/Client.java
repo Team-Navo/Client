@@ -27,7 +27,7 @@ public class Client {
 
     Thread updateSend;
 
-    boolean inGameThread = false;
+    boolean inGameThread = true;
 
     public void setIsInGameThread(boolean is){
         this.inGameThread = is;
@@ -220,17 +220,18 @@ public class Client {
             @Override
             public void run() {
                 while(inGameThread){
-                    JSONObject json = new JSONObject();
-                    JSONObject body = new JSONObject();
-                    json.put("Header", "Update");
+                    JSONObject parentJson = new JSONObject();
+                    JSONObject childJson = new JSONObject();
+                    parentJson.put("Header", "Update");
 
                     // UPDATE 6
-                    body.put("Function", "6");
-                    body.put("roomCode", room.getRoomCode());
-                    body.put("crewmate", user.getCrewmateInitJson());
-
-                    json.put("Body", body);
-                    channel.writeAndFlush(json.toJSONString() + "\n");
+                    parentJson.put("Function", "0");
+                    parentJson.put("roomCode", room.getRoomCode());
+                    childJson.put("crewmate", user.getCrewmateInitJson());
+                    parentJson.put("Body",user.getCrewmateInitJson());
+//                    parentJson.put("Body", childJson);
+                    System.out.println("send : "+parentJson.toJSONString());
+                    channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {

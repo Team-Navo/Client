@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import dev.navo.game.Screen.PlayScreen;
 import dev.navo.game.Tools.FontGenerator;
+import dev.navo.game.Tools.Images;
 
 public class ItemSample  extends Sprite {
 
@@ -22,7 +23,8 @@ public class ItemSample  extends Sprite {
 
 
     public ItemSample(World world, PlayScreen screen, Vector2 v){
-        super(screen.getItemAtlas().findRegion("pill_blue"));
+//        super(screen.getItemAtlas().findRegion("pill_blue"));
+        super(Images.item.findRegion("pill_blue"));
         this.world = world;
 
         setBounds(v.x, v.y, 15, 14);

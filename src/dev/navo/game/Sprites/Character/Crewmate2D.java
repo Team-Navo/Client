@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import dev.navo.game.Tools.FontGenerator;
+import dev.navo.game.Tools.Images;
 import dev.navo.game.Tools.Sounds;
 import org.json.simple.JSONObject;
 
@@ -71,7 +72,9 @@ public class Crewmate2D extends Sprite{
     }
 
     //Setter
-    public void setColor(String color) { this.color = color; }
+    public void setColor(String color) {
+        this.color = color;
+    }
 
     public void hit() {
         if(HP != 0) this.HP--;
@@ -288,16 +291,16 @@ public class Crewmate2D extends Sprite{
 
         childJson.put("owner", owner);
         childJson.put("name", name);
-        childJson.put("color", "Blue");
+        childJson.put("color", color);
 
 
         childJson.put("x", getX());
         childJson.put("y", getY());
         childJson.put("drmX", drmX);
         childJson.put("drmY", drmY);
-        //childJson.put("frameNum", getFrameNum());
+        childJson.put("frameNum", getFrameNum());
 
-        childJson.put("maxHP", maxHP);
+//        childJson.put("maxHP", maxHP);
         childJson.put("HP", HP);
 
         return childJson;

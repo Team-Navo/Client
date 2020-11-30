@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import dev.navo.game.Screen.PlayScreen;
 import dev.navo.game.Tools.FontGenerator;
+import dev.navo.game.Tools.Images;
 
 public class SpeedItem  extends Sprite {
 
@@ -21,7 +22,8 @@ public class SpeedItem  extends Sprite {
 
 
     public SpeedItem(World world, PlayScreen screen, Vector2 v){
-        super(screen.getItemAtlas().findRegion("pill_green"));
+//        super(screen.getItemAtlas().findRegion("pill_green"));
+        super(Images.item.findRegion("pill_green"));
         this.world = world;
         setBounds(v.x, v.y, 15, 14);
         setRegion(new TextureRegion(getTexture(), 74, 2, 22 ,21));

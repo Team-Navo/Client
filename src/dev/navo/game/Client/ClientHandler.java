@@ -4,6 +4,8 @@ import dev.navo.game.Buffer.LoginBuffer;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Screen.PlayScreen;
+import dev.navo.game.Screen.WaitScreen;
+import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
 import dev.navo.game.Tools.JsonParser;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,7 +27,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
                 LoginBuffer.getInstance().put(json);
                 break;
             case "Update": // 구 InGame, 게임 진행 중 변경 사항 업데이트
-                updateHandler(json);
+//                updateHandler(json);
+                updateHandler(JsonParser.createJson(json.get("Body").toString()));
                 //inGameBuffer.put(JsonParser.createJson(json.get("Body").toString()));
                 break;
             case "Event": // 초기화, 방장, 색 변경, 충돌 감지
@@ -35,7 +38,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void updateHandler(JSONObject json) {
-
+        Room.getRoom().roomUpdate(json);
     }
 
     private void eventHandler(JSONObject json) {
@@ -58,7 +61,11 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
                 Room.getRoom().changeSuper(json.get("Super").toString());
                 break;
             case "6":
-                NavoGame.getGame().setScreen(new PlayScreen(NavoGame.getGame()));
+                System.out.println("GameStart");
+//                NavoGame.getGame().setScreen(new PlayScreen(NavoGame.getGame()));
+//                WaitScreen.startGame();
+                Room.getRoom().isStart=true;
+                Client.getInstance().updateSender(Room.getRoom().getMyCrewmate(),Room.getRoom());
                 break;
         }
     }

@@ -21,6 +21,8 @@ public class Room { // 게임 방
 
     public static Crewmate2D myCrewmate;
 
+    public boolean isStart = false;
+
     // 싱글톤 게터
     public static Room getRoom() {
         if(room == null){
@@ -69,22 +71,27 @@ public class Room { // 게임 방
 
     // room 안에 있는 crewmate들 업데이트
     public void roomUpdate(JSONObject roomInfo) {
-        if (this.roomCode == Integer.parseInt(roomInfo.get("code").toString())) {
-            JSONObject crewmatesJson = (JSONObject) roomInfo.get("crewmates");
-            int size = Integer.parseInt(crewmatesJson.get("crewmates_size").toString());
-            for (int i = 0; i < size; i++) {
-                boolean isFine = false;
-                JSONObject temp = (JSONObject) crewmatesJson.get("" + i);
-                String owner = temp.get("owner").toString();
-                for (CrewmateMulti crewmate : crewmates) {
-                    if (crewmate.owner.equals(owner)) {
-                        crewmate.updateInfo(temp);
-                        isFine = true;
-                    }
-                }
-                if (!isFine) addCrewmate(temp);
+        int size = Integer.parseInt(roomInfo.get("crewmates_size").toString());
+        for(int i = 0 ; i < size ; i++ ) {
+            JSONObject temp=(JSONObject)roomInfo.get("" + i); //?
+            for(CrewmateMulti crewmateMulti : crewmates) {
+                if(crewmateMulti.owner.equals(temp.get("owner").toString()))
+                    crewmateMulti.updateInfo(temp);
             }
         }
+//        if (this.roomCode == Integer.parseInt(roomInfo.get("code").toString())) {
+//            JSONObject crewmatesJson = (JSONObject) roomInfo.get("crewmates");
+//            int size = Integer.parseInt(crewmatesJson.get("crewmates_size").toString());
+//            for (int i = 0; i < size; i++) {
+//                JSONObject temp = (JSONObject) crewmatesJson.get("" + i);
+//                String owner = temp.get("owner").toString();
+//                for (CrewmateMulti crewmate : crewmates) {
+//                    if (crewmate.owner.equals(owner)) {
+//                        crewmate.updateInfo(temp);
+//                    }
+//                }
+//            }
+//        }
     }
 
     // 나의 crewmate + 접속해 있던 crewmate 생성

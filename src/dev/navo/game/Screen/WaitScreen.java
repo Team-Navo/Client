@@ -119,7 +119,9 @@ public class WaitScreen implements Screen {
         stage.addActor(backBtn);
 
     }
-
+    public static void startGame() {
+        NavoGame.getGame().setScreen(new PlayScreen(NavoGame.getGame()));
+    }
     //버튼 리스너
     private void btnsAddListener(){
         startBtn.addListener(new ClickListener(){
@@ -173,6 +175,13 @@ public class WaitScreen implements Screen {
     private void update(float delta){
         handleInput();
         startBtn.setDisabled(!Room.getRoom().isSuperUser());
+        if(Room.getRoom().isStart) {
+            startBtn.clear();
+            backBtn.clear();
+//            Client.getInstance().startGame();
+            Sounds.start.play(); // 게임 시작 사운드 출력
+            game.setScreen(new PlayScreen(game)); // PlayScreen으로 넘어가기
+        }
     }
 
     @Override
@@ -248,11 +257,11 @@ public class WaitScreen implements Screen {
                 break;
             }
         }
+        Room.getRoom().getMyCrewmate().setColor(colorName);
         // 서버에게 알리기
         JSONObject json = new JSONObject();
         json.put("owner", Room.myCrewmate.owner);
         json.put("color", colorName);
-
         Client.getInstance().changeColor(json);
     }
 

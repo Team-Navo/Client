@@ -23,6 +23,7 @@ import dev.navo.game.NavoGame;
 import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Sprites.Bullet;
 import dev.navo.game.Sprites.Character.Crewmate2D;
+import dev.navo.game.Sprites.Character.CrewmateMulti;
 import dev.navo.game.Sprites.Items.HpItem;
 import dev.navo.game.Sprites.Items.ItemSample;
 import dev.navo.game.Sprites.Items.SpeedItem;
@@ -79,15 +80,15 @@ public class PlayScreen implements Screen {
     boolean isShowMinimap = false;
 
     //Getter
-    public TextureAtlas getAtlas () {
-        return atlas;
-    }
-    public TextureAtlas getItemAtlas () {
-        return item;
-    }
+//    public TextureAtlas getAtlas () {
+//        return atlas;
+//    }
+//    public TextureAtlas getItemAtlas () {
+//        return item;
+//    }
 
     public PlayScreen(NavoGame game) {
-        initAtlas();
+//        initAtlas();
         this.game = game;
         shapeRenderer = new ShapeRenderer();
         gameCam = new OrthographicCamera();
@@ -126,10 +127,10 @@ public class PlayScreen implements Screen {
                 gamePort.getScreenHeight() / 4);
     }
 
-    private void initAtlas() {
-        atlas = new TextureAtlas("Image.atlas");
-        item = new TextureAtlas("Item.atlas");
-    }
+//    private void initAtlas() {
+//        atlas = new TextureAtlas("Image.atlas");
+//        item = new TextureAtlas("Item.atlas");
+//    }
 
     public void handleInput ( float dt){
         Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed);
@@ -166,6 +167,9 @@ public class PlayScreen implements Screen {
         Util.frameSet(world);
         myCrewmate.update(dt);
         for (int i = 0; i < bullets.size(); i++) if (bullets.get(i).distanceOverCheck()) bullets.remove(i--);
+        for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()) {
+            crewmateMulti.update(dt);
+        }
 
 
         //총알과 벽 충돌체크
@@ -393,6 +397,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.begin();
+        Room.getRoom().drawCrewmates(NavoGame.getGame().batch, myCrewmate.owner);
         myCrewmate.draw(game.batch);
         if(!isShowMinimap)
             shapeRenderer.rect(centerHP.x, centerHP.y, 50 * (myCrewmate.getHP() / myCrewmate.getMaxHP()), 10);
