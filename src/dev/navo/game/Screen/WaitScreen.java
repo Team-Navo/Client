@@ -124,11 +124,13 @@ public class WaitScreen implements Screen {
     private void btnsAddListener(){
         startBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-                startBtn.clear();
-                backBtn.clear();
-                Sounds.start.play(); // 게임 시작 사운드 출력
-                game.setScreen(new PlayScreen(game)); // PlayScreen으로 넘어가기
-                dispose();
+                if(!startBtn.isDisabled()) {
+                    startBtn.clear();
+                    backBtn.clear();
+                    Sounds.start.play(); // 게임 시작 사운드 출력
+                    game.setScreen(new PlayScreen(game)); // PlayScreen으로 넘어가기
+                    dispose();
+                }
             }
         });
 
@@ -168,6 +170,7 @@ public class WaitScreen implements Screen {
 
     private void update(float delta){
         handleInput();
+        startBtn.setDisabled(!Room.getRoom().isSuperUser());
     }
 
     @Override

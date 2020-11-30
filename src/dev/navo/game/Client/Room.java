@@ -15,6 +15,8 @@ public class Room { // 게임 방
     private static Room room;
     int roomCode;
 
+    String superUser;//방장 ID
+
     ArrayList<CrewmateMulti> crewmates;
 
     public static Crewmate2D myCrewmate;
@@ -25,6 +27,10 @@ public class Room { // 게임 방
             room = new Room();
         }
         return room;
+    }
+
+    public boolean isSuperUser() {
+        return myCrewmate.owner.equals(superUser);
     }
 
     public ArrayList<CrewmateMulti> getCrewmates() { return crewmates; }
@@ -85,7 +91,7 @@ public class Room { // 게임 방
     public void roomInit(JSONObject json) {
         this.roomCode = Integer.parseInt(json.get("roomCode").toString());
         JSONObject crewmatesJson = (JSONObject)json.get("Body");
-
+        //this.superUser = json.get("super").toString(); //방장 이름 설정
         int i = 0;
         while(crewmatesJson.get("" + i) != null){
             CrewmateMulti temp = new CrewmateMulti(Images.mainAtlas, (JSONObject)crewmatesJson.get("" + i));
@@ -106,5 +112,8 @@ public class Room { // 게임 방
                 crewmateMulti.setColor(json.get("color").toString());
             }
         }
+    }
+    public void changeSuper(String superUser) { // 방장 바꾸는 메소드
+        this.superUser = superUser;
     }
 }

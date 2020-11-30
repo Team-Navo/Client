@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -15,10 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.navo.game.Client.Client;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Scenes.Result;
-import dev.navo.game.Tools.FontGenerator;
-import dev.navo.game.Tools.Images;
-import dev.navo.game.Tools.Sounds;
-import dev.navo.game.Tools.Util;
+import dev.navo.game.Tools.*;
 
 import java.io.IOException;
 
@@ -123,6 +121,7 @@ public class LoginScreen implements Screen {
                 }
             }
         });
+
         signUpBtn.addListener(new ClickListener(){ // 회원가입 화면 버튼 리스너
             public void clicked (InputEvent event, float x, float y) { // 회원가입 버튼 리스너
                 Sounds.click.play(1);// 버튼 클릭 효과음
@@ -154,6 +153,7 @@ public class LoginScreen implements Screen {
         Images.renderBackground(delta, game.batch);
         game.batch.end(); // 배치의 끝
         stage.draw(); // 스테이지에 올라간 액터들을 그림(텍스트 필드나 라벨)
+
     }
 
     @Override

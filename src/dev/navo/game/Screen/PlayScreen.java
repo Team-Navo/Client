@@ -118,6 +118,12 @@ public class PlayScreen implements Screen {
 
         initItem(); // 아이템 초기화
         createSideBlock(); //
+
+        minimap = new TextureRegion(Images.minimap,
+                (int)(myCrewmate.b2Body.getPosition().x) / 4 - gamePort.getScreenWidth() / 16,
+                (int)(1280 - myCrewmate.b2Body.getPosition().y) / 4 - gamePort.getScreenHeight() / 16,
+                gamePort.getScreenWidth() / 4 ,
+                gamePort.getScreenHeight() / 4);
     }
 
     private void initAtlas() {
@@ -168,8 +174,10 @@ public class PlayScreen implements Screen {
             bullet = bullets.get(i);
             for (Rectangle block : blocks) {
                 if (bullet.getX() >= block.getX() - bullet.getWidth() && bullet.getX() <= block.getX() + block.getWidth())
-                    if (bullet.getY() >= block.getY() - bullet.getHeight() && bullet.getY() <= block.getY() + block.getHeight())
+                    if (bullet.getY() >= block.getY() - bullet.getHeight() && bullet.getY() <= block.getY() + block.getHeight()) {
                         bullets.remove(i--);
+                        break;
+                    }
             }
         }
 //                Crewmate2D crewmate;
@@ -253,7 +261,7 @@ public class PlayScreen implements Screen {
         for (SpeedItem s : sList) s.update(dt);
         for (TrapItem t : tList) t.update(dt);
         for (ItemSample i : isList) i.update(dt);
-        hud.showMessage("c1.velocity" + myCrewmate.b2Body.getLinearVelocity().toString());
+        //hud.showMessage("c1.velocity" + myCrewmate.b2Body.getLinearVelocity().toString());
 
         gameCam.position.x = myCrewmate.b2Body.getPosition().x;
         gameCam.position.y = myCrewmate.b2Body.getPosition().y;
@@ -404,6 +412,7 @@ public class PlayScreen implements Screen {
 //                myCrewmate.getLabel().setPosition(174, 166);
 //            }
 //        }
+
         for (Bullet b : bullets)
             b.draw(game.batch);
 
@@ -419,11 +428,6 @@ public class PlayScreen implements Screen {
         for (ItemSample i : isList)
             i.draw(game.batch);
 
-        minimap = new TextureRegion(Images.minimap,
-                (int)(myCrewmate.b2Body.getPosition().x) / 4 - gamePort.getScreenWidth() / 16,
-                (int)(1280 - myCrewmate.b2Body.getPosition().y) / 4 - gamePort.getScreenHeight() / 16,
-                gamePort.getScreenWidth() / 4 ,
-                gamePort.getScreenHeight() / 4);
 
         if(isShowMinimap) {
             game.batch.draw(Images.minimap, myCrewmate.b2Body.getPosition().x - 200, myCrewmate.b2Body.getPosition().y - 150);
