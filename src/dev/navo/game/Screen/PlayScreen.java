@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import dev.navo.game.Client.Client;
 import dev.navo.game.Client.Room;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Scenes.Hud;
@@ -46,7 +47,7 @@ public class PlayScreen implements Screen {
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
 
-    private World world;
+    public static World world;
     private Box2DDebugRenderer b2dr;
 
     private Crewmate2D myCrewmate;
@@ -136,7 +137,8 @@ public class PlayScreen implements Screen {
         Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.X) && myCrewmate.getAttackDelay() <= 0) {
-            myBullets.add(new Bullet(world, this, new Vector2(myCrewmate.getX(), myCrewmate.getY()), myCrewmate.currentState)); // 총알 생성
+            myBullets.add(new Bullet(world, new Vector2(myCrewmate.getX(), myCrewmate.getY()), myCrewmate.currentState)); // 총알 생성
+            Client.getInstance().shoot(myCrewmate.getX(),myCrewmate.getY(),myCrewmate.currentState);
             myCrewmate.setAttackDelay(0.3f);//공격 딜레이 설정
             // To DO : Client.getInstance().shoot(); 쏘는 방향, x, y, type
         }
@@ -186,16 +188,17 @@ public class PlayScreen implements Screen {
                         break;
                     }
             }
-        }for(int i = 0; i < otherBullets.size() ; i++){
-            bullet = otherBullets.get(i);
-            for (Rectangle block : blocks) {
-                if (bullet.getX() >= block.getX() - bullet.getWidth() && bullet.getX() <= block.getX() + block.getWidth())
-                    if (bullet.getY() >= block.getY() - bullet.getHeight() && bullet.getY() <= block.getY() + block.getHeight()) {
-                        myBullets.remove(i--);
-                        break;
-                    }
-            }
         }
+//        for(int i = 0; i < otherBullets.size() ; i++){
+//            bullet = otherBullets.get(i);
+//            for (Rectangle block : blocks) {
+//                if (bullet.getX() >= block.getX() - bullet.getWidth() && bullet.getX() <= block.getX() + block.getWidth()&&!myBullets.isEmpty())
+//                    if (bullet.getY() >= block.getY() - bullet.getHeight() && bullet.getY() <= block.getY() + block.getHeight()) {
+//                        myBullets.remove(i--);
+//                        break;
+//                    }
+//            }
+//        }
 
 //                Crewmate2D crewmate;
 ////                for (int i = 0; i < bullets.size(); i++) {
