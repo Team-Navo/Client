@@ -212,7 +212,21 @@ public class Client {
         System.out.println("Client 204: " + parentJson);
         channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
     }
-
+    public void shoot(float x, float y, Crewmate2D.State state) {
+        JSONObject parentJson = new JSONObject();
+        JSONObject childJson=new JSONObject();
+        childJson.put("owner",Room.getRoom().getMyCrewmate().owner);
+        childJson.put("x",x);
+        childJson.put("y",y);
+        System.out.println("asdfasdf:"+state.toString());
+        childJson.put("state",state.toString());
+        parentJson.put("Header","Event");
+        parentJson.put("Function","3");
+        parentJson.put("roomCode",Room.getRoom().getRoomCode());
+        parentJson.put("Body",childJson);
+        channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
+        System.out.println(parentJson);
+    }
     //업데이트 보내기
     public void updateSender(final Crewmate2D user, final Room room) {
         System.out.println("updateSender set");
@@ -233,7 +247,7 @@ public class Client {
                     System.out.println("send : "+parentJson.toJSONString());
                     channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(75);
                     } catch (InterruptedException e) {
                         inGameThread = false;
                         e.toString();
