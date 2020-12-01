@@ -1,6 +1,8 @@
 package dev.navo.game.Client;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import dev.navo.game.Screen.PlayScreen;
 import dev.navo.game.Screen.WaitScreen;
 import dev.navo.game.Sprites.Bullet;
 import dev.navo.game.Sprites.Character.Crewmate2D;
@@ -53,7 +55,33 @@ public class Room { // 게임 방
         myCrewmate = crewmate;
         Client.getInstance().enter(crewmate.getCrewmateEnterJson());
     }
+    public void makeBullet(JSONObject json) {
+        if(!myCrewmate.owner.equals(json.get("owner").toString())) {
+            switch (json.get("state").toString()) {
+                case "UP":
+                    bullets.add(new Bullet(PlayScreen.world, new Vector2(Float.parseFloat(json.get("x").toString())
+                            ,Float.parseFloat(json.get("y").toString()))
+                            ,Crewmate2D.State.UP));
+                    break;
+                case "DOWN":
+                    bullets.add(new Bullet(PlayScreen.world, new Vector2(Float.parseFloat(json.get("x").toString())
+                            ,Float.parseFloat(json.get("y").toString()))
+                            ,Crewmate2D.State.DOWN));
+                    break;
+                case "RIGHT":
+                    bullets.add(new Bullet(PlayScreen.world, new Vector2(Float.parseFloat(json.get("x").toString())
+                            ,Float.parseFloat(json.get("y").toString()))
+                            ,Crewmate2D.State.RIGHT));
+                    break;
+                case "LEFT":
+                    bullets.add(new Bullet(PlayScreen.world, new Vector2(Float.parseFloat(json.get("x").toString())
+                            ,Float.parseFloat(json.get("y").toString()))
+                            ,Crewmate2D.State.LEFT));
+                    break;
+            }
 
+        }
+    }
     public void drawCrewmates(SpriteBatch batch, String user) {
         for(CrewmateMulti crewmate : crewmates) {
             if(!user.equals(crewmate.owner)) {

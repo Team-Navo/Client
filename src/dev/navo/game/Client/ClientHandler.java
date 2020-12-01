@@ -54,6 +54,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             case "2": // 색 변경
                 Room.getRoom().changeUserColor((JSONObject)json.get("Body"));
                 break;
+            case "3":
+                Room.getRoom().makeBullet((JSONObject)json.get("Body"));
+                break;
             case "4":
                 Room.getRoom().deleteUser(json.get("Body").toString());
                 break;
