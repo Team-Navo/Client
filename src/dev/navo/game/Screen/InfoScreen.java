@@ -28,6 +28,9 @@ import dev.navo.game.Tools.Sounds;
 import dev.navo.game.Tools.Util;
 import org.json.simple.parser.ParseException;
 
+import java.io.*;
+import java.util.ArrayList;
+
 public class InfoScreen implements Screen {
 
     private NavoGame game;
@@ -41,17 +44,30 @@ public class InfoScreen implements Screen {
     private Label vKeyLabel;
     private Label mKeyLabel;
 
-    private Label blueLabel;
-    private Label greenLabel;
-    private Label purpleLabel;
-    private Label redLabel;
+    private String[] fileNames = {
+            "core/assets/txt/blue.txt",
+            "core/assets/txt/green.txt",
+            "core/assets/txt/purple.txt",
+            "core/assets/txt/red.txt"
+    };
+
+    private ArrayList<Label> explainLabels;
 
     public InfoScreen(final NavoGame game){
         this.game = game;
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
+        explainLabels = new ArrayList<>();
+
         initComponent();
+
+        try {
+            setExplain();
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         initActorOnStage();
         btnsAddListener();
     }
@@ -78,36 +94,44 @@ public class InfoScreen implements Screen {
         mKeyLabel.setFontScale(0.9f);
         mKeyLabel.setBounds(695 + keyLabelStartX, 360, 100, 30);
 
-        blueLabel = new Label( "Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE ));
-        blueLabel.setBounds(130, 280, 250, 40);
-        blueLabel.setWrap(true);
 
-        greenLabel = new Label( "Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE ));
-        greenLabel.setBounds(130, 210, 250, 40);
-        greenLabel.setWrap(true);
-
-        purpleLabel = new Label( "Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE ));
-        purpleLabel.setBounds(130, 140, 250, 40);
-        purpleLabel.setWrap(true);
-
-        redLabel = new Label( "Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-Blah-", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE ));
-        redLabel.setBounds(130, 70, 250, 40);
-        redLabel.setWrap(true);
+        for(int i = 0 ; i < fileNames.length ; i++){
+            Label temp = new Label( "", new Label.LabelStyle(FontGenerator.fontBold16, Color.WHITE ));
+            temp.setBounds(130, 280 - i * 70, 250, 40);
+            temp.setWrap(true);
+            explainLabels.add(temp);
+        }
 
         backBtn = new TextButton( "BACK", Util.skin );
         backBtn.setBounds(700, 20, 80, 32);
     }
 
+    private void setExplain() throws FileNotFoundException, UnsupportedEncodingException {
+        for(int i = 0 ; i < fileNames.length ; i++){
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(fileNames[i]), "UTF8"));
+            String data;
+            StringBuilder buffer = new StringBuilder();
+
+            try{
+                while ((data = in.readLine()) != null) {
+                    buffer.append(data);
+                }
+                explainLabels.get(i).setText(buffer);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
     private void initActorOnStage(){
         stage.addActor(moveKeyLabel);
         stage.addActor(zKeyLabel);
         stage.addActor(xKeyLabel);
         stage.addActor(vKeyLabel);
         stage.addActor(mKeyLabel);
-        stage.addActor(blueLabel);
-        stage.addActor(greenLabel);
-        stage.addActor(purpleLabel);
-        stage.addActor(redLabel);
+
+        for(Label label : explainLabels)
+            stage.addActor(label);
+
         stage.addActor(backBtn);
     }
 
