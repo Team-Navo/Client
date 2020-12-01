@@ -14,18 +14,27 @@ import dev.navo.game.Screen.PlayScreen;
 import dev.navo.game.Tools.FontGenerator;
 import dev.navo.game.Tools.Images;
 
-public class HpItem  extends Sprite {
+public class ItemGroup  extends Sprite {
 
     private final static Vector2 regionV = new Vector2(1, 12);
 
     public World world;
-    public Body b2Body;
-    public HpItem(World world, PlayScreen screen, Vector2 v){
-//        super(screen.getItemAtlas().findRegion("pill_red"));
-        super(Images.item.findRegion("pill_red")); //images.item이 안 돼. 왜?
+    private int type;
+    public int getType(){return type;}
+    public ItemGroup(World world, PlayScreen screen, Vector2 v, int type){
+        super(Images.item.findRegion("pill_red"));
         this.world = world;
+        this.type = type;
         setBounds(v.x, v.y, 15, 14);
-        setRegion(new TextureRegion(getTexture(), 1, 2, 22 ,21));
+        if(type==0)
+            setRegion(new TextureRegion(getTexture(), 1, 2, 22 ,21));
+        else if(type==1)
+            setRegion(new TextureRegion(getTexture(), 74, 2, 22 ,21));
+        else if(type==2)
+            setRegion(new TextureRegion(getTexture(), 50, 2, 22 ,21));
+        else
+            setRegion(new TextureRegion(getTexture(), 26, 2, 22 ,21));
+
     }
 
     public void update(float dt){
