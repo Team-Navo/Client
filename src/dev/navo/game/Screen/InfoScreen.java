@@ -95,7 +95,7 @@ public class InfoScreen implements Screen {
         redLabel.setWrap(true);
 
         backBtn = new TextButton( "BACK", Util.skin );
-        backBtn.setBounds(730, 20, 80, 32);
+        backBtn.setBounds(700, 20, 80, 32);
     }
 
     private void initActorOnStage(){

@@ -19,7 +19,7 @@ public class NavoGame extends Game {
 	public SpriteBatch batch; // 스프라이트들을 배치하는 곳
 	public static NavoGame game;
 	public static NavoGame getGame() {
-		if(game==null) game=new NavoGame();
+		if(game == null) game = new NavoGame();
 		return game;
 	}
 	@Override
