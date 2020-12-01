@@ -11,6 +11,8 @@ public class Images {
 
     public static final Texture minimap = new Texture("back/minimap.png"); // 미니맵
 
+    public static final Texture keys = new Texture("keys.png"); // 미니맵
+
     public static final Texture crewmate = new Texture("Image.png");
 
     public static final TextureAtlas mainAtlas = new TextureAtlas("Image.atlas");
@@ -28,6 +30,17 @@ public class Images {
             new TextureRegion(crewmate, 361, 25+12, 20, 25)
     };
 
+    public static final TextureRegion[] key = {
+            new TextureRegion(keys, 0, 0, 72, 72), // UP
+            new TextureRegion(keys, 72, 0, 72, 72), // DOWN
+            new TextureRegion(keys, 144, 0, 72, 72), // RIGHT
+            new TextureRegion(keys, 216, 0, 72, 72), // LEFT
+            new TextureRegion(keys, 288, 0, 72, 72), // Z
+            new TextureRegion(keys, 360, 0, 72, 72), // X
+            new TextureRegion(keys, 432, 0, 72, 72), // V
+            new TextureRegion(keys, 504, 0, 72, 72) // M
+    };
+
     private static Texture[] backgrounds = {
             new Texture("back/Starscape00.png"),
             new Texture("back/Starscape01.png"),
@@ -36,7 +49,7 @@ public class Images {
     };
 
     public static void renderBackground(float delta, SpriteBatch batch) {
-        float backgroundMaxScrollingSpeed = (float)(NavoGame.V_HEIGHT) / 4;
+        float backgroundMaxScrollingSpeed = (float)(600) / 4;
 
         //update position of background images
         backgroundOffsets[0] += delta * backgroundMaxScrollingSpeed / 8;
@@ -46,17 +59,17 @@ public class Images {
 
         //draw each background layer
         for (int layer = 0; layer < backgroundOffsets.length; layer++) {
-            if (backgroundOffsets[layer] > NavoGame.V_HEIGHT) {
+            if (backgroundOffsets[layer] > 600) {
                 backgroundOffsets[layer] = 0;
             }
             batch.draw(backgrounds[layer],
                     0,
                     -backgroundOffsets[layer],
-                    NavoGame.V_WIDTH, NavoGame.V_HEIGHT);
+                    800, 600);
             batch.draw(backgrounds[layer],
                     0,
-                    -backgroundOffsets[layer] + NavoGame.V_HEIGHT,
-                    NavoGame.V_WIDTH, NavoGame.V_HEIGHT);
+                    -backgroundOffsets[layer] + 600,
+                    800, 600);
         }
     }
 }

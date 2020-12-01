@@ -43,6 +43,7 @@ public class LobbyScreen implements Screen {
 
     private TextButton startBtn;
     private TextButton backBtn;
+    private TextButton infoBtn;
 
     private TextField nickname;
 
@@ -77,6 +78,9 @@ public class LobbyScreen implements Screen {
 
         backBtn = new TextButton( "BACK", Util.skin );
         backBtn.setBounds(300, 160, 200, 32);
+
+        infoBtn = new TextButton( "INFO", Util.skin );
+        infoBtn.setBounds(300, 120, 200, 32);
     }
 
     private void initActorOnStage(){
@@ -84,6 +88,7 @@ public class LobbyScreen implements Screen {
         stage.addActor(nickname);
         stage.addActor(startBtn);
         stage.addActor(backBtn);
+        stage.addActor(infoBtn);
     }
 
     private void btnsAddListener(){
@@ -106,12 +111,6 @@ public class LobbyScreen implements Screen {
                     e.printStackTrace();
                 }
             }
-
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                super.enter(event, x, y, pointer, fromActor);
-                Sounds.hover.play();
-            }
         });
 
         backBtn.addListener(new ClickListener(){
@@ -124,10 +123,16 @@ public class LobbyScreen implements Screen {
                 dispose();
                 //client.logout();
             }
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                super.enter(event, x, y, pointer, fromActor);
-                Sounds.hover.play();
+        });
+
+        infoBtn.addListener(new ClickListener(){
+            public void clicked (InputEvent event, float x, float y) {
+                startBtn.clear();
+                backBtn.clear();
+                Sounds.click.play();
+                game.setScreen(new InfoScreen(game));
+                dispose();
+                //client.logout();
             }
         });
     }
