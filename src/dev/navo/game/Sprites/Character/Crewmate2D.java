@@ -37,6 +37,10 @@ public class Crewmate2D extends Sprite{
     private Label nameLabel;
     private float maxHP;
     private float HP;
+    private int weapon; //추가
+    private int bulletMany; //추가
+    private int weaponStack = 0; //추가
+    private boolean isShoot = false; //추가
 
     private float stepDelay;
     private float attackDelay;
@@ -70,30 +74,44 @@ public class Crewmate2D extends Sprite{
     public Label getLabel(){
         return nameLabel;
     }
+    public boolean getisShoot(){return isShoot;}    //추가
+    public int getWeaponStack(){return weaponStack;} //추가
+    public int getWeapon(){return weapon;}; //추가
+    public String getMyColor(){return color;} //추가
+    public int getBulletMany(){return bulletMany;} //추가
 
     //Setter
     public void setColor(String color) {
         this.color = color;
     }
-
     public void hit() {
         if(HP != 0) this.HP--;
     }
-
     public void setAttackDelay(float delay){
         this.attackDelay = delay;
     }
-
     public void heal(){
         if( HP != 0 && HP != this.getMaxHP()){
             this.HP++;
         }
     }
-
     public void setWorld(World world){
         this.world = world;
         defineCrewmate(new Vector2(this.getX(), this.getY()));
     }
+
+    public void shooting(){this.isShoot = true;}    //추가
+    public void setWeapon(int weapon){ //추가
+        this.weapon = weapon;
+        this.weaponStack++;
+    }
+    public void setBulletMany(int bullet){
+        this.bulletMany = bullet;
+    }
+    public void bulletManyDown(){
+        this.bulletMany--;
+    }
+
 
     //생성자
     public Crewmate2D(World world, TextureAtlas atlas, Vector2 v, String owner, String name) {
@@ -103,7 +121,7 @@ public class Crewmate2D extends Sprite{
         this.owner = owner;
         this.name = name;
         this.color = "Blue";
-
+        colorSetting();
         this.maxHP = 10;
         this.HP = 10;
 
@@ -123,7 +141,17 @@ public class Crewmate2D extends Sprite{
         setBounds(v.x, v.y, 20, 25);
         setRegion(crewmateFrontStand);
     }
-
+    //추가
+    public void colorSetting(){
+        if(color.equals("Red")){ //빨간 캐릭터 능력치
+            maxHP = 15;
+            HP = 15;
+            maxSpeed = 70;
+        }
+        if(color.equals("Green")){ //초록 캐릭터 능력치
+            maxSpeed = 100;
+        }
+    }
     //캐릭터 움직임 프레임 초기화
     public void initFrame(){
         int regionX = getImageStartX(color);
