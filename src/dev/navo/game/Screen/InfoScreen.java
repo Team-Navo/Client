@@ -114,7 +114,7 @@ public class InfoScreen implements Screen {
 
             try{
                 while ((data = in.readLine()) != null) {
-                    buffer.append(data);
+                    buffer.append(data+"\n");
                 }
                 explainLabels.get(i).setText(buffer);
             }catch (Exception e) {
