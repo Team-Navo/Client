@@ -25,7 +25,7 @@ public class NavoGame extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		setScreen(new InfoScreen(game)); // 로그인 스크린을 띄워줌
+		setScreen(new LoginScreen(game)); // 로그인 스크린을 띄워줌
 	}
 
 	@Override
