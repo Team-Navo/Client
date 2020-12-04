@@ -34,6 +34,10 @@ public class CrewmateMulti extends Sprite {
     private Label nameLabel;
     private float maxHP;
     private float HP;
+    private int weapon; //추가
+    private int bulletMany; //추가
+    private int weaponStack = 0; //추가
+    private boolean isShoot = false; //추가
 
     //움직임 표현
     private int frameNum;
@@ -54,6 +58,11 @@ public class CrewmateMulti extends Sprite {
     public String getColorName(){
         return color;
     }
+    public boolean getisShoot(){return isShoot;}    //추가
+    public int getWeaponStack(){return weaponStack;} //추가
+    public int getWeapon(){return weapon;}; //추가
+    public String getMyColor(){return color;} //추가
+    public int getBulletMany(){return bulletMany;} //추가
 
     //Setter
     public void hit() {
@@ -62,7 +71,17 @@ public class CrewmateMulti extends Sprite {
     public void setColor(String color){
         this.color = color;
     }
-
+    public void shooting(){this.isShoot = true;}    //추가
+    public void setWeapon(int weapon){ //추가
+        this.weapon = weapon;
+        this.weaponStack++;
+    }
+    public void setBulletMany(int bullet){
+        this.bulletMany = bullet;
+    }
+    public void bulletManyDown(){
+        this.bulletMany--;
+    }
 
     //Constructor
     public CrewmateMulti(TextureAtlas atlas, JSONObject crewmate) {
@@ -73,7 +92,7 @@ public class CrewmateMulti extends Sprite {
         this.owner = crewmate.get("owner").toString();
         this.name = crewmate.get("name").toString();
         this.color = crewmate.get("color").toString();
-
+        colorSetting();
         this.maxHP = 10;
         this.HP = 10;
 
@@ -98,7 +117,16 @@ public class CrewmateMulti extends Sprite {
         initFrame();
         setRegion(crewmateFrontStand);
     }
-
+    public void colorSetting(){
+        if(color.equals("Red")){ //빨간 캐릭터 능력치
+            maxHP = 15;
+            HP = 15;
+//            maxSpeed = 70; //스피드는 움직이는 정보를 받아오기때문에 주석?
+        }
+        if(color.equals("Green")){ //초록 캐릭터 능력치
+//            maxSpeed = 100; //스피드는 움직이는 정보를 받아오기때문에 주석?
+        }
+    }
     //캐릭터 움직임 애니메이션 초기화
     public void initFrame(){
         int regionX = getImageStartX(color);

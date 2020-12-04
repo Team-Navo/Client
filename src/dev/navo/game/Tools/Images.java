@@ -16,7 +16,9 @@ public class Images {
     public static final Texture crewmate = new Texture("Image.png");
 
     public static final TextureAtlas mainAtlas = new TextureAtlas("Image.atlas");
-    public static final TextureAtlas item = new TextureAtlas("Item.atlas");
+    public static final TextureAtlas itemAtlas = new TextureAtlas("Item.atlas");
+    public static final TextureAtlas laserAtlas = new TextureAtlas("laser.atlas");
+    public static final TextureAtlas effectAtlas=new TextureAtlas("effect.atlas");
 
     private static float[] backgroundOffsets = {0, 0, 0, 0};
 
