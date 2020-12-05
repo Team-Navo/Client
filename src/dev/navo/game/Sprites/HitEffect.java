@@ -23,8 +23,8 @@ public class HitEffect extends Sprite {
         return stateTimer;
     }
     public float getFrameDuration(){return frameDuration; }
-    public HitEffect(World world, PlayScreen screen, Vector2 v){
-        super(screen.getEffectAtlas().findRegion("ef1"));
+    public HitEffect(World world, Vector2 v){
+        super(Images.effectAtlas.findRegion("ef1"));
         this.world = world;
         Array<TextureRegion> frames = new Array<>();
         frames.add(new TextureRegion(getTexture(), 2,  2004, 2500, 2000));

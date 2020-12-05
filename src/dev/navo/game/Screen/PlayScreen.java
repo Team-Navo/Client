@@ -24,7 +24,8 @@ import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Sprites.*;
 import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
-import dev.navo.game.Sprites.Items.*;
+import dev.navo.game.Sprites.Items.ItemGroup;
+>>>>>>> origin/info
 import dev.navo.game.Tools.B2WorldCreator;
 import dev.navo.game.Tools.Images;
 import dev.navo.game.Tools.Util;
@@ -35,7 +36,6 @@ import java.util.ArrayList;
 public class PlayScreen implements Screen {
 
     private NavoGame game;
-    private TextureAtlas atlas, item, laser, effect;;
 
     private OrthographicCamera gameCam;
     private Viewport gamePort;
@@ -50,18 +50,18 @@ public class PlayScreen implements Screen {
 
     private Crewmate2D myCrewmate;
     private ArrayList<Crewmate2D> crewmates;
-    private HitEffect hit; //추가
+
     private ArrayList<HitEffect> hitList; //추가
 
     private ArrayList<Bullet> myBullets;
     private ArrayList<Bullet> otherBullets;
-    private ArrayList<WeaponBullet> myWeaponBullets; //추가
-    private ArrayList<WeaponBullet> otherWeaponBullets; //추가
+    private ArrayList<WeaponBullet> myWeaponBullets;
+    private ArrayList<WeaponBullet> otherWeaponBullets;
 
     private ArrayList<Rectangle> blocks;
-    private ArrayList<ItemGroup> itemList; //추가
-    private ArrayList<Weapon> wList;
 
+    private ArrayList<ItemGroup> itemList;
+    private ArrayList<Weapon> wList;
     private ArrayList<Rectangle> recList;
     private Vector2 centerHP;
 
@@ -75,17 +75,7 @@ public class PlayScreen implements Screen {
 
     boolean isShowMinimap = false;
 
-    public TextureAtlas getAtlas(){
-        return atlas;
-    }   //추가
-    public TextureAtlas getItemAtlas(){
-        return item;
-    }   //추가
-    public TextureAtlas getLaserAtlas(){return laser;}  //추가
-    public TextureAtlas getEffectAtlas(){return effect;}    //추가
-
     public PlayScreen(NavoGame game) {
-        initAtlas(); //성경 추가
         this.game = game;
         shapeRenderer = new ShapeRenderer();
         gameCam = new OrthographicCamera();
@@ -115,9 +105,8 @@ public class PlayScreen implements Screen {
 
         myBullets = new ArrayList<>();
         otherBullets = Room.getRoom().getBullets();
-        myWeaponBullets = new ArrayList<>();
-//        otherWeaponBullets = Room.getRoom().getWeaponBullets(); //Room에 추가해야할거같음.
-
+        myWeaponBullets=new ArrayList<>();
+        //        otherWeaponBullets = Room.getRoom().getWeaponBullets(); //Room에 추가해야할거같음.
 
         hitList = new ArrayList<>();    //추가
 
@@ -131,21 +120,11 @@ public class PlayScreen implements Screen {
                 gamePort.getScreenHeight() / 4);
     }
 
-
-    public void initAtlas(){    //추가
-        atlas = new TextureAtlas("Image.atlas");
-        item = new TextureAtlas("Item.atlas");
-        laser = new TextureAtlas("laser.atlas");
-        effect = new TextureAtlas("effect.atlas");
-    }
-
     public void handleInput ( float dt){
         Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.X) && myCrewmate.getAttackDelay() <= 0) {
-            myBullets.add(new Bullet(world, new Vector2(myCrewmate.getX(), myCrewmate.getY()), myCrewmate.currentState)); // 총알 생성
             Client.getInstance().shoot(myCrewmate.getX(),myCrewmate.getY(),myCrewmate.currentState);
-            myCrewmate.setAttackDelay(0.3f);//공격 딜레이 설정
             attack();
             // To DO : Client.getInstance().shoot(); 쏘는 방향, x, y, type
         }
@@ -160,9 +139,10 @@ public class PlayScreen implements Screen {
         }
         //z로 템줍
         if(Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
-            weaponGet(myCrewmate, wList);   //추가
+            weaponGet(myCrewmate,wList);
         }
     }
+
     public void weaponGet(Crewmate2D myCrewmate, ArrayList<Weapon> wList){ //추가
         Weapon weapon;
         Crewmate2D crewmate = myCrewmate;
@@ -196,10 +176,9 @@ public class PlayScreen implements Screen {
         }
     }
 
-
     public void attack(){
         if(myCrewmate.getWeapon()==0){
-            myBullets.add(new Bullet(world, this, new Vector2(myCrewmate.getX(), myCrewmate.getY()), myCrewmate.currentState)); // 총알 생성
+            myBullets.add(new Bullet(world, new Vector2(myCrewmate.getX(), myCrewmate.getY()), myCrewmate.currentState)); // 총알 생성
             myCrewmate.setAttackDelay(0.4f);//공격 딜레이 설정
             myCrewmate.shooting();
             if(myCrewmate.getMyColor().equals("Blue"))
@@ -207,7 +186,7 @@ public class PlayScreen implements Screen {
 
         }
         else if(myCrewmate.getWeapon()==1){
-            myWeaponBullets.add(new WeaponBullet(world,this, new Vector2(myCrewmate.getX(), myCrewmate.getY()),
+            myWeaponBullets.add(new WeaponBullet(world, new Vector2(myCrewmate.getX(), myCrewmate.getY()),
                     myCrewmate.currentState,myCrewmate.getWeapon()-1));
             myCrewmate.setAttackDelay(0.5f);
             myCrewmate.bulletManyDown();
@@ -216,7 +195,7 @@ public class PlayScreen implements Screen {
                 myCrewmate.setWeapon(0);
         }
         else if(myCrewmate.getWeapon()==2){
-            myWeaponBullets.add(new WeaponBullet(world,this, new Vector2(myCrewmate.getX(), myCrewmate.getY()),
+            myWeaponBullets.add(new WeaponBullet(world, new Vector2(myCrewmate.getX(), myCrewmate.getY()),
                     myCrewmate.currentState,myCrewmate.getWeapon()-1));
             myCrewmate.setAttackDelay(0.1f);
             myCrewmate.bulletManyDown();
@@ -225,7 +204,7 @@ public class PlayScreen implements Screen {
                 myCrewmate.setWeapon(0);
         }
         else if(myCrewmate.getWeapon()==3){
-            myWeaponBullets.add(new WeaponBullet(world,this, new Vector2(myCrewmate.getX(), myCrewmate.getY()),
+            myWeaponBullets.add(new WeaponBullet(world,new Vector2(myCrewmate.getX(), myCrewmate.getY()),
                     myCrewmate.currentState,myCrewmate.getWeapon()-1));
             myCrewmate.setAttackDelay(0.2f);
             myCrewmate.bulletManyDown();
@@ -234,7 +213,7 @@ public class PlayScreen implements Screen {
                 myCrewmate.setWeapon(0);
         }
         else if(myCrewmate.getWeapon()==4){
-            myWeaponBullets.add(new WeaponBullet(world,this, new Vector2(myCrewmate.getX(), myCrewmate.getY()),
+            myWeaponBullets.add(new WeaponBullet(world, new Vector2(myCrewmate.getX(), myCrewmate.getY()),
                     myCrewmate.currentState,myCrewmate.getWeapon()-1));
             myCrewmate.setAttackDelay(0.2f);
             myCrewmate.bulletManyDown();
@@ -249,7 +228,7 @@ public class PlayScreen implements Screen {
         Util.frameSet(world);
         myCrewmate.update(dt);
 
-        //추가
+        //퀘스트. 총알 발사하지 않고 무기 10개 모으기.
         if(!myCrewmate.getisShoot()&&myCrewmate.getWeaponStack()>=10){
             myCrewmate.setWeapon(4);
             myCrewmate.setBulletMany(60);
@@ -258,9 +237,8 @@ public class PlayScreen implements Screen {
         for (int i = 0; i < myBullets.size(); i++) if (myBullets.get(i).distanceOverCheck()) myBullets.remove(i--);
         for (int i = 0; i < otherBullets.size(); i++) if (otherBullets.get(i).distanceOverCheck()) otherBullets.remove(i--);
 
-        //추가. 무기총알 거리초과체크
-        for (int i = 0; i < myWeaponBullets.size(); i++) if(myWeaponBullets.get(i).distanceOverCheck()) myWeaponBullets.remove(i--);
-        for (int i = 0; i < otherWeaponBullets.size(); i++) if(otherWeaponBullets.get(i).distanceOverCheck()) otherWeaponBullets.remove(i--);
+        for (int i = 0; i < myWeaponBullets.size(); i++) if (myWeaponBullets.get(i).distanceOverCheck()) myWeaponBullets.remove(i--);
+//        for (int i = 0; i < otherWeaponBullets.size(); i++) if(otherWeaponBullets.get(i).distanceOverCheck()) otherWeaponBullets.remove(i--);
 
         for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()) {
             crewmateMulti.update(dt);
@@ -285,13 +263,7 @@ public class PlayScreen implements Screen {
                     }
             }
         }
-//        for(int i = 0; i < otherBullets.size() ; i++){
-//            bullet = otherBullets.get(i);
-//            for (Rectangle block : blocks) {
-//                if (bullet.getX() >= block.getX() - bullet.getWidth() && bullet.getX() <= block.getX() + block.getWidth()&&!myBullets.isEmpty())
-//                    if (bullet.getY() >= block.getY() - bullet.getHeight() && bullet.getY() <= block.getY() + block.getHeight()) {
-//                        myBullets.remove(i--);
-        }
+        //다른 총알 벽 충돌체크.
         for(int i = 0; i < otherBullets.size() ; i++){
             bullet = otherBullets.get(i);
             for (Rectangle block : blocks) {
@@ -302,33 +274,22 @@ public class PlayScreen implements Screen {
                     }
             }
         }
-        //추가
+        //상민
         WeaponBullet weaponBullet;
         for(int i = 0; i<myWeaponBullets.size(); i++){
             weaponBullet = myWeaponBullets.get(i);
-            if(weaponBullet.getType()!=3){ //퀘스트 총알은 벽을 통과하기에 제외
-                for (Rectangle block : blocks) {
-                    if (weaponBullet.getX() >= block.getX() - weaponBullet.getWidth() && weaponBullet.getX() <= block.getX() + block.getWidth())
-                        if (weaponBullet.getY() >= block.getY() - weaponBullet.getHeight() && weaponBullet.getY() <= block.getY() + block.getHeight()) {
+            for (Rectangle block : blocks) {
+                if (weaponBullet.getX() >= block.getX() - weaponBullet.getWidth() && weaponBullet.getX() <= block.getX() + block.getWidth())
+                    if (weaponBullet.getY() >= block.getY() - weaponBullet.getHeight() && weaponBullet.getY() <= block.getY() + block.getHeight()) {
+                        if(myCrewmate.getWeapon()!=4){
                             myWeaponBullets.remove(i--);
                             break;
                         }
-                }
+                    }
             }
         }
-//        for(int i = 0; i<otherWeaponBullets.size(); i++){
-//            weaponBullet = otherWeaponBullets.get(i);
-//            if(weaponBullet.getType()!=3){ //퀘스트 총알은 벽을 통과하기에 제외
-//                for (Rectangle block : blocks) {
-//                    if (weaponBullet.getX() >= block.getX() - weaponBullet.getWidth() && weaponBullet.getX() <= block.getX() + block.getWidth())
-//                        if (weaponBullet.getY() >= block.getY() - weaponBullet.getHeight() && weaponBullet.getY() <= block.getY() + block.getHeight()) {
-//                            otherWeaponBullets.remove(i--);
-//                            break;
-//                        }
-//                }
-//            }
-//        }
 
+        //상민
         //총알과 캐릭터 충돌체크
         for(int i = 0 ; i< otherBullets.size() ; i++) {
             bullet = otherBullets.get(i);
@@ -337,7 +298,9 @@ public class PlayScreen implements Screen {
                     otherBullets.remove(i--);
                     myCrewmate.hit();
                     //추가. 이펙트 생성
-                    hitList.add(new HitEffect(world,this,new Vector2(myCrewmate.getX(),myCrewmate.getY())));
+                    hitList.add(new HitEffect(world,
+                            new Vector2((myCrewmate.getX()-(myCrewmate.getX()-bullet.getX())/2)-3,
+                                    (myCrewmate.getY()-(myCrewmate.getY()-bullet.getY())/2)-5)));
                     break;
                 }
             }
@@ -357,6 +320,20 @@ public class PlayScreen implements Screen {
                 }
             }
         }
+//        for(int i = 0 ; i< otherWeaponBullets.size() ; i++) {
+//            weaponBullet = otherWeaponBullets.get(i);
+//            if (weaponBullet.getX() >= myCrewmate.getX() - weaponBullet.getWidth() && weaponBullet.getX() <= myCrewmate.getX() + myCrewmate.getWidth()){
+//                if (weaponBullet.getY() >= myCrewmate.getY() - weaponBullet.getHeight() && weaponBullet.getY() <= myCrewmate.getY() + myCrewmate.getHeight()) {
+//                    otherWeaponBullets.remove(i--);
+//                    myCrewmate.hit();
+//                    //추가. 이펙트 생성
+//                    hitList.add(new HitEffect(world,
+//                            new Vector2((myCrewmate.getX()-(myCrewmate.getX()-weaponBullet.getX())/2)-3,
+//                                    (myCrewmate.getY()-(myCrewmate.getY()-weaponBullet.getY())/2)-5)));
+//                    break;
+//                }
+//            }
+//        }
 
         for (int i = 0; i < crewmates.size(); i++) {
             Crewmate2D temp = crewmates.get(i);
@@ -367,6 +344,7 @@ public class PlayScreen implements Screen {
             }
         }
 
+        //상민
         //추가. 아이템 습득체크
         ItemGroup it;
         for(int i = 0; i<itemList.size();i++){
@@ -381,14 +359,11 @@ public class PlayScreen implements Screen {
                     else if(it.getType()==2)
                         myCrewmate.hit();
                 }
-
         }
-
-
         for (Bullet b : myBullets) b.update(dt);
         for (Bullet b : otherBullets) b.update(dt);
         for (WeaponBullet wb : myWeaponBullets) wb.update(dt); //추가
-//        for (WeaponBullet wb : otherWeaponBullets) wb.update(dt); //추가
+//        for (WeaponBullet wb : otherWeaponBullets) wb.update(dt); //추후 남 무기 총알 구현시 필요
         for (ItemGroup item : itemList) item.update(dt); //추가
         for (Weapon w : wList) w.update(dt); //추가
         for (HitEffect hit : hitList) hit.update(dt); //추가
@@ -400,10 +375,12 @@ public class PlayScreen implements Screen {
         gameCam.update();
         renderer.setView(gameCam);
     }
-
+    //상민
     private void initItem () {
-        itemList = new ArrayList<>(); //추가
-        wList = new ArrayList<>(); //추가
+        itemList=new ArrayList<>();
+        wList=new ArrayList<>();
+
+        //상민
         //추가. 벽에 겹치지 않게 아이템 생성
         for(int i = 0; i<300; i++){
             boolean check = true;
@@ -420,10 +397,11 @@ public class PlayScreen implements Screen {
             else i--;
         }
 
+        //상민
         //추가. 벽에 겹치지 않게 무기 생성
         for(int i = 0; i< 300; i++){
             boolean check = true;
-            Weapon weapon = new Weapon(world, this,
+            Weapon weapon = new Weapon(world,
                     new Vector2((int) (Math.random() * 1560) + 20, (int) (Math.random() * 960) + 20),
                     i%3);
             for (int j = 0; j < recList.size(); j++) {
@@ -518,6 +496,12 @@ public class PlayScreen implements Screen {
 
 //        for (WeaponBullet wb : otherWeaponBullets) //추가
 //           wb.draw(game.batch);
+        //상민
+        for (WeaponBullet wb : myWeaponBullets) //추가
+            wb.draw(game.batch);
+
+//        for (WeaponBullet wb : otherWeaponBullets) //추후 추가 필요
+//            wb.draw(game.batch);
 
         for(ItemGroup it : itemList) //추가
             it.draw(game.batch);

@@ -18,8 +18,8 @@ public class WeaponBullet extends Sprite {
     private final static float SPEED = 2.5f;
     private int type;
     public int getType(){return type;}
-    public WeaponBullet(World world, PlayScreen screen, Vector2 v, Crewmate2D.State crewmateState, int type){
-        super(screen.getLaserAtlas().findRegion("laserRed"));
+    public WeaponBullet(World world, Vector2 v, Crewmate2D.State crewmateState, int type){
+        super(Images.laserAtlas.findRegion("laserRed"));
         isCollision = false;
         this.world = world;
         startV = v;
