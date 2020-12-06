@@ -62,8 +62,8 @@ public class Room { // 게임 방
                     PlayScreen.world, new Vector2(Float.parseFloat(json.get("x").toString())
                     ,Float.parseFloat(json.get("y").toString()))
                     ,Crewmate2D.State.valueOf(json.get("state").toString())
-                    , Weapon.Type.NORMAL)
-            );
+                    , Weapon.Type.valueOf(json.get("weapon").toString()))
+            ); //Type.NORMAL을 받아오는 객체로 전달
         }
     }
     public void drawCrewmates(SpriteBatch batch, String user) {

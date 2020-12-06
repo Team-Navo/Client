@@ -108,7 +108,7 @@ public class PlayScreen implements Screen {
         Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.X) && myCrewmate.getAttackDelay() <= 0) {
-            Client.getInstance().shoot(myCrewmate.getX(), myCrewmate.getY(), myCrewmate.currentState);
+            Client.getInstance().shoot(myCrewmate.getX(),myCrewmate.getY(),myCrewmate.currentState,myCrewmate.getWeapon());
             attack();
             // To DO : Client.getInstance().shoot(); 쏘는 방향, x, y, type
         }
