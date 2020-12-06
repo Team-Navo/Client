@@ -10,8 +10,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import dev.navo.game.Sprites.Weapon;
 import dev.navo.game.Tools.FontGenerator;
-import dev.navo.game.Tools.Images;
 import dev.navo.game.Tools.Sounds;
 import org.json.simple.JSONObject;
 
@@ -37,8 +37,8 @@ public class Crewmate2D extends Sprite{
     private Label nameLabel;
     private float maxHP;
     private float HP;
-    private int weapon; //추가
-    private int bulletMany; //추가
+    private Weapon.Type weapon; //추가
+    private int bulletQuantity; //추가
     private int weaponStack = 0; //추가
     private boolean isShoot = false; //추가
 
@@ -76,9 +76,9 @@ public class Crewmate2D extends Sprite{
     }
     public boolean getisShoot(){return isShoot;}    //추가
     public int getWeaponStack(){return weaponStack;} //추가
-    public int getWeapon(){return weapon;}; //추가
+    public Weapon.Type getWeapon(){return weapon;}; //추가
     public String getMyColor(){return color;} //추가
-    public int getBulletMany(){return bulletMany;} //추가
+    public int getBulletQuantity(){return bulletQuantity;} //추가
 
     //Setter
     public void setColor(String color) {
@@ -100,16 +100,38 @@ public class Crewmate2D extends Sprite{
         defineCrewmate(new Vector2(this.getX(), this.getY()));
     }
 
-    public void shooting(){this.isShoot = true;}    //추가
-    public void setWeapon(int weapon){ //추가
+    public void shooting(){//추가
+        this.isShoot = true;
+        if(!weapon.equals(Weapon.Type.NORMAL)){
+            if( --this.bulletQuantity <= 0 )
+               weapon = Weapon.Type.NORMAL;
+        }
+    }
+    public void setWeapon(Weapon.Type weapon){ //추가
         this.weapon = weapon;
         this.weaponStack++;
+
+        if(weapon.equals(Weapon.Type.RED)){
+            attackDelay = 0.5f;
+            if(color.equals("Purple")) bulletQuantity = 25;
+            else bulletQuantity = 15;
+        }
+        else if(weapon.equals(Weapon.Type.BLUE)){
+            attackDelay = 0.1f;
+            if(color.equals("Purple")) bulletQuantity = 60;
+            else bulletQuantity = 40;
+        }
+        else if(weapon.equals(Weapon.Type.GREEN) || weapon.equals(Weapon.Type.SUPER)){
+            attackDelay = 0.2f;
+            if(color.equals("Purple")) bulletQuantity = 60;
+            else bulletQuantity = 40;
+        }
+        else {
+            attackDelay = 0.4f;
+        }
     }
-    public void setBulletMany(int bullet){
-        this.bulletMany = bullet;
-    }
-    public void bulletManyDown(){
-        this.bulletMany--;
+    public void setBulletQuantity(int bullet){
+        this.bulletQuantity = bullet;
     }
 
 
@@ -124,6 +146,7 @@ public class Crewmate2D extends Sprite{
         colorSetting();
         this.maxHP = 10;
         this.HP = 10;
+        this.weapon = Weapon.Type.NORMAL;
 
         nameLabel = new Label(name, new Label.LabelStyle(FontGenerator.font32, Color.BLUE));
         nameLabel.setWidth(50);

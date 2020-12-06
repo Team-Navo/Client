@@ -1,0 +1,34 @@
+
+Bullet.png
+size: 128,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+BlueBullet
+  rotate: false
+  xy: 41, 15
+  size: 37, 37
+  orig: 37, 37
+  offset: 0, 0
+  index: -1
+GreenBullet
+  rotate: false
+  xy: 2, 15
+  size: 37, 37
+  orig: 37, 37
+  offset: 0, 0
+  index: -1
+NormalBullet
+  rotate: false
+  xy: 2, 2
+  size: 11, 11
+  orig: 11, 11
+  offset: 0, 0
+  index: -1
+RedBullet
+  rotate: false
+  xy: 80, 16
+  size: 37, 36
+  orig: 37, 36
+  offset: 0, 0
+  index: -1

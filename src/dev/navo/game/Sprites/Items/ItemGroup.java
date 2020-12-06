@@ -21,11 +21,15 @@ public class ItemGroup  extends Sprite {
     public World world;
     private int type;
     public int getType(){return type;}
-    public ItemGroup(World world, PlayScreen screen, Vector2 v, int type){
+    public ItemGroup(World world, Vector2 v, int type){
         super(Images.itemAtlas.findRegion("pill_red"));
         this.world = world;
         this.type = type;
         setBounds(v.x, v.y, 15, 14);
+        initRegion();
+    }
+
+    private void initRegion(){
         if(type==0)
             setRegion(new TextureRegion(getTexture(), 1, 2, 22 ,21));
         else if(type==1)
@@ -34,6 +38,7 @@ public class ItemGroup  extends Sprite {
             setRegion(new TextureRegion(getTexture(), 50, 2, 22 ,21));
         else
             setRegion(new TextureRegion(getTexture(), 26, 2, 22 ,21));
+
     }
 
     public void update(float dt){

@@ -42,7 +42,7 @@ public class HitEffect extends Sprite {
     public TextureRegion getFrame(float dt){
         TextureRegion region;
         region = (TextureRegion)hitEffect.getKeyFrame(stateTimer);
-        if(stateTimer >= frameDuration*4)
+        if(stateTimer >= frameDuration * 4)
             stateTimer = 0;
         stateTimer = stateTimer + dt;
         return region;

@@ -7,6 +7,7 @@ import dev.navo.game.Screen.WaitScreen;
 import dev.navo.game.Sprites.Bullet;
 import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
+import dev.navo.game.Sprites.Weapon;
 import dev.navo.game.Tools.Images;
 import org.json.simple.JSONObject;
 import java.util.ArrayList;
@@ -57,29 +58,12 @@ public class Room { // 게임 방
     }
     public void makeBullet(JSONObject json) {
         if(!myCrewmate.owner.equals(json.get("owner").toString())) {
-            switch (json.get("state").toString()) {
-                case "UP":
-                    bullets.add(new Bullet(PlayScreen.world, new Vector2(Float.parseFloat(json.get("x").toString())
-                            ,Float.parseFloat(json.get("y").toString()))
-                            ,Crewmate2D.State.UP));
-                    break;
-                case "DOWN":
-                    bullets.add(new Bullet(PlayScreen.world, new Vector2(Float.parseFloat(json.get("x").toString())
-                            ,Float.parseFloat(json.get("y").toString()))
-                            ,Crewmate2D.State.DOWN));
-                    break;
-                case "RIGHT":
-                    bullets.add(new Bullet(PlayScreen.world, new Vector2(Float.parseFloat(json.get("x").toString())
-                            ,Float.parseFloat(json.get("y").toString()))
-                            ,Crewmate2D.State.RIGHT));
-                    break;
-                case "LEFT":
-                    bullets.add(new Bullet(PlayScreen.world, new Vector2(Float.parseFloat(json.get("x").toString())
-                            ,Float.parseFloat(json.get("y").toString()))
-                            ,Crewmate2D.State.LEFT));
-                    break;
-            }
-
+            bullets.add(new Bullet(
+                    PlayScreen.world, new Vector2(Float.parseFloat(json.get("x").toString())
+                    ,Float.parseFloat(json.get("y").toString()))
+                    ,Crewmate2D.State.valueOf(json.get("state").toString())
+                    , Weapon.Type.NORMAL)
+            );
         }
     }
     public void drawCrewmates(SpriteBatch batch, String user) {

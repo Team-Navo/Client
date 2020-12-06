@@ -244,7 +244,6 @@ public class Client {
                     childJson.put("crewmate", user.getCrewmateInitJson());
                     parentJson.put("Body",user.getCrewmateInitJson());
 //                    parentJson.put("Body", childJson);
-                    System.out.println("send : "+parentJson.toJSONString());
                     channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
                     try {
                         Thread.sleep(75);

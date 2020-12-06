@@ -19,6 +19,7 @@ public class Images {
     public static final TextureAtlas itemAtlas = new TextureAtlas("Item.atlas");
     public static final TextureAtlas laserAtlas = new TextureAtlas("laser.atlas");
     public static final TextureAtlas effectAtlas=new TextureAtlas("effect.atlas");
+    public static final TextureAtlas bulletAtlas = new TextureAtlas("bullet.atlas");
 
     private static float[] backgroundOffsets = {0, 0, 0, 0};
 
