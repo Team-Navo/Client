@@ -84,29 +84,31 @@ public class PlayScreen implements Screen {
 
         B2WorldCreator b2 = new B2WorldCreator(world, map);
         blocks = b2.getRecList();
+        createSideBlock();
 
         myCrewmate = Room.getRoom().getMyCrewmate();
         myCrewmate.setWorld(world);
         myCrewmate.colorSetting();
+        myCrewmate.getLabel().setPosition(174, 166);
         hud.addActor(myCrewmate.getLabel());
 
         recList = b2.getRecList();
 
         myBullets = new ArrayList<>();
         otherBullets = Room.getRoom().getBullets();
-        //        otherWeaponBullets = Room.getRoom().getWeaponBullets(); //Room에 추가해야할거같음.
+        for(CrewmateMulti c : Room.getRoom().getCrewmates())
+            hud.addActor(c.getLabel());
 
         hitList = new ArrayList<>();    //추가
 
         initItem(); // 아이템 초기화
-        createSideBlock(); //
     }
 
     public void handleInput ( float dt){
         Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.X) && myCrewmate.getAttackDelay() <= 0) {
-            Client.getInstance().shoot(myCrewmate.getX(),myCrewmate.getY(),myCrewmate.currentState);
+            Client.getInstance().shoot(myCrewmate.getX(), myCrewmate.getY(), myCrewmate.currentState);
             attack();
             // To DO : Client.getInstance().shoot(); 쏘는 방향, x, y, type
         }
@@ -185,7 +187,22 @@ public class PlayScreen implements Screen {
                         }
                     }
             }
+            for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()){
+                if(!crewmateMulti.owner.equals(myCrewmate.owner)){
+                    if (bullet.getX() >= crewmateMulti.getX() - bullet.getWidth() && bullet.getX() <= crewmateMulti.getX() + crewmateMulti.getWidth()){
+                        if (bullet.getY() >= crewmateMulti.getY() - bullet.getHeight() && bullet.getY() <= crewmateMulti.getY() + crewmateMulti.getHeight()) {
+                            myBullets.remove(i--);
+                            //추가. 이펙트 생성
+                            hitList.add(new HitEffect(world,
+                                    new Vector2((crewmateMulti.getX()-(crewmateMulti.getX()-bullet.getX())/2)-3,
+                                            (crewmateMulti.getY()-(crewmateMulti.getY()-bullet.getY())/2)-5)));
+                            break;
+                        }
+                    }
+                }
+            }
         }
+
         //다른 총알 벽 충돌체크.
         for(int i = 0; i < otherBullets.size() ; i++){
             bullet = otherBullets.get(i);
@@ -265,13 +282,9 @@ public class PlayScreen implements Screen {
         }
 
         myBullets.removeIf(b -> b.update(dt)); // 내가 쏜 총알 체크
-
         otherBullets.removeIf(b -> b.update(dt)); // 상대가 쏜 총알 체크
 
-//        for (WeaponBullet wb : otherWeaponBullets) wb.update(dt); //추후 남 무기 총알 구현시 필요
         for (HitEffect hit : hitList) hit.update(dt); //추가
-
-        //hud.showMessage("c1.velocity" + myCrewmate.b2Body.getLinearVelocity().toString());
 
         gameCam.position.x = myCrewmate.b2Body.getPosition().x;
         gameCam.position.y = myCrewmate.b2Body.getPosition().y;
@@ -327,8 +340,8 @@ public class PlayScreen implements Screen {
     // 800 x 600 해상도 기준
     @Override
     public void render ( float delta){
-
         update(delta);
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -345,32 +358,15 @@ public class PlayScreen implements Screen {
 
         game.batch.begin();
         Room.getRoom().drawCrewmates(NavoGame.getGame().batch, myCrewmate.owner);
+
         myCrewmate.draw(game.batch);
-        if(!isShowMinimap)
-            shapeRenderer.rect(centerHP.x, centerHP.y, 50 * (myCrewmate.getHP() / myCrewmate.getMaxHP()), 10);
 
-        myCrewmate.getLabel().setPosition(174, 166);
-
-//        for (Crewmate2D c : crewmates) {
-//            c.draw(game.batch);
-//            if (!c.equals(myCrewmate)) {
-//                shapeRenderer.rect(centerHP.x + (c.b2Body.getPosition().x - myCrewmate.b2Body.getPosition().x) * 2,
-//                        centerHP.y + (c.b2Body.getPosition().y - myCrewmate.b2Body.getPosition().y) * 2, 50 * (c.getHP() / c.getMaxHP()), 10);
-//
-//                c.getLabel().setPosition(174 + (c.b2Body.getPosition().x - myCrewmate.b2Body.getPosition().x),
-//                        165 + (c.b2Body.getPosition().y - myCrewmate.b2Body.getPosition().y));
-//
-//            } else {
-//                myCrewmate.getLabel().setPosition(174, 166);
-//            }
-//        }
+        if(!isShowMinimap) drawStatus(); // 캐릭터 이름이랑 HP 바 그리는거
 
         for (Bullet b : myBullets) b.draw(game.batch);
-
         for (Bullet b : otherBullets) b.draw(game.batch);
-
-//        for (WeaponBullet wb : otherWeaponBullets) //추후 추가 필요
-//            wb.draw(game.batch);
+        for (HitEffect hit : hitList) //추가
+            hit.draw(game.batch);
 
         for(ItemGroup it : itemList) //추가
             it.draw(game.batch);
@@ -378,19 +374,30 @@ public class PlayScreen implements Screen {
         for(Weapon w : wList) //추가
             w.draw(game.batch);
 
-        for (HitEffect hit : hitList) //추가
-            hit.draw(game.batch);
 
         drawMinimap();
 
         game.batch.end();
-
         shapeRenderer.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
         if(!isShowMinimap) {
             hud.stage.draw();
+        }
+    }
+
+    private void drawStatus() {
+        shapeRenderer.rect(centerHP.x, centerHP.y, 50 * (myCrewmate.getHP() / myCrewmate.getMaxHP()), 10);
+
+        for (CrewmateMulti c : Room.getRoom().getCrewmates()) {
+            if (!c.owner.equals(myCrewmate.owner)) {
+                shapeRenderer.rect(centerHP.x + 22f + (c.getX() - myCrewmate.b2Body.getPosition().x) * 2,
+                        centerHP.y + 26 + (c.getY() - myCrewmate.b2Body.getPosition().y) * 2, 50 * (c.getHP() / c.getMaxHP()), 10);
+
+                c.getLabel().setPosition(174 + 11f + (c.getX() - myCrewmate.b2Body.getPosition().x),
+                        165 + 13 + (c.getY() - myCrewmate.b2Body.getPosition().y));
+            }
         }
     }
 

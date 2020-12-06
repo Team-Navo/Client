@@ -87,9 +87,7 @@ public class Crewmate2D extends Sprite{
     public void hit() {
         if(HP != 0) this.HP--;
     }
-    public void setAttackDelay(float delay){
-        this.attackDelay = delay;
-    }
+
     public void heal(){
         if( HP != 0 && HP != this.getMaxHP()){
             this.HP++;
@@ -106,29 +104,29 @@ public class Crewmate2D extends Sprite{
             if( --this.bulletQuantity <= 0 )
                weapon = Weapon.Type.NORMAL;
         }
+        setAttackDelay();
     }
     public void setWeapon(Weapon.Type weapon){ //추가
         this.weapon = weapon;
         this.weaponStack++;
 
-        if(weapon.equals(Weapon.Type.RED)){
-            attackDelay = 0.5f;
+        if(this.weapon.equals(Weapon.Type.RED)){
             if(color.equals("Purple")) bulletQuantity = 25;
             else bulletQuantity = 15;
         }
-        else if(weapon.equals(Weapon.Type.BLUE)){
-            attackDelay = 0.1f;
-            if(color.equals("Purple")) bulletQuantity = 60;
-            else bulletQuantity = 40;
-        }
-        else if(weapon.equals(Weapon.Type.GREEN) || weapon.equals(Weapon.Type.SUPER)){
-            attackDelay = 0.2f;
-            if(color.equals("Purple")) bulletQuantity = 60;
-            else bulletQuantity = 40;
-        }
         else {
-            attackDelay = 0.4f;
+            if(color.equals("Purple")) bulletQuantity = 60;
+            else bulletQuantity = 40;
         }
+    }
+
+    public void setAttackDelay(){
+        if(this.weapon.equals(Weapon.Type.RED)) attackDelay = 0.5f;
+        else if(this.weapon.equals(Weapon.Type.BLUE)) attackDelay = 0.1f;
+        else if(this.weapon.equals(Weapon.Type.GREEN) || weapon.equals(Weapon.Type.SUPER)) attackDelay = 0.2f;
+        else if(color.equals("Purple")) attackDelay = 0.2f;
+        else attackDelay = 0.4f;
+
     }
     public void setBulletQuantity(int bullet){
         this.bulletQuantity = bullet;

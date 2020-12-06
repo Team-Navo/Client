@@ -28,6 +28,7 @@ public class Bullet extends Sprite {
         this.type = type;
 
         Sounds.gunShotSound.play(0.7f);
+        initFeature();
         initRegion();
     }
 
