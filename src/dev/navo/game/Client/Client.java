@@ -7,6 +7,7 @@ import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Screen.WaitScreen;
 import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
+import dev.navo.game.Sprites.Weapon;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -212,7 +213,7 @@ public class Client {
         System.out.println("Client 204: " + parentJson);
         channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
     }
-    public void shoot(float x, float y, Crewmate2D.State state) {
+    public void shoot(float x, float y, Crewmate2D.State state, Weapon.Type type) {
         JSONObject parentJson = new JSONObject();
         JSONObject childJson=new JSONObject();
         childJson.put("owner",Room.getRoom().getMyCrewmate().owner);
@@ -220,6 +221,7 @@ public class Client {
         childJson.put("y",y);
         System.out.println("asdfasdf:"+state.toString());
         childJson.put("state",state.toString());
+        childJson.put("weapon",type.toString());
         parentJson.put("Header","Event");
         parentJson.put("Function","3");
         parentJson.put("roomCode",Room.getRoom().getRoomCode());
