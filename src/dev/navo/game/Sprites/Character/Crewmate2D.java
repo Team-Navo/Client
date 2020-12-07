@@ -10,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import dev.navo.game.Sprites.Items.ItemGroup;
 import dev.navo.game.Sprites.Weapon;
 import dev.navo.game.Tools.FontGenerator;
 import dev.navo.game.Tools.Sounds;
@@ -57,8 +56,8 @@ public class Crewmate2D extends Sprite{
         return maxSpeed;
     }
     public void setMaxSpeed(int maxSpeed) {
+        Sounds.speed.play();
         this.maxSpeed = maxSpeed;
-        Sounds.speedUp.play();
     }
 
     public enum State { UP, DOWN, LEFT, RIGHT };
@@ -85,21 +84,22 @@ public class Crewmate2D extends Sprite{
     //Setter
     public void setColor(String color) {
         this.color = color;
+        initFrame();
     }
-    public void hit() {
-        if(HP != 0) this.HP--;
+    public void hit(int damage) {
+        if(HP != 0) this.HP -= damage;
         Sounds.hit.play();
     }
 
     public void heal(){
+        Sounds.hp.play();
         if( HP != 0 && HP != this.getMaxHP()){
-            this.HP++;
-            Sounds.getHP.play();
+            this.HP+=10;
         }
     }
-    public void setWorld(World world){ // TO DO : add Vector2 vector
+    public void setWorld(World world){
         this.world = world;
-        defineCrewmate(new Vector2(this.getX(), this.getY())); // TO DO : Vector2.x, Vector2.y
+        defineCrewmate(new Vector2(this.getX(), this.getY()));
     }
 
     public void shooting(){//추가
@@ -110,21 +110,9 @@ public class Crewmate2D extends Sprite{
         }
         setAttackDelay();
     }
-
-    public void interactiveItem(ItemGroup it){
-        if(it.getType()==0) {
-            this.heal();
-        }
-        else if(it.getType()==1) {
-            this.setMaxSpeed(this.getMaxSpeed() + 10);
-        }
-        else if(it.getType()==2)
-            this.hit();
-    }
-
     public void setWeapon(Weapon.Type weapon){ //추가
         this.weapon = weapon;
-        Sounds.getGunSound.play();
+        Sounds.getGun.play();
         this.weaponStack++;
 
         if(this.weapon.equals(Weapon.Type.RED)){
@@ -141,7 +129,7 @@ public class Crewmate2D extends Sprite{
         if(this.weapon.equals(Weapon.Type.RED)) attackDelay = 0.5f;
         else if(this.weapon.equals(Weapon.Type.BLUE)) attackDelay = 0.1f;
         else if(this.weapon.equals(Weapon.Type.GREEN) || weapon.equals(Weapon.Type.SUPER)) attackDelay = 0.2f;
-        else if(color.equals("Purple")) attackDelay = 0.2f;
+        else if(color.equals("Blue")) attackDelay = 0.2f;
         else attackDelay = 0.4f;
 
     }
@@ -159,8 +147,8 @@ public class Crewmate2D extends Sprite{
         this.name = name;
         this.color = "Blue";
         colorSetting();
-        this.maxHP = 10;
-        this.HP = 10;
+        this.maxHP = 100;
+        this.HP = 100;
         this.weapon = Weapon.Type.NORMAL;
 
         nameLabel = new Label(name, new Label.LabelStyle(FontGenerator.font32, Color.BLUE));
@@ -182,8 +170,8 @@ public class Crewmate2D extends Sprite{
     //추가
     public void colorSetting(){
         if(color.equals("Red")){ //빨간 캐릭터 능력치
-            maxHP = 15;
-            HP = 15;
+            maxHP = 150;
+            HP = 150;
             maxSpeed = 70;
         }
         if(color.equals("Green")){ //초록 캐릭터 능력치

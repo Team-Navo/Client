@@ -44,10 +44,12 @@ public class WaitScreen implements Screen {
 
     TextureRegion blue;
     TextureRegion green;
+    TextureRegion purple;
     TextureRegion red;
 
     Vector2 blueV;
     Vector2 greenV;
+    Vector2 purpleV;
     Vector2 redV;
 
     Vector2 now;
@@ -57,6 +59,7 @@ public class WaitScreen implements Screen {
 
     boolean isBlueHover = false;
     boolean isGreenHover = false;
+    boolean isPurpleHover = false;
     boolean isRedHover = false;
     public WaitScreen(NavoGame game, String nickname) throws ParseException {
         this.game = game; // Lig Gdx 게임 클래스 초기화
@@ -74,11 +77,13 @@ public class WaitScreen implements Screen {
 
         blue = Images.header[0];
         green = Images.header[2];
+        purple = Images.header[3];
         red = Images.header[4];
 
-        blueV = new Vector2(260, 124);
-        greenV = new Vector2(320, 124);
-        redV = new Vector2(380, 124);
+        blueV = new Vector2(260, 135);
+        greenV = new Vector2(320, 135);
+        purpleV = new Vector2(380, 135);
+        redV = new Vector2( 440, 135);
 
         now = new Vector2(0, 0);
         //client.enter(myCrewmate.getCrewmateInitJson());
@@ -164,6 +169,10 @@ public class WaitScreen implements Screen {
                 selectColor("Green");
                 Sounds.click.play();
             }
+            if (Math.abs(new Vector2(purpleV.x - now.x, purpleV.y - now.y).len()) <= 20) {
+                selectColor("Purple");
+                Sounds.click.play();
+            }
             if (Math.abs(new Vector2(redV.x - now.x, redV.y - now.y).len()) <= 20) {
                 selectColor("Red");
                 Sounds.click.play();
@@ -220,7 +229,7 @@ public class WaitScreen implements Screen {
 
     private void buttonHover(){
         if( Math.abs(new Vector2(blueV.x - now.x, blueV.y - now.y).len()) <= 20){
-            game.batch.draw(blue, 236, 485, 0, 0, 20, 25, 2.4f, 2.4f, 0);
+            game.batch.draw(blue, 236, 475, 0, 0, 20, 25, 2.4f, 2.4f, 0);
             if(!isBlueHover){
                 Sounds.hover.play();
                 isBlueHover = true;
@@ -228,11 +237,11 @@ public class WaitScreen implements Screen {
         }else{
             if(isBlueHover)
                 isBlueHover = false;
-            game.batch.draw(blue, 240, 490, 0, 0, 20, 25, 2, 2, 0);
+            game.batch.draw(blue, 240, 480, 0, 0, 20, 25, 2, 2, 0);
         }
 
         if( Math.abs(new Vector2(greenV.x - now.x, greenV.y - now.y).len()) <= 20){
-            game.batch.draw(green, 296, 485, 0, 0, 20, 25, 2.4f, 2.4f, 0);
+            game.batch.draw(green, 296, 475, 0, 0, 20, 25, 2.4f, 2.4f, 0);
             if(!isGreenHover){
                 Sounds.hover.play();
                 isGreenHover = true;
@@ -240,11 +249,22 @@ public class WaitScreen implements Screen {
         }else{
             if(isGreenHover)
                 isGreenHover = false;
-            game.batch.draw(green, 300, 490, 0, 0, 20, 25, 2, 2, 0);
+            game.batch.draw(green, 300, 480, 0, 0, 20, 25, 2, 2, 0);
         }
 
+        if( Math.abs(new Vector2(purpleV.x - now.x, purpleV.y - now.y).len()) <= 20){
+            game.batch.draw(purple, 354, 475, 0, 0, 20, 25, 2.4f, 2.4f, 0);
+            if(!isPurpleHover){
+                Sounds.hover.play();
+                isPurpleHover = true;
+            }
+        }else{
+            if(isPurpleHover)
+                isPurpleHover = false;
+            game.batch.draw(purple, 360, 480, 0, 0, 20, 25, 2f, 2f, 0);
+        }
         if( Math.abs(new Vector2(redV.x - now.x, redV.y - now.y).len()) <= 20){
-            game.batch.draw(red, 354, 485, 0, 0, 20, 25, 2.4f, 2.4f, 0);
+            game.batch.draw(red, 414, 475, 0, 0, 20, 25, 2.4f, 2.4f, 0);
             if(!isRedHover){
                 Sounds.hover.play();
                 isRedHover = true;
@@ -252,18 +272,19 @@ public class WaitScreen implements Screen {
         }else{
             if(isRedHover)
                 isRedHover = false;
-            game.batch.draw(red, 360, 490, 0, 0, 20, 25, 2f, 2f, 0);
+            game.batch.draw(red, 420, 480, 0, 0, 20, 25, 2f, 2f, 0);
         }
     }
     private void selectColor(String colorName) {
         // 나의 crewmate 색상 변경
+        Room.getRoom().getMyCrewmate().setColor(colorName);
+
         for (CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()) {
             if (crewmateMulti.owner.equals(Room.myCrewmate.owner)) {
                 crewmateMulti.setColor(colorName);
                 break;
             }
         }
-        Room.getRoom().getMyCrewmate().setColor(colorName);
         // 서버에게 알리기
         JSONObject json = new JSONObject();
         json.put("owner", Room.myCrewmate.owner);
@@ -278,6 +299,8 @@ public class WaitScreen implements Screen {
             return 2;
         } else if ("Red".equals(color)) {
             return 4;
+        } else if ("Purple".equals(color)) {
+            return 3;
         }else{
             return 1;
         }

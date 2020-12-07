@@ -115,7 +115,7 @@ public class LobbyScreen implements Screen {
 
         backBtn.addListener(new ClickListener(){
             public void clicked (InputEvent event, float x, float y) {
-                Gdx.graphics.setWindowedMode(400, 300);
+                Gdx.graphics.setWindowedMode(NavoGame.V_WIDTH, NavoGame.V_HEIGHT);
                 startBtn.clear();
                 backBtn.clear();
                 Sounds.click.play();

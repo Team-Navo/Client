@@ -41,29 +41,29 @@ public class Bullet extends Sprite {
         }
         else if(type.equals(Weapon.Type.RED)){
             setRegion(new TextureRegion(getTexture(), 80,  16, 37, 37));
-            setBounds(startV.x, startV.y, 7, 7);
+            setBounds(startV.x+2.5f, startV.y+4.0f, 17, 17);
         }
         else if(type.equals(Weapon.Type.BLUE)){
             setRegion(new TextureRegion(getTexture(), 41,  15, 37, 37));
-            setBounds(startV.x, startV.y, 14, 14);
+            setBounds(startV.x+8.5f, startV.y+8.0f, 5, 5);
         }
-        else if(type.equals(Weapon.Type.GREEN)){
+        else if(type.equals(Weapon.Type.GREEN)||type.equals(Weapon.Type.SUPER)){
             setRegion(new TextureRegion(getTexture(), 2,  15, 37, 37));
-            setBounds(startV.x, startV.y, 10, 10);
+            setBounds(startV.x+4.0f, startV.y+6.0f, 14, 14);
         }else{
             setRegion(new TextureRegion(getTexture(), 2,  2, 11, 11));
-            setBounds(startV.x, startV.y, 9, 9);
+            setBounds(startV.x+6.5f, startV.y+7.25f, 9, 9);
         }
     }
 
     public void initFeature(){
         if(type.equals(Weapon.Type.RED)) {
-            this.speed = 50;
+            this.speed = 100;
             this.range = 200;
         }
         else if(type.equals(Weapon.Type.BLUE)){
             this.speed = 350;
-            this.range = 150;
+            this.range = 100;
         }
         else if(type.equals(Weapon.Type.GREEN)){
             this.speed = 300;

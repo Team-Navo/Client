@@ -95,7 +95,6 @@ public class PlayScreen implements Screen {
 
         myCrewmate = Room.getRoom().getMyCrewmate();
         myCrewmate.setWorld(world);
-        // 리스폰 지점 TO DO : myCrewmate.setWorld(world, Vector2);
         myCrewmate.colorSetting();
         myCrewmate.getLabel().setPosition(174, 176);
         hud.addActor(myCrewmate.getLabel());
@@ -191,12 +190,12 @@ public class PlayScreen implements Screen {
                 , centerOfMagnetic.y - 300); // 자기장이랑 내 위치 비교
         if(magneticChecker.len() >= (radius * 4)){
             if(magneticDelay <= 0){
-                myCrewmate.hit();
+                myCrewmate.hit(10);
                 magneticDelay = 1;
             }
             if(!isMagneticSoundPlay){
                 isMagneticSoundPlay = true;
-                Sounds.magnetic.loop();
+                Sounds.magnetic.play();
             }
         }else{
             if(isMagneticSoundPlay){
@@ -254,7 +253,15 @@ public class PlayScreen implements Screen {
             if (bullet.getX() >= myCrewmate.getX() - bullet.getWidth() && bullet.getX() <= myCrewmate.getX() + myCrewmate.getWidth()){
                 if (bullet.getY() >= myCrewmate.getY() - bullet.getHeight() && bullet.getY() <= myCrewmate.getY() + myCrewmate.getHeight()) {
                     otherBullets.remove(i--);
-                    myCrewmate.hit();
+                    if(bullet.getType().equals(Weapon.Type.RED))
+                        myCrewmate.hit(20);
+                    else if(bullet.getType().equals(Weapon.Type.GREEN))
+                        myCrewmate.hit(15);
+                    else if(bullet.getType().equals(Weapon.Type.BLUE))
+                        myCrewmate.hit(7);
+                    else
+                        myCrewmate.hit(10);
+
                     //추가. 이펙트 생성
                     hitList.add(new HitEffect(world,
                             new Vector2((myCrewmate.getX()-(myCrewmate.getX()-bullet.getX())/2)-3,
@@ -271,7 +278,12 @@ public class PlayScreen implements Screen {
             if (myCrewmate.getX() >= it.getX() - myCrewmate.getWidth() && myCrewmate.getX() <= it.getX() + it.getWidth())
                 if (myCrewmate.getY() >= it.getY() - myCrewmate.getHeight() && myCrewmate.getY() <= it.getY() + it.getHeight()) {
                     itemList.remove(i--);
-                    myCrewmate.interactiveItem(it);
+                    if(it.getType()==0)
+                        myCrewmate.heal();
+                    else if(it.getType()==1)
+                        myCrewmate.setMaxSpeed(myCrewmate.getMaxSpeed()+10);
+                    else if(it.getType()==2)
+                        myCrewmate.hit(10);
                 }
         }
     }
