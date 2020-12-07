@@ -25,6 +25,7 @@ import dev.navo.game.Sprites.Character.CrewmateMulti;
 import dev.navo.game.Sprites.Items.ItemGroup;
 import dev.navo.game.Tools.B2WorldCreator;
 import dev.navo.game.Tools.Images;
+import dev.navo.game.Tools.Sounds;
 import dev.navo.game.Tools.Util;
 
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ public class PlayScreen implements Screen {
 
     private static float radius = 500;
     private boolean isShowMinimap = false;
+    private boolean isMagneticSoundPlay = false;
 
     private float magneticDelay = 0;
     private Vector2 centerOfMagnetic;
@@ -186,9 +188,20 @@ public class PlayScreen implements Screen {
         // 자기장 체크
         Vector2 magneticChecker = new Vector2(centerOfMagnetic.x - 400
                 , centerOfMagnetic.y - 300); // 자기장이랑 내 위치 비교
-        if(magneticChecker.len() >= (radius * 4) && magneticDelay <= 0){
-            myCrewmate.hit();
-            magneticDelay = 1;
+        if(magneticChecker.len() >= (radius * 4)){
+            if(magneticDelay <= 0){
+                myCrewmate.hit();
+                magneticDelay = 1;
+            }
+            if(!isMagneticSoundPlay){
+                isMagneticSoundPlay = true;
+                Sounds.magnetic.play();
+            }
+        }else{
+            if(isMagneticSoundPlay){
+                isMagneticSoundPlay = false;
+                Sounds.magnetic.pause();
+            }
         }
         hud.showMessage("magneticChecker len : " + magneticChecker.len() + ", radius len : " + (radius * 4));
         //총알과 벽 충돌체크
@@ -390,7 +403,7 @@ public class PlayScreen implements Screen {
             lineRenderer.circle(centerOfMagnetic.x // 미니맵이 안 그려 질 때 자기장
                     ,  centerOfMagnetic.y
                     ,radius*4);
-            lineRenderer.line(centerOfMagnetic.x, centerOfMagnetic.y, 400, 320);
+            lineRenderer.line(centerOfMagnetic.x, centerOfMagnetic.y, 400, 320); // 자기장 중간지점과 내 위치 확인선
         }
     }
 

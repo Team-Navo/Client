@@ -86,6 +86,7 @@ public class Crewmate2D extends Sprite{
     }
     public void hit() {
         if(HP != 0) this.HP--;
+        Sounds.hit.play();
     }
 
     public void heal(){
