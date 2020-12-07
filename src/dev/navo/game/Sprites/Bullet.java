@@ -58,7 +58,7 @@ public class Bullet extends Sprite {
 
     public void initFeature(){
         if(type.equals(Weapon.Type.RED)) {
-            this.speed = 100;
+            this.speed = 200;
             this.range = 200;
         }
         else if(type.equals(Weapon.Type.BLUE)){

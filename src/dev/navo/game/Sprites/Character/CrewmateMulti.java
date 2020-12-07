@@ -65,8 +65,8 @@ public class CrewmateMulti extends Sprite {
     public int getBulletMany(){return bulletMany;} //추가
 
     //Setter
-    public void hit() {
-        if(HP != 0) this.HP--;
+    public void hit(int damage) {
+        if(HP != 0) this.HP-= damage;
     }
     public void setColor(String color){
         this.color = color;
@@ -93,8 +93,8 @@ public class CrewmateMulti extends Sprite {
         this.name = crewmate.get("name").toString();
         this.color = crewmate.get("color").toString();
         colorSetting();
-        this.maxHP = 10;
-        this.HP = 10;
+        this.maxHP = 100;
+        this.HP = 100;
 
         this.drmX = 0f;
         this.drmY = 0f;
@@ -119,8 +119,8 @@ public class CrewmateMulti extends Sprite {
     }
     public void colorSetting(){
         if(color.equals("Red")){ //빨간 캐릭터 능력치
-            maxHP = 15;
-            HP = 15;
+            maxHP = 150;
+            HP = 150;
 //            maxSpeed = 70; //스피드는 움직이는 정보를 받아오기때문에 주석?
         }
         if(color.equals("Green")){ //초록 캐릭터 능력치
