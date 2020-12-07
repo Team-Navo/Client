@@ -62,7 +62,7 @@ public class PlayScreen implements Screen {
     ShapeRenderer shapeRenderer;
     ShapeRenderer lineRenderer;
 
-    private String mapType = "Navo32.tmx";
+    private String mapType = "map/Navo16.tmx";
     private static final int moveSpeed = 10;
     private static int maxSpeed = 80;
 
@@ -334,7 +334,7 @@ public class PlayScreen implements Screen {
         game.batch.end();
 
         renderer.render();
-        b2dr.render(world, gameCam.combined);
+//        b2dr.render(world, gameCam.combined);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         lineRenderer.begin(ShapeRenderer.ShapeType.Line);
