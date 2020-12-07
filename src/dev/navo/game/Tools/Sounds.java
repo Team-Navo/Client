@@ -22,4 +22,8 @@ public class Sounds {
     public static final Sound hit = Gdx.audio.newSound(Gdx.files.internal("sound/hit.mp3")); // 피격 사운드
     public static final Sound magnetic = Gdx.audio.newSound(Gdx.files.internal("sound/magnetic.mp3")); // 자기장 사운드
 
+    public static final Sound getGunSound = Gdx.audio.newSound(Gdx.files.internal("sound/getgun2.wav")); // 총춥 사운드
+    public static final Sound speedUp = Gdx.audio.newSound(Gdx.files.internal("sound/speed.mp3")); // 총춥 사운드
+    public static final Sound getHP = Gdx.audio.newSound(Gdx.files.internal("sound/hp.mp3")); // 총춥 사운드
+
 }

@@ -95,6 +95,7 @@ public class PlayScreen implements Screen {
 
         myCrewmate = Room.getRoom().getMyCrewmate();
         myCrewmate.setWorld(world);
+        // 리스폰 지점 TO DO : myCrewmate.setWorld(world, Vector2);
         myCrewmate.colorSetting();
         myCrewmate.getLabel().setPosition(174, 176);
         hud.addActor(myCrewmate.getLabel());
@@ -195,7 +196,7 @@ public class PlayScreen implements Screen {
             }
             if(!isMagneticSoundPlay){
                 isMagneticSoundPlay = true;
-                Sounds.magnetic.play();
+                Sounds.magnetic.loop();
             }
         }else{
             if(isMagneticSoundPlay){
@@ -270,12 +271,7 @@ public class PlayScreen implements Screen {
             if (myCrewmate.getX() >= it.getX() - myCrewmate.getWidth() && myCrewmate.getX() <= it.getX() + it.getWidth())
                 if (myCrewmate.getY() >= it.getY() - myCrewmate.getHeight() && myCrewmate.getY() <= it.getY() + it.getHeight()) {
                     itemList.remove(i--);
-                    if(it.getType()==0)
-                        myCrewmate.heal();
-                    else if(it.getType()==1)
-                        myCrewmate.setMaxSpeed(myCrewmate.getMaxSpeed()+10);
-                    else if(it.getType()==2)
-                        myCrewmate.hit();
+                    myCrewmate.interactiveItem(it);
                 }
         }
     }

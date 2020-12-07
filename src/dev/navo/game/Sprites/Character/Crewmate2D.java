@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import dev.navo.game.Sprites.Items.ItemGroup;
 import dev.navo.game.Sprites.Weapon;
 import dev.navo.game.Tools.FontGenerator;
 import dev.navo.game.Tools.Sounds;
@@ -57,6 +58,7 @@ public class Crewmate2D extends Sprite{
     }
     public void setMaxSpeed(int maxSpeed) {
         this.maxSpeed = maxSpeed;
+        Sounds.speedUp.play();
     }
 
     public enum State { UP, DOWN, LEFT, RIGHT };
@@ -92,11 +94,12 @@ public class Crewmate2D extends Sprite{
     public void heal(){
         if( HP != 0 && HP != this.getMaxHP()){
             this.HP++;
+            Sounds.getHP.play();
         }
     }
-    public void setWorld(World world){
+    public void setWorld(World world){ // TO DO : add Vector2 vector
         this.world = world;
-        defineCrewmate(new Vector2(this.getX(), this.getY()));
+        defineCrewmate(new Vector2(this.getX(), this.getY())); // TO DO : Vector2.x, Vector2.y
     }
 
     public void shooting(){//추가
@@ -107,8 +110,21 @@ public class Crewmate2D extends Sprite{
         }
         setAttackDelay();
     }
+
+    public void interactiveItem(ItemGroup it){
+        if(it.getType()==0) {
+            this.heal();
+        }
+        else if(it.getType()==1) {
+            this.setMaxSpeed(this.getMaxSpeed() + 10);
+        }
+        else if(it.getType()==2)
+            this.hit();
+    }
+
     public void setWeapon(Weapon.Type weapon){ //추가
         this.weapon = weapon;
+        Sounds.getGunSound.play();
         this.weaponStack++;
 
         if(this.weapon.equals(Weapon.Type.RED)){
