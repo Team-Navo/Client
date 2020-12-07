@@ -58,6 +58,7 @@ public class Crewmate2D extends Sprite{
     public void setMaxSpeed(int maxSpeed) {
         Sounds.speed.play();
         this.maxSpeed = maxSpeed;
+        if(this.maxSpeed<30) this.maxSpeed = 30;
     }
 
     public enum State { UP, DOWN, LEFT, RIGHT };

@@ -281,8 +281,10 @@ public class PlayScreen implements Screen {
                         myCrewmate.heal();
                     else if(it.getType()==1)
                         myCrewmate.setMaxSpeed(myCrewmate.getMaxSpeed()+10);
-                    else if(it.getType()==2)
-                        myCrewmate.hit(10);
+                    else if(it.getType()==2){
+                        myCrewmate.heal(); myCrewmate.heal();
+                        myCrewmate.setMaxSpeed(myCrewmate.getMaxSpeed()-10);
+                    }
                 }
         }
     }
