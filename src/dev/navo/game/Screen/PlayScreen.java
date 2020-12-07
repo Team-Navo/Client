@@ -54,9 +54,9 @@ public class PlayScreen implements Screen {
 
     private ArrayList<Rectangle> blocks;
 
-    private ArrayList<ItemGroup> itemList;
-    private ArrayList<Weapon> wList;
-    private ArrayList<Rectangle> recList;
+    private ArrayList<ItemGroup> items;
+    private ArrayList<Weapon> weapons;
+
     private Vector2 centerHP;
 
     ShapeRenderer shapeRenderer;
@@ -99,10 +99,11 @@ public class PlayScreen implements Screen {
         myCrewmate.getLabel().setPosition(174*2, 176*2);
         hud.addActor(myCrewmate.getLabel());
 
-        recList = b2.getRecList();
-
         myBullets = new ArrayList<>();
         otherBullets = Room.getRoom().getBullets();
+        items = Room.getRoom().getItems();
+        weapons = Room.getRoom().getWeapons();
+
         for(CrewmateMulti c : Room.getRoom().getCrewmates())
             hud.addActor(c.getLabel());
 
@@ -111,7 +112,50 @@ public class PlayScreen implements Screen {
         initItem(); // 아이템 초기화
     }
 
-    public void handleInput ( float dt){
+    //상민
+    private void initItem () {
+        //상민
+        //추가. 벽에 겹치지 않게 아이템 생성
+        for(int i = 0 ; i < 12 ; i++){
+            boolean check = true;
+            ItemGroup item = new ItemGroup(world,
+                    new Vector2((int) (Math.random() * 1560) + 20, (int) (Math.random() * 960) + 20),
+                    i % 3);
+            for (Rectangle rect : blocks) {
+                if (item.getX() >= rect.getX() - item.getWidth() && item.getX() <= rect.getX() + rect.getWidth())
+                    if (item.getY() >= rect.getY() - item.getHeight() && item.getY() <= rect.getY() + rect.getHeight())
+                        check = false;
+            }
+            if(check){
+                items.add(item);}
+            else i--;
+        }
+
+        //상민
+        //추가. 벽에 겹치지 않게 무기 생성
+        ArrayList<Weapon.Type> types = new ArrayList<>();
+        types.add(Weapon.Type.BLUE);
+        types.add(Weapon.Type.GREEN);
+        types.add(Weapon.Type.RED);
+        for(int i = 0 ; i < 8 ; i++){
+            boolean check = true;
+            Weapon.Type type = types.get(i % 3);
+            Weapon weapon = new Weapon(world,
+                    new Vector2((int) (Math.random() * 1560) + 20, (int) (Math.random() * 960) + 20),
+                    type);
+            for (Rectangle rect : blocks) {
+                if (weapon.getX() >= rect.getX() - weapon.getWidth() && weapon.getX() <= rect.getX() + rect.getWidth())
+                    if (weapon.getY() >= rect.getY() - weapon.getHeight() && weapon.getY() <= rect.getY() + rect.getHeight()) {
+                        check = false;
+                    }
+            }
+            if (check) {
+                weapons.add(weapon);
+            } else i--;
+        }
+    }
+
+    public void handleInput (float dt){
         Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.X) && myCrewmate.getAttackDelay() <= 0) {
@@ -133,11 +177,13 @@ public class PlayScreen implements Screen {
 
     public void weaponGet(){ //추가
         Weapon weapon;
-        for(int i = 0 ; i< wList.size() ; i++) {
-            weapon = wList.get(i);
+        for(int i = 0; i< weapons.size() ; i++) {
+            weapon = weapons.get(i);
+            assert weapon != null;
+
             if (myCrewmate.getX() >= weapon.getX()- myCrewmate.getWidth() && myCrewmate.getX() <= weapon.getX()+weapon.getWidth())
                 if (myCrewmate.getY() >= weapon.getY()- myCrewmate.getHeight() && myCrewmate.getY() <= weapon.getY()+weapon.getHeight()) {
-                    wList.remove(i);
+                    weapons.remove(i--);
                     myCrewmate.setWeapon(weapon.getType());
                     break;
                 }
@@ -272,11 +318,11 @@ public class PlayScreen implements Screen {
         //상민
         //추가. 아이템 습득체크
         ItemGroup it;
-        for(int i = 0; i<itemList.size();i++){
-            it = itemList.get(i);
+        for(int i = 0; i < items.size() ; i++){
+            it = items.get(i);
             if (myCrewmate.getX() >= it.getX() - myCrewmate.getWidth() && myCrewmate.getX() <= it.getX() + it.getWidth())
                 if (myCrewmate.getY() >= it.getY() - myCrewmate.getHeight() && myCrewmate.getY() <= it.getY() + it.getHeight()) {
-                    itemList.remove(i--);
+                    items.remove(i--);
                     if(it.getType()==0)
                         myCrewmate.heal();
                     else if(it.getType()==1)
@@ -284,51 +330,6 @@ public class PlayScreen implements Screen {
                     else if(it.getType()==2)
                         myCrewmate.setHpSpeed(myCrewmate.getMaxSpeed()-10);
                 }
-        }
-    }
-    //상민
-    private void initItem () {
-        itemList=new ArrayList<>();
-        wList=new ArrayList<>();
-
-        //상민
-        //추가. 벽에 겹치지 않게 아이템 생성
-        for(int i = 0; i<300; i++){
-            boolean check = true;
-            ItemGroup item = new ItemGroup(world,
-                    new Vector2((int) (Math.random() * 1560) + 20, (int) (Math.random() * 960) + 20),
-                    i%3);
-            for(int j = 0; j<recList.size(); j++){
-                Rectangle rect = recList.get(j);
-                if (item.getX() >= rect.getX() - item.getWidth() && item.getX() <= rect.getX() + rect.getWidth())
-                    if (item.getY() >= rect.getY() - item.getHeight() && item.getY() <= rect.getY() + rect.getHeight())
-                        check = false;
-            }
-            if(check){itemList.add(item);}
-            else i--;
-        }
-
-        //상민
-        //추가. 벽에 겹치지 않게 무기 생성
-        ArrayList<Weapon.Type> types = new ArrayList<>();
-        types.add(Weapon.Type.BLUE);
-        types.add(Weapon.Type.GREEN);
-        types.add(Weapon.Type.RED);
-        for(int i = 0; i< 300; i++){
-            boolean check = true;
-            Weapon.Type type = types.get(i % 3);
-            Weapon weapon = new Weapon(world,
-                    new Vector2((int) (Math.random() * 1560) + 20, (int) (Math.random() * 960) + 20),
-                    type);
-            for (int j = 0; j < recList.size(); j++) {
-                Rectangle rect = recList.get(j);
-                if (weapon.getX() >= rect.getX() - weapon.getWidth() && weapon.getX() <= rect.getX() + rect.getWidth())
-                    if (weapon.getY() >= rect.getY() - weapon.getHeight() && weapon.getY() <= rect.getY() + rect.getHeight())
-                        check = false;
-            }
-            if (check) {
-                wList.add(weapon);
-            } else i--;
         }
     }
 
@@ -366,10 +367,10 @@ public class PlayScreen implements Screen {
         for (HitEffect hit : hitList) //추가
             hit.draw(game.batch);
 
-        for(ItemGroup it : itemList) //추가
+        for(ItemGroup it : items) //추가
             it.draw(game.batch);
 
-        for(Weapon w : wList) //추가
+        for(Weapon w : weapons) //추가
             w.draw(game.batch);
 
 

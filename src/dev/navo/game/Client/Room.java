@@ -3,19 +3,18 @@ package dev.navo.game.Client;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import dev.navo.game.Screen.PlayScreen;
-import dev.navo.game.Screen.WaitScreen;
 import dev.navo.game.Sprites.Bullet;
 import dev.navo.game.Sprites.Character.Crewmate2D;
 import dev.navo.game.Sprites.Character.CrewmateMulti;
+import dev.navo.game.Sprites.Items.ItemGroup;
 import dev.navo.game.Sprites.Weapon;
 import dev.navo.game.Tools.Images;
 import org.json.simple.JSONObject;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Room { // 게임 방
 
-    public Room() { this.crewmates = new ArrayList<>(); }
+
     private static Room room;
     int roomCode;
 
@@ -29,6 +28,14 @@ public class Room { // 게임 방
 
     private ArrayList<Bullet> bullets = new ArrayList<>();
 
+    private ArrayList<ItemGroup> items;
+    private ArrayList<Weapon> weapons;
+
+    public Room() {
+        this.crewmates = new ArrayList<>();
+        items = new ArrayList<>();
+        weapons = new ArrayList<>();
+    }
     // 싱글톤 게터
     public static Room getRoom() {
         if(room == null){
@@ -39,6 +46,12 @@ public class Room { // 게임 방
 
     public ArrayList<Bullet> getBullets(){
         return bullets;
+    }
+    public ArrayList<ItemGroup> getItems(){
+        return items;
+    }
+    public ArrayList<Weapon> getWeapons(){
+        return weapons;
     }
 
     public boolean isSuperUser() {

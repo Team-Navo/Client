@@ -93,17 +93,15 @@ public class Crewmate2D extends Sprite{
         initFrame();
     }
     public void hit(int damage) {
-        if(HP >= 0) this.HP -= damage;
-        else HP = 0;
+        if(this.HP - damage <= 0) this.HP = 0;
+        else this.HP -= damage;
         Sounds.hit.play();
     }
 
     public void heal(){
         Sounds.hp.play();
-        if( HP != 0){
-            if(HP <= this.getMaxHP()) HP = maxHP;
-            else this.HP+=10;
-        }
+        if(HP + 10 >= this.maxHP) this.HP = this.maxHP;
+        else this.HP += 10;
     }
     public void setWorld(World world){
         this.world = world;
