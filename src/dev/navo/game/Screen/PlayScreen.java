@@ -59,16 +59,19 @@ public class PlayScreen implements Screen {
     private Vector2 centerHP;
 
     ShapeRenderer shapeRenderer;
+    ShapeRenderer lineRenderer;
 
     private String mapType = "Navo32.tmx";
     private static final int moveSpeed = 10;
     private static int maxSpeed = 80;
 
+    private static float radius = 500;
     boolean isShowMinimap = false;
 
     public PlayScreen(NavoGame game) {
         this.game = game;
         shapeRenderer = new ShapeRenderer();
+        lineRenderer = new ShapeRenderer();
         gameCam = new OrthographicCamera();
         gamePort = new FitViewport(NavoGame.V_WIDTH, NavoGame.V_HEIGHT, gameCam);
         mapLoader = new TmxMapLoader();
@@ -76,7 +79,7 @@ public class PlayScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map);
         gameCam.position.set(200, 1130, 0); // 200, 1130 = Left Top
 
-        centerHP = new Vector2(375, 325);
+        centerHP = new Vector2(375, 345);
         hud = new Hud(game.batch);
 
         world = new World(new Vector2(0, 0), true);
@@ -89,7 +92,7 @@ public class PlayScreen implements Screen {
         myCrewmate = Room.getRoom().getMyCrewmate();
         myCrewmate.setWorld(world);
         myCrewmate.colorSetting();
-        myCrewmate.getLabel().setPosition(174, 166);
+        myCrewmate.getLabel().setPosition(174, 176);
         hud.addActor(myCrewmate.getLabel());
 
         recList = b2.getRecList();
@@ -110,7 +113,6 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.X) && myCrewmate.getAttackDelay() <= 0) {
             Client.getInstance().shoot(myCrewmate.getX(),myCrewmate.getY(),myCrewmate.currentState,myCrewmate.getWeapon());
             attack();
-            // To DO : Client.getInstance().shoot(); 쏘는 방향, x, y, type
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) game.setScreen(new LobbyScreen(game));
@@ -118,13 +120,11 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.M)) isShowMinimap = !isShowMinimap;
 
         //v로 무기 버리기
-        if (Gdx.input.isKeyJustPressed(Input.Keys.V)){
-            myCrewmate.setWeapon(Weapon.Type.NORMAL);
-        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.V)) myCrewmate.setWeapon(Weapon.Type.NORMAL);
+
         //z로 템줍
-        if(Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
-            weaponGet();
-        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Z)) weaponGet();
+
     }
 
     public void weaponGet(){ //추가
@@ -156,24 +156,25 @@ public class PlayScreen implements Screen {
     public void update (float dt){
         handleInput(dt);
         Util.frameSet(world);
-        myCrewmate.update(dt);
 
-        //퀘스트. 총알 발사하지 않고 무기 10개 모으기.
-        if(!myCrewmate.getisShoot()&&myCrewmate.getWeaponStack()>=10){
-            myCrewmate.setWeapon(Weapon.Type.SUPER);
-        }
+        radius -= dt * 3; // 자기장 줄이기
 
-//        for (int i = 0; i < otherWeaponBullets.size(); i++) if(otherWeaponBullets.get(i).distanceOverCheck()) otherWeaponBullets.remove(i--);
+        myCrewmate.update(dt); // 내캐릭터 위치 업데이트
+        for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()) crewmateMulti.update(dt); // 크루메이트들 위치 업데이트
 
-        for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()) crewmateMulti.update(dt);
+        collisionCheck(); // 충돌 체크
 
-        //추가. 충돌 이펙트 한번 보여주고 제거
-        for(int i = 0; i < hitList.size(); i++){
-            HitEffect hit = hitList.get(i);
-            if(hit.getStateTimer() >= hit.getFrameDuration()*4)
-                hitList.remove(i--);
-        }
+        myBullets.removeIf(b -> b.update(dt)); // 내가 쏜 총알 체크
+        otherBullets.removeIf(b -> b.update(dt)); // 상대가 쏜 총알 체크
+        hitList.removeIf(hit -> hit.update(dt)); // 충돌 이펙트 체크
 
+        gameCam.position.x = myCrewmate.b2Body.getPosition().x;
+        gameCam.position.y = myCrewmate.b2Body.getPosition().y;
+        gameCam.update();
+        renderer.setView(gameCam);
+    }
+
+    private void collisionCheck(){
         //총알과 벽 충돌체크
         Bullet bullet;
         for(int i = 0; i < myBullets.size() ; i++){
@@ -216,7 +217,6 @@ public class PlayScreen implements Screen {
                     }
             }
         }
-
         //상민
         //총알과 캐릭터 충돌체크
         for(int i = 0 ; i< otherBullets.size() ; i++) {
@@ -233,37 +233,6 @@ public class PlayScreen implements Screen {
                 }
             }
         }
-
-
-        // 추가. 무기총알과 캐릭터 충돌체크
-//        for(int i = 0 ; i< otherWeaponBullets.size() ; i++) {
-//            weaponBullet = otherWeaponBullets.get(i);
-//            if (weaponBullet.getX() >= myCrewmate.getX() - weaponBullet.getWidth() && weaponBullet.getX() <= myCrewmate.getX() + myCrewmate.getWidth()){
-//                if (weaponBullet.getY() >= myCrewmate.getY() - weaponBullet.getHeight() && weaponBullet.getY() <= myCrewmate.getY() + myCrewmate.getHeight()) {
-//                    otherWeaponBullets.remove(i--);
-//                    if(weaponBullet.getType()==0) myCrewmate.hit(); //빨간무기는 딜이 두배
-//                    myCrewmate.hit();
-//                    hitList.add(new HitEffect( world, new Vector2(myCrewmate.getX(),myCrewmate.getY() )));
-//                    break;
-//                }
-//            }
-//        }
-//        for(int i = 0 ; i< otherWeaponBullets.size() ; i++) {
-//            weaponBullet = otherWeaponBullets.get(i);
-//            if (weaponBullet.getX() >= myCrewmate.getX() - weaponBullet.getWidth() && weaponBullet.getX() <= myCrewmate.getX() + myCrewmate.getWidth()){
-//                if (weaponBullet.getY() >= myCrewmate.getY() - weaponBullet.getHeight() && weaponBullet.getY() <= myCrewmate.getY() + myCrewmate.getHeight()) {
-//                    otherWeaponBullets.remove(i--);
-//                    myCrewmate.hit();
-//                    //추가. 이펙트 생성
-//                    hitList.add(new HitEffect(world,
-//                            new Vector2((myCrewmate.getX()-(myCrewmate.getX()-weaponBullet.getX())/2)-3,
-//                                    (myCrewmate.getY()-(myCrewmate.getY()-weaponBullet.getY())/2)-5)));
-//                    break;
-//                }
-//            }
-//        }
-
-
         //상민
         //추가. 아이템 습득체크
         ItemGroup it;
@@ -280,16 +249,6 @@ public class PlayScreen implements Screen {
                         myCrewmate.hit();
                 }
         }
-
-        myBullets.removeIf(b -> b.update(dt)); // 내가 쏜 총알 체크
-        otherBullets.removeIf(b -> b.update(dt)); // 상대가 쏜 총알 체크
-
-        for (HitEffect hit : hitList) hit.update(dt); //추가
-
-        gameCam.position.x = myCrewmate.b2Body.getPosition().x;
-        gameCam.position.y = myCrewmate.b2Body.getPosition().y;
-        gameCam.update();
-        renderer.setView(gameCam);
     }
     //상민
     private void initItem () {
@@ -353,12 +312,15 @@ public class PlayScreen implements Screen {
         b2dr.render(world, gameCam.combined);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        lineRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
+        lineRenderer.setColor(Color.WHITE);
+
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.begin();
-        Room.getRoom().drawCrewmates(NavoGame.getGame().batch, myCrewmate.owner);
 
+        Room.getRoom().drawCrewmates(NavoGame.getGame().batch, myCrewmate.owner);
         myCrewmate.draw(game.batch);
 
         if(!isShowMinimap) drawStatus(); // 캐릭터 이름이랑 HP 바 그리는거
@@ -374,17 +336,15 @@ public class PlayScreen implements Screen {
         for(Weapon w : wList) //추가
             w.draw(game.batch);
 
-
         drawMinimap();
 
         game.batch.end();
         shapeRenderer.end();
+        lineRenderer.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
-        if(!isShowMinimap) {
-            hud.stage.draw();
-        }
+        if(!isShowMinimap) hud.stage.draw();
     }
 
     private void drawStatus() {
@@ -396,51 +356,28 @@ public class PlayScreen implements Screen {
                         centerHP.y + 26 + (c.getY() - myCrewmate.b2Body.getPosition().y) * 2, 50 * (c.getHP() / c.getMaxHP()), 10);
 
                 c.getLabel().setPosition(174 + 11f + (c.getX() - myCrewmate.b2Body.getPosition().x),
-                        165 + 13 + (c.getY() - myCrewmate.b2Body.getPosition().y));
+                        175 + 13 + (c.getY() - myCrewmate.b2Body.getPosition().y));
             }
         }
     }
 
     private void drawMinimap() {
         if(isShowMinimap) {
-            game.batch.draw(Images.minimap, myCrewmate.b2Body.getPosition().x - 200, myCrewmate.b2Body.getPosition().y - 150);
-            shapeRenderer.circle((myCrewmate.b2Body.getPosition().x / 2),
-                    (myCrewmate.b2Body.getPosition().y / 2),
+            game.batch.draw(Images.minimap, myCrewmate.b2Body.getPosition().x - NavoGame.V_WIDTH / 2f // 미니맵
+                    , myCrewmate.b2Body.getPosition().y - NavoGame.V_HEIGHT / 2f);
+            shapeRenderer.circle(myCrewmate.b2Body.getPosition().x / 2, // 미니맵 그릴 때 내 캐릭터 위치
+                    myCrewmate.b2Body.getPosition().y / 2,
                     10
             );
+            lineRenderer.circle(NavoGame.V_WIDTH, NavoGame.V_HEIGHT, radius); // 미니맵 그릴 때 자기장
+        }else{
+            Vector2 centerOfScreen = new Vector2(1600 - myCrewmate.b2Body.getPosition().x * 2
+                    , 1280 - myCrewmate.b2Body.getPosition().y * 2);
+
+            lineRenderer.circle(NavoGame.V_WIDTH + centerOfScreen.x // 미니맵이 안 그려 질 때 자기장
+                    ,  NavoGame.V_HEIGHT + centerOfScreen.y
+                    ,radius*4);
         }
-    }
-
-    @Override
-    public void resize ( int width, int height){
-        gamePort.update(width, height);
-    }
-
-    @Override
-    public void dispose () {
-        map.dispose();
-        renderer.dispose();
-        world.dispose();
-        b2dr.dispose();
-        hud.dispose();
-    }
-
-    @Override
-    public void hide () {
-
-    }
-
-    @Override
-    public void resume () {
-
-    }
-
-    @Override
-    public void pause () {
-
-    }
-    @Override
-    public void show () {
     }
 
     private void createSideBlock() {
@@ -468,5 +405,32 @@ public class PlayScreen implements Screen {
         bDef.position.set(800, 1280);
         b2Body = world.createBody(bDef);
         b2Body.createFixture(fDef);
+    }
+
+    @Override
+    public void dispose () {
+        map.dispose();
+        renderer.dispose();
+        world.dispose();
+        b2dr.dispose();
+        hud.dispose();
+    }
+    @Override
+    public void resize ( int width, int height){
+        gamePort.update(width, height);
+    }
+    @Override
+    public void pause () {
+    }
+    @Override
+    public void show () {
+    }
+    @Override
+    public void resume () {
+
+    }
+    @Override
+    public void hide () {
+
     }
 }

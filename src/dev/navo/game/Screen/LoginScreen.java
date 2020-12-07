@@ -106,7 +106,7 @@ public class LoginScreen implements Screen {
             public void clicked (InputEvent event, float x, float y) { // 로그인 버튼 리스너
                 try {
                     if( client.login(idField.getText(), pwField.getText()) ){
-                        Gdx.graphics.setWindowedMode(800 , 600 );
+                        Gdx.graphics.setWindowedMode(NavoGame.V_WIDTH * 2 , NavoGame.V_HEIGHT * 2 );
                         Sounds.success.play(1); // 성공 소리
                         client.setOwner(idField.getText());
                         game.setScreen(new LobbyScreen(game));

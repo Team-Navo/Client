@@ -51,7 +51,7 @@ public class LobbyScreen implements Screen {
 
     public LobbyScreen(final NavoGame game){
         this.game = game;
-        viewport = new FitViewport(800, 600, new OrthographicCamera());
+        viewport = new FitViewport(NavoGame.V_WIDTH * 2, NavoGame.V_HEIGHT * 2, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
 

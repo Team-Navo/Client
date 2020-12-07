@@ -253,6 +253,9 @@ public class Crewmate2D extends Sprite{
             }
         }
         setRegion(getFrame(dt));
+
+        //퀘스트. 총알 발사하지 않고 무기 10개 모으기.
+        if(!getisShoot() && getWeaponStack()>=10) setWeapon(Weapon.Type.SUPER);
     }
 
     //프레임 받아오기

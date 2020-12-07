@@ -35,9 +35,11 @@ public class HitEffect extends Sprite {
         hitEffect = new Animation(frameDuration, frames);
         setBounds(v.x-3, v.y, 30, 30);
     }
-    public void update(float dt){
+    public boolean update(float dt){
         setPosition(this.getX(), this.getY());
         setRegion(getFrame(dt));
+
+        return getStateTimer() >= getFrameDuration()*4;
     }
     public TextureRegion getFrame(float dt){
         TextureRegion region;

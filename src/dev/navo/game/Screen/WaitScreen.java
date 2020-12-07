@@ -60,7 +60,7 @@ public class WaitScreen implements Screen {
     boolean isRedHover = false;
     public WaitScreen(NavoGame game, String nickname) throws ParseException {
         this.game = game; // Lig Gdx 게임 클래스 초기화
-        viewport = new FitViewport(800, 600, new OrthographicCamera()); // 뷰포트 생성
+        viewport = new FitViewport(NavoGame.V_WIDTH * 2, NavoGame.V_HEIGHT * 2, new OrthographicCamera()); // 뷰포트 생성
         stage = new Stage(viewport, game.batch); // 스테이지 생성
         Gdx.input.setInputProcessor(stage); // 스테이지에 마우스 및 키보드 입력을 받기
 
