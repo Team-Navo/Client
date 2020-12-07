@@ -25,6 +25,7 @@ import dev.navo.game.Sprites.Character.CrewmateMulti;
 import dev.navo.game.Sprites.Items.ItemGroup;
 import dev.navo.game.Tools.B2WorldCreator;
 import dev.navo.game.Tools.Images;
+import dev.navo.game.Tools.Sounds;
 import dev.navo.game.Tools.Util;
 
 import java.util.ArrayList;
@@ -61,12 +62,13 @@ public class PlayScreen implements Screen {
     ShapeRenderer shapeRenderer;
     ShapeRenderer lineRenderer;
 
-    private String mapType = "Navo32.tmx";
+    private String mapType = "map/Navo16.tmx";
     private static final int moveSpeed = 10;
     private static int maxSpeed = 80;
 
     private static float radius = 500;
     private boolean isShowMinimap = false;
+    private boolean isMagneticSoundPlay = false;
 
     private float magneticDelay = 0;
     private Vector2 centerOfMagnetic;
@@ -93,6 +95,7 @@ public class PlayScreen implements Screen {
 
         myCrewmate = Room.getRoom().getMyCrewmate();
         myCrewmate.setWorld(world);
+        // 리스폰 지점 TO DO : myCrewmate.setWorld(world, Vector2);
         myCrewmate.colorSetting();
         myCrewmate.getLabel().setPosition(174, 176);
         hud.addActor(myCrewmate.getLabel());
@@ -186,9 +189,20 @@ public class PlayScreen implements Screen {
         // 자기장 체크
         Vector2 magneticChecker = new Vector2(centerOfMagnetic.x - 400
                 , centerOfMagnetic.y - 300); // 자기장이랑 내 위치 비교
-        if(magneticChecker.len() >= (radius * 4) && magneticDelay <= 0){
-            myCrewmate.hit();
-            magneticDelay = 1;
+        if(magneticChecker.len() >= (radius * 4)){
+            if(magneticDelay <= 0){
+                myCrewmate.hit();
+                magneticDelay = 1;
+            }
+            if(!isMagneticSoundPlay){
+                isMagneticSoundPlay = true;
+                Sounds.magnetic.loop();
+            }
+        }else{
+            if(isMagneticSoundPlay){
+                isMagneticSoundPlay = false;
+                Sounds.magnetic.pause();
+            }
         }
         hud.showMessage("magneticChecker len : " + magneticChecker.len() + ", radius len : " + (radius * 4));
         //총알과 벽 충돌체크
@@ -257,12 +271,7 @@ public class PlayScreen implements Screen {
             if (myCrewmate.getX() >= it.getX() - myCrewmate.getWidth() && myCrewmate.getX() <= it.getX() + it.getWidth())
                 if (myCrewmate.getY() >= it.getY() - myCrewmate.getHeight() && myCrewmate.getY() <= it.getY() + it.getHeight()) {
                     itemList.remove(i--);
-                    if(it.getType()==0)
-                        myCrewmate.heal();
-                    else if(it.getType()==1)
-                        myCrewmate.setMaxSpeed(myCrewmate.getMaxSpeed()+10);
-                    else if(it.getType()==2)
-                        myCrewmate.hit();
+                    myCrewmate.interactiveItem(it);
                 }
         }
     }
@@ -325,7 +334,7 @@ public class PlayScreen implements Screen {
         game.batch.end();
 
         renderer.render();
-        b2dr.render(world, gameCam.combined);
+//        b2dr.render(world, gameCam.combined);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         lineRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -390,7 +399,7 @@ public class PlayScreen implements Screen {
             lineRenderer.circle(centerOfMagnetic.x // 미니맵이 안 그려 질 때 자기장
                     ,  centerOfMagnetic.y
                     ,radius*4);
-            lineRenderer.line(centerOfMagnetic.x, centerOfMagnetic.y, 400, 320);
+            lineRenderer.line(centerOfMagnetic.x, centerOfMagnetic.y, 400, 320); // 자기장 중간지점과 내 위치 확인선
         }
     }
 

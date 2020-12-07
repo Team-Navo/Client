@@ -76,9 +76,9 @@ public class WaitScreen implements Screen {
         green = Images.header[2];
         red = Images.header[4];
 
-        blueV = new Vector2(260, 95);
-        greenV = new Vector2(320, 95);
-        redV = new Vector2(380, 95);
+        blueV = new Vector2(260, 124);
+        greenV = new Vector2(320, 124);
+        redV = new Vector2(380, 124);
 
         now = new Vector2(0, 0);
         //client.enter(myCrewmate.getCrewmateInitJson());
@@ -220,7 +220,7 @@ public class WaitScreen implements Screen {
 
     private void buttonHover(){
         if( Math.abs(new Vector2(blueV.x - now.x, blueV.y - now.y).len()) <= 20){
-            game.batch.draw(blue, 236, 475, 0, 0, 20, 25, 2.4f, 2.4f, 0);
+            game.batch.draw(blue, 236, 485, 0, 0, 20, 25, 2.4f, 2.4f, 0);
             if(!isBlueHover){
                 Sounds.hover.play();
                 isBlueHover = true;
@@ -228,11 +228,11 @@ public class WaitScreen implements Screen {
         }else{
             if(isBlueHover)
                 isBlueHover = false;
-            game.batch.draw(blue, 240, 480, 0, 0, 20, 25, 2, 2, 0);
+            game.batch.draw(blue, 240, 490, 0, 0, 20, 25, 2, 2, 0);
         }
 
         if( Math.abs(new Vector2(greenV.x - now.x, greenV.y - now.y).len()) <= 20){
-            game.batch.draw(green, 296, 475, 0, 0, 20, 25, 2.4f, 2.4f, 0);
+            game.batch.draw(green, 296, 485, 0, 0, 20, 25, 2.4f, 2.4f, 0);
             if(!isGreenHover){
                 Sounds.hover.play();
                 isGreenHover = true;
@@ -240,11 +240,11 @@ public class WaitScreen implements Screen {
         }else{
             if(isGreenHover)
                 isGreenHover = false;
-            game.batch.draw(green, 300, 480, 0, 0, 20, 25, 2, 2, 0);
+            game.batch.draw(green, 300, 490, 0, 0, 20, 25, 2, 2, 0);
         }
 
         if( Math.abs(new Vector2(redV.x - now.x, redV.y - now.y).len()) <= 20){
-            game.batch.draw(red, 354, 475, 0, 0, 20, 25, 2.4f, 2.4f, 0);
+            game.batch.draw(red, 354, 485, 0, 0, 20, 25, 2.4f, 2.4f, 0);
             if(!isRedHover){
                 Sounds.hover.play();
                 isRedHover = true;
@@ -252,7 +252,7 @@ public class WaitScreen implements Screen {
         }else{
             if(isRedHover)
                 isRedHover = false;
-            game.batch.draw(red, 360, 480, 0, 0, 20, 25, 2f, 2f, 0);
+            game.batch.draw(red, 360, 490, 0, 0, 20, 25, 2f, 2f, 0);
         }
     }
     private void selectColor(String colorName) {

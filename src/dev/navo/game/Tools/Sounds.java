@@ -19,4 +19,11 @@ public class Sounds {
     public static final Sound gunShotSound = Gdx.audio.newSound(Gdx.files.internal("sound/gunshot.wav")); // 총알 발사 사운드
     public static final Sound kill = Gdx.audio.newSound(Gdx.files.internal("sound/killsound.wav")); // 사망 사운드
 
+    public static final Sound hit = Gdx.audio.newSound(Gdx.files.internal("sound/hit.mp3")); // 피격 사운드
+    public static final Sound magnetic = Gdx.audio.newSound(Gdx.files.internal("sound/magnetic.mp3")); // 자기장 사운드
+
+    public static final Sound getGunSound = Gdx.audio.newSound(Gdx.files.internal("sound/getgun2.wav")); // 총춥 사운드
+    public static final Sound speedUp = Gdx.audio.newSound(Gdx.files.internal("sound/speed.mp3")); // 총춥 사운드
+    public static final Sound getHP = Gdx.audio.newSound(Gdx.files.internal("sound/hp.mp3")); // 총춥 사운드
+
 }
