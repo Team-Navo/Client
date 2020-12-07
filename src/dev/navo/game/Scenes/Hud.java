@@ -23,6 +23,7 @@ public class Hud implements Disposable{
     int count;
     public Label alive;
     public Label aliveUser;
+    public Label position;
 
     public Hud(SpriteBatch sb){
         count = 0;
@@ -38,12 +39,18 @@ public class Hud implements Disposable{
         aliveUser.setBounds(720, 583, 100, 40);
         aliveUser.setAlignment(Align.center);
 
+        position = new Label("1", new Label.LabelStyle(FontGenerator.fontBold16, Color.BLACK));
+        position.setBounds(0, 580, 100, 40);
+
         stage.addActor(alive);
         stage.addActor(aliveUser);
+        stage.addActor(position);
     }
     public void showAliveUser(int user){
         aliveUser.setText(user);
     }
+
+
     public void addActor(Actor actor){
         stage.addActor(actor);
     }

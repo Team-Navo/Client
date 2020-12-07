@@ -382,6 +382,7 @@ public class PlayScreen implements Screen {
 
         //game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.showAliveUser(Room.getRoom().getCrewmates().size());
+        hud.position.setText("X : " + myCrewmate.getX() + ", Y : " + myCrewmate.getY());
         if(!isShowMinimap) hud.stage.draw();
     }
 
