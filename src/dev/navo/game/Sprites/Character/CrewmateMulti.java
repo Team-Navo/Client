@@ -100,9 +100,9 @@ public class CrewmateMulti extends Sprite {
         this.drmY = 0f;
 
         nameLabel = new Label(name, new Label.LabelStyle(FontGenerator.font32, Color.WHITE));
-        nameLabel.setWidth(50);
-        nameLabel.setHeight(15);
-        nameLabel.setFontScale(0.25f);
+        nameLabel.setWidth(100);
+        nameLabel.setHeight(30);
+        nameLabel.setFontScale(0.5f);
         nameLabel.setAlignment(Align.center);
 
         setBounds( 0, 0, 20,25);

@@ -152,9 +152,9 @@ public class Crewmate2D extends Sprite{
         this.weapon = Weapon.Type.NORMAL;
 
         nameLabel = new Label(name, new Label.LabelStyle(FontGenerator.font32, Color.BLUE));
-        nameLabel.setWidth(50);
-        nameLabel.setHeight(15);
-        nameLabel.setFontScale(0.25f);
+        nameLabel.setWidth(100);
+        nameLabel.setHeight(30);
+        nameLabel.setFontScale(0.5f);
         nameLabel.setAlignment(Align.center);
 
         currentState = State.DOWN;

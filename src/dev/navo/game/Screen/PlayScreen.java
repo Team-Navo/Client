@@ -96,7 +96,7 @@ public class PlayScreen implements Screen {
         myCrewmate = Room.getRoom().getMyCrewmate();
         myCrewmate.setWorld(world);
         myCrewmate.colorSetting();
-        myCrewmate.getLabel().setPosition(174, 176);
+        myCrewmate.getLabel().setPosition(174*2, 176*2);
         hud.addActor(myCrewmate.getLabel());
 
         recList = b2.getRecList();
@@ -203,7 +203,6 @@ public class PlayScreen implements Screen {
                 Sounds.magnetic.pause();
             }
         }
-        hud.showMessage("magneticChecker len : " + magneticChecker.len() + ", radius len : " + (radius * 4));
         //총알과 벽 충돌체크
         Bullet bullet;
         for(int i = 0; i < myBullets.size() ; i++){
@@ -373,13 +372,15 @@ public class PlayScreen implements Screen {
         for(Weapon w : wList) //추가
             w.draw(game.batch);
 
+
         drawMinimap();
 
         game.batch.end();
         shapeRenderer.end();
         lineRenderer.end();
 
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+
+        //game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
         if(!isShowMinimap) hud.stage.draw();
     }
@@ -392,8 +393,8 @@ public class PlayScreen implements Screen {
                 shapeRenderer.rect(centerHP.x + 22f + (c.getX() - myCrewmate.b2Body.getPosition().x) * 2,
                         centerHP.y + 26 + (c.getY() - myCrewmate.b2Body.getPosition().y) * 2, 50 * (c.getHP() / c.getMaxHP()), 10);
 
-                c.getLabel().setPosition(174 + 11f + (c.getX() - myCrewmate.b2Body.getPosition().x),
-                        175 + 13 + (c.getY() - myCrewmate.b2Body.getPosition().y));
+                c.getLabel().setPosition((174 + 11f + (c.getX() - myCrewmate.b2Body.getPosition().x)) * 2,
+                        (175 + 13 + (c.getY() - myCrewmate.b2Body.getPosition().y)) * 2);
             }
         }
     }
