@@ -103,9 +103,11 @@ public class Crewmate2D extends Sprite{
         if(HP + 10 >= this.maxHP) this.HP = this.maxHP;
         else this.HP += 10;
     }
-    public void setWorld(World world){
+
+    public void setWorld(World world){ // TO DO : add Vector2 vector
         this.world = world;
-        defineCrewmate(new Vector2(this.getX(), this.getY()));
+        defineCrewmate(new Vector2(this.getX(), this.getY())); // TO DO : Vector2.x, Vector2.y
+        //   defineCrewmate(vector2);
     }
 
     public void shooting(){//추가
