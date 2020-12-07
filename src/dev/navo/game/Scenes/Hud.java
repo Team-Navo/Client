@@ -41,7 +41,9 @@ public class Hud implements Disposable{
         stage.addActor(alive);
         stage.addActor(aliveUser);
     }
-
+    public void showAliveUser(int user){
+        aliveUser.setText(user);
+    }
     public void addActor(Actor actor){
         stage.addActor(actor);
     }
