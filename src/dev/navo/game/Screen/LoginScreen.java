@@ -125,7 +125,7 @@ public class LoginScreen implements Screen {
         signUpBtn.addListener(new ClickListener(){ // 회원가입 화면 버튼 리스너
             public void clicked (InputEvent event, float x, float y) { // 회원가입 버튼 리스너
                 Sounds.click.play(1);// 버튼 클릭 효과음
-                game.setScreen(new SignUpScreen(game));
+                game.setScreen(new WinScreen(game));
                 dispose();
             }
         });

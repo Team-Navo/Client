@@ -93,17 +93,17 @@ public class Crewmate2D extends Sprite{
         initFrame();
     }
     public void hit(int damage) {
-        if(HP >= 0) this.HP -= damage;
-        else HP = 0;
+        if(this.HP-damage<=0) this.HP = 0;
+        else this.HP -= damage;
         Sounds.hit.play();
     }
 
     public void heal(){
         Sounds.hp.play();
-        if( HP != 0){
-            if(HP <= this.getMaxHP()) HP = maxHP;
-            else this.HP+=10;
-        }
+        if( this.HP+10>=this.maxHP) this.HP = maxHP;
+        else this.HP += 10;
+
+
     }
     public void setWorld(World world){
         this.world = world;
@@ -172,7 +172,7 @@ public class Crewmate2D extends Sprite{
         initFrame();
         maxSpeed = 50;
 
-        setBounds(v.x, v.y, 20, 25);
+        setBounds(800, 600, 20, 25);
         setRegion(crewmateFrontStand);
     }
     //추가
