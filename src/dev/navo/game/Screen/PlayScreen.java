@@ -66,8 +66,10 @@ public class PlayScreen implements Screen {
     private static int maxSpeed = 80;
 
     private static float radius = 500;
-    boolean isShowMinimap = false;
+    private boolean isShowMinimap = false;
 
+    private float magneticDelay = 0;
+    private Vector2 centerOfMagnetic;
     public PlayScreen(NavoGame game) {
         this.game = game;
         shapeRenderer = new ShapeRenderer();
@@ -157,7 +159,11 @@ public class PlayScreen implements Screen {
         handleInput(dt);
         Util.frameSet(world);
 
-        radius -= dt * 3; // 자기장 줄이기
+        if(radius >= 0) radius -= dt * 3; // 자기장 줄이기
+        if(magneticDelay > 0) magneticDelay -= dt; // 자기장에 맞는거 체크
+
+        centerOfMagnetic = new Vector2(1600 - myCrewmate.b2Body.getPosition().x * 2 + NavoGame.V_WIDTH
+                , 1280 - myCrewmate.b2Body.getPosition().y * 2 + NavoGame.V_HEIGHT); // 자기장 중간 지점 업데이트
 
         myCrewmate.update(dt); // 내캐릭터 위치 업데이트
         for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()) crewmateMulti.update(dt); // 크루메이트들 위치 업데이트
@@ -168,6 +174,8 @@ public class PlayScreen implements Screen {
         otherBullets.removeIf(b -> b.update(dt)); // 상대가 쏜 총알 체크
         hitList.removeIf(hit -> hit.update(dt)); // 충돌 이펙트 체크
 
+
+
         gameCam.position.x = myCrewmate.b2Body.getPosition().x;
         gameCam.position.y = myCrewmate.b2Body.getPosition().y;
         gameCam.update();
@@ -175,6 +183,14 @@ public class PlayScreen implements Screen {
     }
 
     private void collisionCheck(){
+        // 자기장 체크
+        Vector2 magneticChecker = new Vector2(centerOfMagnetic.x - 400
+                , centerOfMagnetic.y - 300); // 자기장이랑 내 위치 비교
+        if(magneticChecker.len() >= (radius * 4) && magneticDelay <= 0){
+            myCrewmate.hit();
+            magneticDelay = 1;
+        }
+        hud.showMessage("magneticChecker len : " + magneticChecker.len() + ", radius len : " + (radius * 4));
         //총알과 벽 충돌체크
         Bullet bullet;
         for(int i = 0; i < myBullets.size() ; i++){
@@ -371,12 +387,10 @@ public class PlayScreen implements Screen {
             );
             lineRenderer.circle(NavoGame.V_WIDTH, NavoGame.V_HEIGHT, radius); // 미니맵 그릴 때 자기장
         }else{
-            Vector2 centerOfScreen = new Vector2(1600 - myCrewmate.b2Body.getPosition().x * 2
-                    , 1280 - myCrewmate.b2Body.getPosition().y * 2);
-
-            lineRenderer.circle(NavoGame.V_WIDTH + centerOfScreen.x // 미니맵이 안 그려 질 때 자기장
-                    ,  NavoGame.V_HEIGHT + centerOfScreen.y
+            lineRenderer.circle(centerOfMagnetic.x // 미니맵이 안 그려 질 때 자기장
+                    ,  centerOfMagnetic.y
                     ,radius*4);
+            lineRenderer.line(centerOfMagnetic.x, centerOfMagnetic.y, 400, 320);
         }
     }
 
