@@ -65,22 +65,9 @@ public class CrewmateMulti extends Sprite {
     public int getBulletMany(){return bulletMany;} //추가
 
     //Setter
-    public void hit(int damage) {
-        if(HP != 0) this.HP-= damage;
-    }
+
     public void setColor(String color){
         this.color = color;
-    }
-    public void shooting(){this.isShoot = true;}    //추가
-    public void setWeapon(int weapon){ //추가
-        this.weapon = weapon;
-        this.weaponStack++;
-    }
-    public void setBulletMany(int bullet){
-        this.bulletMany = bullet;
-    }
-    public void bulletManyDown(){
-        this.bulletMany--;
     }
 
     //Constructor
@@ -107,13 +94,6 @@ public class CrewmateMulti extends Sprite {
 
         setBounds( 0, 0, 20,25);
 
-        /*
-        setBounds( Integer.parseInt(crewmate.get("x").toString())
-                , Integer.parseInt(crewmate.get("y").toString())
-                , 20
-                , 25);
-
-         */
         initFrame();
         setRegion(crewmateFrontStand);
     }
@@ -121,10 +101,6 @@ public class CrewmateMulti extends Sprite {
         if(color.equals("Red")){ //빨간 캐릭터 능력치
             maxHP = 150;
             HP = 150;
-//            maxSpeed = 70; //스피드는 움직이는 정보를 받아오기때문에 주석?
-        }
-        if(color.equals("Green")){ //초록 캐릭터 능력치
-//            maxSpeed = 100; //스피드는 움직이는 정보를 받아오기때문에 주석?
         }
     }
     //캐릭터 움직임 애니메이션 초기화
