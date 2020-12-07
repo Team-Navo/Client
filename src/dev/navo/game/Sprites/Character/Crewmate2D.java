@@ -60,6 +60,11 @@ public class Crewmate2D extends Sprite{
         this.maxSpeed = maxSpeed;
         if(this.maxSpeed<30) this.maxSpeed = 30;
     }
+    public void setHpSpeed(int maxSpeed){
+        this.maxSpeed = maxSpeed;
+        if(this.maxSpeed<30) this.maxSpeed = 30;
+        this.heal(); this.heal();
+    }
 
     public enum State { UP, DOWN, LEFT, RIGHT };
     public State currentState;
@@ -261,7 +266,9 @@ public class Crewmate2D extends Sprite{
         setRegion(getFrame(dt));
 
         //퀘스트. 총알 발사하지 않고 무기 10개 모으기.
-        if(!getisShoot() && getWeaponStack()>=10) setWeapon(Weapon.Type.SUPER);
+        if(!getisShoot() && getWeaponStack()>=10) {
+            setWeapon(Weapon.Type.SUPER); this.weaponStack = 9;
+        }
     }
 
     //프레임 받아오기
