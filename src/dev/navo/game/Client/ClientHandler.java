@@ -1,5 +1,6 @@
 package dev.navo.game.Client;
 
+import com.badlogic.gdx.math.Vector2;
 import dev.navo.game.Buffer.LoginBuffer;
 import dev.navo.game.NavoGame;
 import dev.navo.game.Scenes.Hud;
@@ -12,6 +13,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+
+import java.util.ArrayList;
 
 public class ClientHandler extends ChannelInboundHandlerAdapter {
 
@@ -54,20 +57,25 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             case "2": // 색 변경
                 Room.getRoom().changeUserColor((JSONObject)json.get("Body"));
                 break;
-            case "3":
+            case "3": //shoot
                 Room.getRoom().makeBullet((JSONObject)json.get("Body"));
                 break;
-            case "4":
+            case "4": //exit
                 Room.getRoom().deleteUser(json.get("Body").toString());
                 break;
-            case "5":
+            case "5": //changeSuper
                 Room.getRoom().changeSuper(json.get("Super").toString());
                 break;
-            case "6":
+            case "6": //startGame
                 System.out.println("GameStart");
-//                NavoGame.getGame().setScreen(new PlayScreen(NavoGame.getGame()));
-//                WaitScreen.startGame();
+                System.out.println(json.toJSONString());
+
                 Room.getRoom().isStart=true;
+
+                Room.getRoom().getMyCrewmate().setPosition(
+                        Float.parseFloat(json.get("x").toString())
+                        ,Float.parseFloat(json.get("y").toString())
+                );
                 Client.getInstance().updateSender(Room.getRoom().getMyCrewmate(),Room.getRoom());
                 break;
         }

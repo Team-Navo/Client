@@ -93,9 +93,10 @@ public class Crewmate2D extends Sprite{
             this.HP++;
         }
     }
-    public void setWorld(World world){
+    public void setWorld(World world){ //, Vector2 vector2
         this.world = world;
         defineCrewmate(new Vector2(this.getX(), this.getY()));
+//        defineCrewmate(vector2);
     }
 
     public void shooting(){//추가

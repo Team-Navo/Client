@@ -19,7 +19,7 @@ import org.json.simple.JSONObject;
 public class Client {
     private static Client instance;
     static final String HOST = System.getProperty("host", "yjpcpa.ddns.net");
-    static final int PORT = Integer.parseInt(System.getProperty("port", "1120"));
+    static final int PORT = Integer.parseInt(System.getProperty("port", "1023"));
     Channel channel;
 
     String owner; //로그인 한 아이디
