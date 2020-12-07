@@ -100,8 +100,11 @@ public class Crewmate2D extends Sprite{
 
     public void heal(){
         Sounds.hp.play();
-        if(HP + 10 >= this.maxHP) this.HP = this.maxHP;
+        if(this.HP + 10 >= this.maxHP) this.HP = this.maxHP;
         else this.HP += 10;
+        if( this.HP+10>=this.maxHP) this.HP = maxHP;
+        else this.HP += 10;
+
     }
 
     public void setWorld(World world){ // TO DO : add Vector2 vector

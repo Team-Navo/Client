@@ -228,6 +228,12 @@ public class PlayScreen implements Screen {
         gameCam.position.y = myCrewmate.b2Body.getPosition().y;
         gameCam.update();
         renderer.setView(gameCam);
+
+        if(myCrewmate.getHP()==0&&Room.getRoom().getCrewmates().size()<=1){
+            game.setScreen(new WinScreen(game));
+        } else if(myCrewmate.getHP()==0){
+            game.setScreen(new LoseScreen(game));
+        }
     }
 
     private void collisionCheck(){
@@ -291,6 +297,7 @@ public class PlayScreen implements Screen {
                     }
             }
         }
+
         //상민
         //총알과 캐릭터 충돌체크
         for(int i = 0 ; i< otherBullets.size() ; i++) {
