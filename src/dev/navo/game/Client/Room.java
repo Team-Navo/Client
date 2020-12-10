@@ -31,6 +31,7 @@ public class Room { // 게임 방
     private ArrayList<ItemGroup> items;
     private ArrayList<Weapon> weapons;
 
+    private int size;
     public Room() {
         this.crewmates = new ArrayList<>();
         items = new ArrayList<>();
@@ -80,9 +81,13 @@ public class Room { // 게임 방
         }
     }
     public void drawCrewmates(SpriteBatch batch, String user) {
+        size = 0;
         for(CrewmateMulti crewmate : crewmates) {
-            if(!user.equals(crewmate.owner) && crewmate.getHP() > 0) {
-                crewmate.draw(batch);
+            if(crewmate.getHP() > 0){
+                size++;
+                if(!user.equals(crewmate.owner){
+                    crewmate.draw(batch);
+                }
             }
         }
     }
@@ -155,5 +160,9 @@ public class Room { // 게임 방
     }
     public void changeSuper(String superUser) { // 방장 바꾸는 메소드
         this.superUser = superUser;
+    }
+
+    public int getSize() {
+
     }
 }

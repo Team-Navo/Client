@@ -230,7 +230,7 @@ public class PlayScreen implements Screen {
         gameCam.update();
         renderer.setView(gameCam);
 
-        if(myCrewmate.getHP()==0 && Room.getRoom().getCrewmates().size()<=1){
+        if(myCrewmate.getHP()==0 && Room.getRoom().getSize()<=1){
             game.setScreen(new WinScreen(game));
         } else if(myCrewmate.getHP() == 0){
             game.setScreen(new LoseScreen(game));
@@ -390,7 +390,7 @@ public class PlayScreen implements Screen {
 
 
         //game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.showAliveUser(Room.getRoom().getCrewmates().size());
+        hud.showAliveUser(Room.getRoom().getSize());
         hud.position.setText("X : " + myCrewmate.getX() + ", Y : " + myCrewmate.getY());
         if(!isShowMinimap) hud.stage.draw();
     }
