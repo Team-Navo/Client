@@ -81,7 +81,7 @@ public class Room { // 게임 방
     }
     public void drawCrewmates(SpriteBatch batch, String user) {
         for(CrewmateMulti crewmate : crewmates) {
-            if(!user.equals(crewmate.owner)) {
+            if(!user.equals(crewmate.owner) && crewmate.getHP() > 0) {
                 crewmate.draw(batch);
             }
         }

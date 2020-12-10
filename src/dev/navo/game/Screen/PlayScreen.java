@@ -66,7 +66,7 @@ public class PlayScreen implements Screen {
     private static final int moveSpeed = 10;
     private static int maxSpeed = 80;
 
-    private static float radius = 500;
+    private static float radius = 600;
     private boolean isShowMinimap = false;
     private boolean isMagneticSoundPlay = false;
 
@@ -104,8 +104,9 @@ public class PlayScreen implements Screen {
         items = Room.getRoom().getItems();
         weapons = Room.getRoom().getWeapons();
 
-        for(CrewmateMulti c : Room.getRoom().getCrewmates())
-            hud.addActor(c.getLabel());
+        for(CrewmateMulti c : Room.getRoom().getCrewmates()) {
+            if(!c.owner.equals(myCrewmate.owner)) hud.addActor(c.getLabel());
+        }
 
         hitList = new ArrayList<>();    //추가
 
@@ -116,7 +117,7 @@ public class PlayScreen implements Screen {
     private void initItem () {
         //상민
         //추가. 벽에 겹치지 않게 아이템 생성
-        for(int i = 0 ; i < 12 ; i++){
+        for(int i = 0 ; i < 15 ; i++){
             boolean check = true;
             ItemGroup item = new ItemGroup(world,
                     new Vector2((int) (Math.random() * 1560) + 20, (int) (Math.random() * 960) + 20),
@@ -137,7 +138,7 @@ public class PlayScreen implements Screen {
         types.add(Weapon.Type.BLUE);
         types.add(Weapon.Type.GREEN);
         types.add(Weapon.Type.RED);
-        for(int i = 0 ; i < 8 ; i++){
+        for(int i = 0 ; i < 15 ; i++){
             boolean check = true;
             Weapon.Type type = types.get(i % 3);
             Weapon weapon = new Weapon(world,
@@ -214,7 +215,9 @@ public class PlayScreen implements Screen {
                 , 1280 - myCrewmate.b2Body.getPosition().y * 2 + NavoGame.V_HEIGHT); // 자기장 중간 지점 업데이트
 
         myCrewmate.update(dt); // 내캐릭터 위치 업데이트
-        for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()) crewmateMulti.update(dt); // 크루메이트들 위치 업데이트
+        for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()){
+            crewmateMulti.update(dt); // 크루메이트들 위치 업데이트
+        }
 
         collisionCheck(); // 충돌 체크
 
@@ -222,16 +225,14 @@ public class PlayScreen implements Screen {
         otherBullets.removeIf(b -> b.update(dt)); // 상대가 쏜 총알 체크
         hitList.removeIf(hit -> hit.update(dt)); // 충돌 이펙트 체크
 
-
-
         gameCam.position.x = myCrewmate.b2Body.getPosition().x;
         gameCam.position.y = myCrewmate.b2Body.getPosition().y;
         gameCam.update();
         renderer.setView(gameCam);
 
-        if(myCrewmate.getHP()==0&&Room.getRoom().getCrewmates().size()<=1){
+        if(myCrewmate.getHP()==0 && Room.getRoom().getCrewmates().size()<=1){
             game.setScreen(new WinScreen(game));
-        } else if(myCrewmate.getHP()==0){
+        } else if(myCrewmate.getHP() == 0){
             game.setScreen(new LoseScreen(game));
         }
     }
@@ -269,7 +270,7 @@ public class PlayScreen implements Screen {
                     }
             }
             for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()){
-                if(!crewmateMulti.owner.equals(myCrewmate.owner)){
+                if(!crewmateMulti.owner.equals(myCrewmate.owner) && crewmateMulti.getHP() > 0){
                     if (bullet.getX() >= crewmateMulti.getX() - bullet.getWidth() && bullet.getX() <= crewmateMulti.getX() + crewmateMulti.getWidth()){
                         if (bullet.getY() >= crewmateMulti.getY() - bullet.getHeight() && bullet.getY() <= crewmateMulti.getY() + crewmateMulti.getHeight()) {
                             myBullets.remove(i--);

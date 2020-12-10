@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="100" height="80" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="421">
- <tileset firstgid="1" source="navo201207/core/assets/map/Outside_A2.tsx"/>
- <tileset firstgid="1729" source="navo201207/core/assets/map/acoc_122394_1253963474_01.tsx"/>
- <tileset firstgid="15969" source="Outside_A2.tsx"/>
+ <tileset firstgid="1" source="Outside_A2.tsx"/>
+ <tileset firstgid="1729" source="acoc_122394_1253963474_01.tsx"/>
+ <tileset firstgid="15969" source="../../../../Outside_A2.tsx"/>
  <layer id="1" name="background" width="100" height="80">
   <data encoding="csv">
 1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,1113,
@@ -171,7 +171,7 @@
 541,542,543,679,324,0,0,0,0,0,0,0,0,0,0,0,6783,6784,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,367,732,541,542,543,679,372,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2833,2834,2835,2836,2837,2838,0,0,0,0,0,0,0,0,0,0,0,0,367,684,541,542,543
 </data>
  </layer>
- <objectgroup id="8" name="Object Layer 1">
+ <objectgroup id="8" name="Object Layer 1" visible="0">
   <object id="82" x="335.5" y="0" width="97" height="143"/>
   <object id="83" x="67.5" y="0" width="11.75" height="31"/>
   <object id="84" x="-0.5" y="67.75" width="48.5" height="0.5"/>
