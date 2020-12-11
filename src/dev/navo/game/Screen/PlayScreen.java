@@ -395,11 +395,9 @@ public class PlayScreen implements Screen {
         for (HitEffect hit : hitList) //추가
             hit.draw(game.batch);
 
-        for(ItemGroup it : items) //추가
-            it.draw(game.batch);
+        for(int i = 0 ; i < items.size() ; i++) items.get(i).draw(game.batch);
 
-        for(Weapon w : weapons) //추가
-            w.draw(game.batch);
+        for(int i = 0 ; i < weapons.size() ; i++) weapons.get(i).draw(game.batch);
 
 
         drawMinimap();
