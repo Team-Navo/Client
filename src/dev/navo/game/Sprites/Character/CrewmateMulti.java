@@ -68,6 +68,7 @@ public class CrewmateMulti extends Sprite {
 
     public void setColor(String color){
         this.color = color;
+        colorSetting();
     }
 
     //Constructor

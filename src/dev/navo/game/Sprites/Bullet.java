@@ -19,14 +19,19 @@ public class Bullet extends Sprite {
     protected int range = 150; // 총알 사거리
     protected Weapon.Type type;
 
-    public Bullet(World world, Vector2 v, Crewmate2D.State crewmateState, Weapon.Type type){
+    private String owner;
+    public String getOwner(){
+        return owner;
+    }
+
+    public Bullet(World world, Vector2 v, Crewmate2D.State crewmateState, Weapon.Type type, String owner){
         super(Images.bulletAtlas.findRegion("NormalBullet"));
         this.world = world;
         startV = v;
         dir = crewmateState;
         stackDistance = 0;
         this.type = type;
-
+        this.owner = owner;
         Sounds.gunShotSound.play(0.7f);
         initFeature();
         initRegion();

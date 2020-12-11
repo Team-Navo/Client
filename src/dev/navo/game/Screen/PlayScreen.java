@@ -110,7 +110,7 @@ public class PlayScreen implements Screen {
 
         hitList = new ArrayList<>();    //추가
 
-        initItem(); // 아이템 초기화
+        //initItem(); // 아이템 초기화
     }
 
     //상민
@@ -121,7 +121,8 @@ public class PlayScreen implements Screen {
             boolean check = true;
             ItemGroup item = new ItemGroup(world,
                     new Vector2((int) (Math.random() * 1560) + 20, (int) (Math.random() * 960) + 20),
-                    i % 3);
+                    i % 3,
+                    22);
             for (Rectangle rect : blocks) {
                 if (item.getX() >= rect.getX() - item.getWidth() && item.getX() <= rect.getX() + rect.getWidth())
                     if (item.getY() >= rect.getY() - item.getHeight() && item.getY() <= rect.getY() + rect.getHeight())
@@ -143,7 +144,7 @@ public class PlayScreen implements Screen {
             Weapon.Type type = types.get(i % 3);
             Weapon weapon = new Weapon(world,
                     new Vector2((int) (Math.random() * 1560) + 20, (int) (Math.random() * 960) + 20),
-                    type);
+                    type, 22);
             for (Rectangle rect : blocks) {
                 if (weapon.getX() >= rect.getX() - weapon.getWidth() && weapon.getX() <= rect.getX() + rect.getWidth())
                     if (weapon.getY() >= rect.getY() - weapon.getHeight() && weapon.getY() <= rect.getY() + rect.getHeight()) {
@@ -160,7 +161,7 @@ public class PlayScreen implements Screen {
         Util.moveInputHandle(myCrewmate, maxSpeed, moveSpeed);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.X) && myCrewmate.getAttackDelay() <= 0) {
-            Client.getInstance().shoot(myCrewmate.getX(),myCrewmate.getY(),myCrewmate.currentState,myCrewmate.getWeapon());
+            Client.getInstance().shoot(myCrewmate.getX(),myCrewmate.getY(),myCrewmate.currentState,myCrewmate.getWeapon(), myCrewmate.owner);
             attack();
         }
 
@@ -186,6 +187,7 @@ public class PlayScreen implements Screen {
                 if (myCrewmate.getY() >= weapon.getY()- myCrewmate.getHeight() && myCrewmate.getY() <= weapon.getY()+weapon.getHeight()) {
                     weapons.remove(i--);
                     myCrewmate.setWeapon(weapon.getType());
+                    Client.getInstance().getItem(weapon.getCode());
                     break;
                 }
         }
@@ -200,6 +202,7 @@ public class PlayScreen implements Screen {
                 , myCrewmate.getY())
                 , myCrewmate.currentState
                 , myCrewmate.getWeapon()
+                , myCrewmate.owner
                 )
         );
     }
@@ -230,7 +233,7 @@ public class PlayScreen implements Screen {
         gameCam.update();
         renderer.setView(gameCam);
 
-        if(myCrewmate.getHP()==0 && Room.getRoom().getSize()<=1){
+        if(myCrewmate.getHP() > 0 && Room.getRoom().getSize()<=1){
             game.setScreen(new WinScreen(game));
         } else if(myCrewmate.getHP() == 0){
             game.setScreen(new LoseScreen(game));
@@ -322,6 +325,21 @@ public class PlayScreen implements Screen {
                     break;
                 }
             }
+
+            for(CrewmateMulti crewmateMulti : Room.getRoom().getCrewmates()){
+                if( !crewmateMulti.owner.equals(myCrewmate.owner) && !bullet.getOwner().equals(crewmateMulti.owner) && crewmateMulti.getHP() > 0){
+                    if (bullet.getX() >= crewmateMulti.getX() - bullet.getWidth() && bullet.getX() <= crewmateMulti.getX() + crewmateMulti.getWidth()){
+                        if (bullet.getY() >= crewmateMulti.getY() - bullet.getHeight() && bullet.getY() <= crewmateMulti.getY() + crewmateMulti.getHeight()) {
+                            otherBullets.remove(i--);
+                            //추가. 이펙트 생성
+                            hitList.add(new HitEffect(world,
+                                    new Vector2((crewmateMulti.getX()-(crewmateMulti.getX()-bullet.getX())/2)-3,
+                                            (crewmateMulti.getY()-(crewmateMulti.getY()-bullet.getY())/2)-5)));
+                            break;
+                        }
+                    }
+                }
+            }
         }
         //상민
         //추가. 아이템 습득체크
@@ -331,6 +349,7 @@ public class PlayScreen implements Screen {
             if (myCrewmate.getX() >= it.getX() - myCrewmate.getWidth() && myCrewmate.getX() <= it.getX() + it.getWidth())
                 if (myCrewmate.getY() >= it.getY() - myCrewmate.getHeight() && myCrewmate.getY() <= it.getY() + it.getHeight()) {
                     items.remove(i--);
+                    Client.getInstance().getItem(it.getCode());
                     if(it.getType()==0)
                         myCrewmate.heal();
                     else if(it.getType()==1)
@@ -365,7 +384,7 @@ public class PlayScreen implements Screen {
 
         game.batch.begin();
 
-        Room.getRoom().drawCrewmates(NavoGame.getGame().batch, myCrewmate.owner);
+        Room.getRoom().drawCrewmates(NavoGame.getGame().batch, myCrewmate.owner, hud);
         myCrewmate.draw(game.batch);
 
         if(!isShowMinimap) drawStatus(); // 캐릭터 이름이랑 HP 바 그리는거

@@ -19,7 +19,7 @@ import org.json.simple.JSONObject;
 public class Client {
     private static Client instance;
     static final String HOST = System.getProperty("host", "yjpcpa.ddns.net");
-    static final int PORT = Integer.parseInt(System.getProperty("port", "1023"));
+    static final int PORT = Integer.parseInt(System.getProperty("port", "1120"));
     Channel channel;
 
     String owner; //로그인 한 아이디
@@ -213,7 +213,8 @@ public class Client {
         System.out.println("Client 204: " + parentJson);
         channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
     }
-    public void shoot(float x, float y, Crewmate2D.State state, Weapon.Type type) {
+
+    public void shoot(float x, float y, Crewmate2D.State state, Weapon.Type type, String owner) {
         JSONObject parentJson = new JSONObject();
         JSONObject childJson=new JSONObject();
         childJson.put("owner",Room.getRoom().getMyCrewmate().owner);
@@ -222,6 +223,7 @@ public class Client {
         System.out.println("asdfasdf:"+state.toString());
         childJson.put("state",state.toString());
         childJson.put("weapon",type.toString());
+        childJson.put("owner", owner);
         parentJson.put("Header","Event");
         parentJson.put("Function","3");
         parentJson.put("roomCode",Room.getRoom().getRoomCode());
@@ -229,6 +231,23 @@ public class Client {
         channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
         System.out.println(parentJson);
     }
+
+    public void getItem(int code) {
+        System.out.println("getItem : " + code);
+        JSONObject parentJson = new JSONObject();
+        JSONObject childJson = new JSONObject();
+
+        parentJson.put("Header", "Event");
+        parentJson.put("Function", "7");
+        parentJson.put("roomCode", Room.getRoom().getRoomCode());
+        childJson.put("owner",Room.getRoom().getMyCrewmate().owner);
+        childJson.put("entityCode", code);
+        parentJson.put("Body", childJson);
+
+        channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
+        System.out.println("[getItem] : " + parentJson);
+    }
+
     //업데이트 보내기
     public void updateSender(final Crewmate2D user, final Room room) {
         System.out.println("updateSender set");

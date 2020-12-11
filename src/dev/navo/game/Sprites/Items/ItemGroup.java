@@ -20,11 +20,17 @@ public class ItemGroup  extends Sprite {
 
     public World world;
     private int type;
+    private int code;
+
+    public int getCode(){
+        return code;
+    }
     public int getType(){return type;}
-    public ItemGroup(World world, Vector2 v, int type){
+    public ItemGroup(World world, Vector2 v, int type, int code){
         super(Images.itemAtlas.findRegion("pill_red"));
         this.world = world;
         this.type = type;
+        this.code = code;
         setBounds(v.x, v.y, 15, 14);
         initRegion();
     }

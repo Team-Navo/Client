@@ -2,6 +2,7 @@ package dev.navo.game.Client;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import dev.navo.game.Scenes.Hud;
 import dev.navo.game.Screen.PlayScreen;
 import dev.navo.game.Sprites.Bullet;
 import dev.navo.game.Sprites.Character.Crewmate2D;
@@ -36,6 +37,7 @@ public class Room { // 게임 방
         this.crewmates = new ArrayList<>();
         items = new ArrayList<>();
         weapons = new ArrayList<>();
+        size = 100;
     }
     // 싱글톤 게터
     public static Room getRoom() {
@@ -45,6 +47,62 @@ public class Room { // 게임 방
         return room;
     }
 
+    public void removeItems(JSONObject json){
+        if (!json.get("owner").equals(myCrewmate.owner)) {
+            int code = Integer.parseInt(json.get("entityCode").toString());
+
+            System.out.println("removeItems entityCode : " + code);
+            if (code < 8) {
+                weapons.removeIf(weapon -> weapon.getCode() == code);
+            } else {
+                items.removeIf(itemGroup -> itemGroup.getCode() == code);
+            }
+        }
+    }
+
+    public void addItems(JSONObject childJson) {
+        ArrayList<Vector2> v=new ArrayList<>();
+        v.add(new Vector2(823,270));
+        v.add(new Vector2(1069,398));
+        v.add(new Vector2(1197,637));
+        v.add(new Vector2(1068,877));
+        v.add(new Vector2(813,1006));
+        v.add(new Vector2(557,881));
+        v.add(new Vector2(429,638));
+        v.add(new Vector2(557,400));
+        v.add(new Vector2(140,835));
+        v.add(new Vector2(427,948));
+        v.add(new Vector2(813,948));
+        v.add(new Vector2(1165,948));
+        v.add(new Vector2(1165,357));
+        v.add(new Vector2(812,355));
+        v.add(new Vector2(429,356));
+        v.add(new Vector2(684,644));
+        v.add(new Vector2(812,788));
+        v.add(new Vector2(956,644));
+        v.add(new Vector2(812,500));
+        v.add(new Vector2(1452,228));
+
+        for( int i=0;i < 8; i++ ) {
+            weapons.add(new Weapon(
+                    PlayScreen.world,
+                    v.get(i),
+                    Weapon.Type.valueOf(childJson.get("" + i).toString()),
+                    i
+            ));
+        }
+        for (int i = 8 ; i < 20 ; i++){
+            items.add(new ItemGroup(
+                    PlayScreen.world,
+                    v.get(i),
+                    Integer.parseInt(childJson.get("" + i).toString()),
+                    i
+            ));
+        }
+    }
+    public int getSize() {
+        return size;
+    }
     public ArrayList<Bullet> getBullets(){
         return bullets;
     }
@@ -70,24 +128,31 @@ public class Room { // 게임 방
         myCrewmate = crewmate;
         Client.getInstance().enter(crewmate.getCrewmateEnterJson());
     }
+
     public void makeBullet(JSONObject json) {
         if(!myCrewmate.owner.equals(json.get("owner").toString())) {
             bullets.add(new Bullet(
-                    PlayScreen.world, new Vector2(Float.parseFloat(json.get("x").toString())
-                    ,Float.parseFloat(json.get("y").toString()))
-                    ,Crewmate2D.State.valueOf(json.get("state").toString())
-                    , Weapon.Type.valueOf(json.get("weapon").toString()))
+                    PlayScreen.world,
+                    new Vector2(Float.parseFloat(json.get("x").toString()),
+                    Float.parseFloat(json.get("y").toString())),
+                    Crewmate2D.State.valueOf(json.get("state").toString()),
+                    Weapon.Type.valueOf(json.get("weapon").toString()),
+                    json.get("owner").toString()
+                    )
             ); //Type.NORMAL을 받아오는 객체로 전달
         }
     }
-    public void drawCrewmates(SpriteBatch batch, String user) {
+
+    public void drawCrewmates(SpriteBatch batch, String user, Hud hud) {
         size = 0;
         for(CrewmateMulti crewmate : crewmates) {
-            if(crewmate.getHP() > 0){
+            if(crewmate.getHP() > 0) {
                 size++;
-                if(!user.equals(crewmate.owner){
+                if(!user.equals(crewmate.owner)){
                     crewmate.draw(batch);
                 }
+            }else{
+                hud.removeActor(crewmate.getLabel());
             }
         }
     }
@@ -160,9 +225,5 @@ public class Room { // 게임 방
     }
     public void changeSuper(String superUser) { // 방장 바꾸는 메소드
         this.superUser = superUser;
-    }
-
-    public int getSize() {
-
     }
 }

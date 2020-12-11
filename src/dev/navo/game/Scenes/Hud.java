@@ -56,6 +56,7 @@ public class Hud implements Disposable{
     }
 
     public <T> void removeActor(T actor){
+        if(actor == null) return;
         for(Actor temp : stage.getActors()){
             if(temp.equals(actor)){
                 temp.remove();

@@ -18,13 +18,17 @@ public class Weapon extends Sprite {
     public enum Type { NORMAL, RED, BLUE, GREEN , SUPER};
     public World world;
 
+    private int code;
     private Type type;
     public Type getType(){ return type; }
+    public int getCode() { return code; }
 
-    public Weapon(World world, Vector2 v, Type type){
+
+    public Weapon(World world, Vector2 v, Type type, int code){
         super(Images.bulletAtlas.findRegion("NormalBullet"));
         this.type = type;
         this.world = world;
+        this.code = code;
         setBounds(v.x, v.y, 14, 14);
         initRegion();
     }

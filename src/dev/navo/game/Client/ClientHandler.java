@@ -78,6 +78,12 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
                 );
                 Client.getInstance().updateSender(Room.getRoom().getMyCrewmate(),Room.getRoom());
                 break;
+            case "7" : // removecItems
+                Room.getRoom().removeItems((JSONObject)json.get("Body"));
+                break;
+            case "10": //addItems
+                Room.getRoom().addItems((JSONObject)json.get("Body"));
+                break;
         }
     }
 
