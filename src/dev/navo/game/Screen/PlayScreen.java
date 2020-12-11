@@ -203,6 +203,7 @@ public class PlayScreen implements Screen {
                 , myCrewmate.currentState
                 , myCrewmate.getWeapon()
                 , myCrewmate.owner
+                , 1
                 )
         );
     }

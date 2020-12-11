@@ -169,7 +169,6 @@ public class CrewmateMulti extends Sprite {
 
     //받아온 정보로 초기화
     public void updateInfo(JSONObject updateJson) {
-        System.out.println("updateInfo : " + updateJson.toJSONString());
 //        this.name = updateJson.get("name").toString();
 //        nameLabel.setText(name);
         //this.color = crewmateJson.get("color").toString();

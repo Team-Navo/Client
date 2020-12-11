@@ -130,6 +130,15 @@ public class Room { // 게임 방
     }
 
     public void makeBullet(JSONObject json) {
+        Vector2 len = new Vector2(
+                myCrewmate.getX() - Float.parseFloat(json.get("x").toString()),
+                myCrewmate.getY() - Float.parseFloat(json.get("y").toString())
+        );
+
+        float sound;
+        if(len.len() > 400) sound = 0;
+        else sound = (Math.abs( len.len() / 4 - 100 ) / 100f);
+
         if(!myCrewmate.owner.equals(json.get("owner").toString())) {
             bullets.add(new Bullet(
                     PlayScreen.world,
@@ -137,12 +146,21 @@ public class Room { // 게임 방
                     Float.parseFloat(json.get("y").toString())),
                     Crewmate2D.State.valueOf(json.get("state").toString()),
                     Weapon.Type.valueOf(json.get("weapon").toString()),
-                    json.get("owner").toString()
+                    json.get("owner").toString(),
+                    sound
                     )
             ); //Type.NORMAL을 받아오는 객체로 전달
         }
     }
-
+    // 상대방 총알 소리 크기
+    // v1 - v2 = len(400) = min, len(0) = max
+    // 400 = 0%
+    // 300 = 25%
+    // 200 = 50%
+    // 100 = 75%
+    // 0 = 100%
+    // 4 = 1%
+    //  | len / 4 - 100 | / 100
     public void drawCrewmates(SpriteBatch batch, String user, Hud hud) {
         size = 0;
         for(CrewmateMulti crewmate : crewmates) {

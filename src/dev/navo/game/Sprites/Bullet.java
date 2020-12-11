@@ -24,7 +24,7 @@ public class Bullet extends Sprite {
         return owner;
     }
 
-    public Bullet(World world, Vector2 v, Crewmate2D.State crewmateState, Weapon.Type type, String owner){
+    public Bullet(World world, Vector2 v, Crewmate2D.State crewmateState, Weapon.Type type, String owner, float sound){
         super(Images.bulletAtlas.findRegion("NormalBullet"));
         this.world = world;
         startV = v;
@@ -32,11 +32,10 @@ public class Bullet extends Sprite {
         stackDistance = 0;
         this.type = type;
         this.owner = owner;
-        Sounds.gunShotSound.play(0.7f);
+        if(sound > 0) Sounds.gunShotSound.play(sound * 0.7f);
         initFeature();
         initRegion();
     }
-
     public Weapon.Type getType(){return type;}
 
     private void initRegion(){
@@ -100,12 +99,4 @@ public class Bullet extends Sprite {
     }
 }
 
-// 상대방 총알 소리 크기
-// v1 - v2 = len(400) = min, len(0) = max
-// 400 = 0%
-// 300 = 25%
-// 200 = 50%
-// 100 = 75%
-// 0 = 100%
-// 4 = 1%
-//  | len / 4 - 100 | / 100
+
