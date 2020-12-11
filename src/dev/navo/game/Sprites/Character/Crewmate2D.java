@@ -258,8 +258,13 @@ public class Crewmate2D extends Sprite{
     public void update(float dt){
         if(attackDelay > 0) attackDelay -= dt;
         if(stepDelay > 0) stepDelay -= dt;
-        drmX = b2Body.getLinearVelocity().x * dt; // 1초당 80만큼 움직임 = velocity.X = 80 * dt = 1 Frame 당 움직일 X 거리
-        drmY = b2Body.getLinearVelocity().y * dt;// 1초당 80만큼 움직임 = velocity.Y = 80 * dt = 1 Frame 당 움직일 Y 거리
+        if(isStop){
+            drmX = 0;
+            drmY = 0;
+        }else{
+            drmX = b2Body.getLinearVelocity().x * dt * 4; // 1초당 80만큼 움직임 = velocity.X = 80 * dt = 1 Frame 당 움직일 X 거리
+            drmY = b2Body.getLinearVelocity().y * dt * 4;// 1초당 80만큼 움직임 = velocity.Y = 80 * dt = 1 Frame 당 움직일 Y 거리
+        }
         setPosition(b2Body.getPosition().x - getWidth() /2 -1, b2Body.getPosition().y - getHeight() / 2);
 
         if(!isStop){
@@ -369,6 +374,7 @@ public class Crewmate2D extends Sprite{
         childJson.put("drmX", drmX);
         childJson.put("drmY", drmY);
         childJson.put("frameNum", getFrameNum());
+        childJson.put("maxSpeed",getMaxSpeed());
 
 //        childJson.put("maxHP", maxHP);
         childJson.put("HP", HP);

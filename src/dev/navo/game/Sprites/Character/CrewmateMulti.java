@@ -34,6 +34,7 @@ public class CrewmateMulti extends Sprite {
     private Label nameLabel;
     private float maxHP;
     private float HP;
+    private float maxSpeed;
     private int weapon; //추가
     private int bulletMany; //추가
     private int weaponStack = 0; //추가
@@ -156,29 +157,35 @@ public class CrewmateMulti extends Sprite {
 
     // 매 프레임마다 업데이트
     public void update(float dt){
-        //DRM으로 이동하는 로직 추가
-        setPosition(getX() + drmX
-                ,getY() + drmY);
+        if(drmX != 0 && drmY != 0){
+            Vector2 temp = new Vector2(drmX, drmY);
+            float division = temp.len() / (maxSpeed * dt);
+            //DRM으로 이동하는 로직 추가
+            setPosition(getX() + temp.x / division
+                    ,getY() + temp.y / division);
+        }
         setRegion(getFrame());
     }
 
     //받아온 정보로 초기화
     public void updateInfo(JSONObject updateJson) {
-
+        System.out.println("updateInfo : " + updateJson.toJSONString());
 //        this.name = updateJson.get("name").toString();
 //        nameLabel.setText(name);
         //this.color = crewmateJson.get("color").toString();
 
-        setPosition(Integer.parseInt(updateJson.get("x").toString())
-                ,Integer.parseInt(updateJson.get("y").toString()));
 
         this.drmX = Float.parseFloat(updateJson.get("drmX").toString());
         this.drmY = Float.parseFloat(updateJson.get("drmY").toString());
 
-        //this.maxHP = Integer.parseInt(crewmateJson.get("maxHP").toString());
+        setPosition(Integer.parseInt(updateJson.get("x").toString())
+                    ,Integer.parseInt(updateJson.get("y").toString()));
+
+        this.maxSpeed = Float.parseFloat(updateJson.get("maxSpeed").toString());
         this.HP = Integer.parseInt(updateJson.get("HP").toString());
 
         this.frameNum = Integer.parseInt(updateJson.get("frameNum").toString());
+
 
     }
 

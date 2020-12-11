@@ -262,14 +262,14 @@ public class Client {
                     // UPDATE 6
                     parentJson.put("Function", "0");
                     parentJson.put("roomCode", room.getRoomCode());
-                    childJson.put("crewmate", user.getCrewmateInitJson());
-                    parentJson.put("Body",user.getCrewmateInitJson());
+                        childJson.put("crewmate", user.getCrewmateInitJson());
+                        parentJson.put("Body",user.getCrewmateInitJson());
 //                    parentJson.put("Body", childJson);
-                    channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
-                    try {
-                        Thread.sleep(75);
-                    } catch (InterruptedException e) {
-                        inGameThread = false;
+                        channel.writeAndFlush(parentJson.toJSONString() + "\r\n");
+                        try {
+                            Thread.sleep(75);
+                        } catch (InterruptedException e) {
+                            inGameThread = false;
                         e.toString();
                     }
                 }
