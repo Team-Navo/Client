@@ -212,7 +212,7 @@ public class PlayScreen implements Screen {
         handleInput(dt);
         Util.frameSet(world);
 
-        if(radius >= 0) radius -= dt * 3; // 자기장 줄이기
+        if(radius >= 0) radius -= dt * 6; // 자기장 줄이기
         if(magneticDelay > 0) magneticDelay -= dt; // 자기장에 맞는거 체크
 
         centerOfMagnetic = new Vector2(1600 - myCrewmate.b2Body.getPosition().x * 2 + NavoGame.V_WIDTH
@@ -247,12 +247,12 @@ public class PlayScreen implements Screen {
                 , centerOfMagnetic.y - 300); // 자기장이랑 내 위치 비교
         if(magneticChecker.len() >= (radius * 4)){
             if(magneticDelay <= 0){
-                myCrewmate.hit(10);
+                myCrewmate.hit(5);
                 magneticDelay = 1;
             }
             if(!isMagneticSoundPlay){
                 isMagneticSoundPlay = true;
-                Sounds.magnetic.play();
+                Sounds.magnetic.loop();
             }
         }else{
             if(isMagneticSoundPlay){

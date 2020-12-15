@@ -51,27 +51,27 @@ public class Images {
     };
 
     public static void renderBackground(float delta, SpriteBatch batch) {
-        float backgroundMaxScrollingSpeed = (float)(600) / 4;
+        float backgroundMaxScrollingSpeed = (float)(700) / 4;
 
         //update position of background images
-        backgroundOffsets[0] += delta * backgroundMaxScrollingSpeed / 8;
+        backgroundOffsets[0] += delta * backgroundMaxScrollingSpeed / 2;
         backgroundOffsets[1] += delta * backgroundMaxScrollingSpeed / 4;
         backgroundOffsets[2] += delta * backgroundMaxScrollingSpeed / 2;
         backgroundOffsets[3] += delta * backgroundMaxScrollingSpeed;
 
         //draw each background layer
         for (int layer = 0; layer < backgroundOffsets.length; layer++) {
-            if (backgroundOffsets[layer] > 600) {
+            if (backgroundOffsets[layer] > 700) {
                 backgroundOffsets[layer] = 0;
             }
             batch.draw(backgrounds[layer],
                     0,
                     -backgroundOffsets[layer],
-                    800, 600);
+                    800, 700);
             batch.draw(backgrounds[layer],
                     0,
-                    -backgroundOffsets[layer] + 600,
-                    800, 600);
+                    -backgroundOffsets[layer] + 700,
+                    800, 700);
         }
     }
 }
